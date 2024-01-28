@@ -26,7 +26,7 @@ public class MemberMapperDTO {
     }
 
     public String validateEmail(String email) {
-        String pattern = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
+        String pattern = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$";
         if (!Pattern.matches(pattern,email)) {
             throw new IllegalArgumentException();
         }
@@ -51,7 +51,7 @@ public class MemberMapperDTO {
 
     public String validatePassword(String password) {
         String pattern = "^(?=.*[a-z])(?=.*\\d).{8,13}$";
-        if (!Pattern.matches(pattern, pattern)) {
+        if (!Pattern.matches(pattern, password)) {
             throw new IllegalArgumentException();
         }
         return password;
