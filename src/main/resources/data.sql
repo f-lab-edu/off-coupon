@@ -1,3 +1,1 @@
-INSERT INTO Member(name, password, email) VALUES ('SEJIN1', '1234','seijin@naver.com')
-INSERT INTO Member(name, password, email) VALUES ('SEJIN2', '1234','seijin@naver.com')
-INSERT INTO Member(name, password, email) VALUES ('SEJIN3', '1234','seijin@naver.com')
+INSERT INTO users (email, password, name, birthDate, phone) VALUES('sejin@email.com','1234','박세진','1111-11-1122','010-222-222');
