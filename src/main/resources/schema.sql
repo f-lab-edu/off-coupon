@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS memeber;
 
-CREATE TABLE memeber
+CREATE TABLE member
 (
     id IDENTITY PRIMARY KEY,
     email VARCHAR(40) NOT NULL,

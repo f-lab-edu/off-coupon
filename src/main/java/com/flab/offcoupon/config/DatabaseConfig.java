@@ -19,7 +19,7 @@ public class DatabaseConfig {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setTypeAliasesPackage("com.flab.offcoupon.controller.api");
+        sessionFactory.setTypeAliasesPackage("com.flab.offcoupon.domain");
         Resource[] res = new PathMatchingResourcePatternResolver().getResources("classpath:mapper/**/*.xml");
 
 
