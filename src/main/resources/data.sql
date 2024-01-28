@@ -1,1 +1,1 @@
-INSERT INTO users (email, password, name, birthDate, phone) VALUES('sejin@email.com','1234','박세진','1111-11-1122','010-222-222');
+INSERT INTO memeber (email, password, name, birthDate, phone) VALUES('sejin@email.com','1234','박세진','1111-11-1122','010-222-222');
