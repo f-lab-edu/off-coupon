@@ -12,4 +12,8 @@
         VALUES (#{email}, #{password}, #{name}, #{birthDate},#{phone},#{createdAt},#{updatedAt} )
     </insert>
 
+    <select id="countByEmail" parameterType="com.flab.offcoupon.domain.Member" resultType="int">
+        SELECT COUNT(*) FROM member WHERE email = #{email}
+    </select>
+
 </mapper>

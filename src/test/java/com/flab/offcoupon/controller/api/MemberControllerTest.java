@@ -41,6 +41,7 @@ class MemberControllerTest {
 
     @Autowired
     MockMvc mvc;
+
     @Autowired
     private ObjectMapper objectMapper;
 
