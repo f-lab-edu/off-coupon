@@ -88,7 +88,7 @@ class MemberControllerTest {
         // Given
         sb.append("password=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PASSWORD_FORMAT).append("}").toString());
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_FORMAT).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
@@ -111,7 +111,7 @@ class MemberControllerTest {
         // Given
         sb.append("password=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PASSWORD_LENGTH).append("}").toString());
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_LENGTH).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
