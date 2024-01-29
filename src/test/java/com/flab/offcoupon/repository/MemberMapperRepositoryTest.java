@@ -17,7 +17,7 @@ class MemberMapperRepositoryTest {
     @Transactional
     @DisplayName("Mybatis 회원가입 테스트")
     public void userSaveTest() {
-        MemberMapperDTO mapperDTO = new MemberMapperDTO("test",",1234", "name", "20021223", "01075805060");
+        MemberMapperDTO mapperDTO = MemberMapperDTO.create("test",",1234", "name", "20021223", "01075805060");
         Member entity = Member.toEntity(mapperDTO);
         memberMapperRepository.save(entity);
     }

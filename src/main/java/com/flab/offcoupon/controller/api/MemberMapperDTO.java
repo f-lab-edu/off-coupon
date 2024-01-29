@@ -1,66 +1,57 @@
 package com.flab.offcoupon.controller.api;
 
-import com.flab.offcoupon.exception.member.MemberBadRequestException;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
-import java.util.regex.Pattern;
 
 import static com.flab.offcoupon.exception.Constant.*;
 
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor
 public class MemberMapperDTO {
 
     @NotBlank
+    @Pattern( message= CHECK_REQUEST_EMAIL , regexp = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$")
     private String email;
+
+    @Size(min = 8, max= 13, message = CHECK_REQUEST_PASSWORD_LENGTH)
+    @Pattern( message= CHECK_REQUEST_PASSWORD_FORMAT , regexp = "^(?=.*[a-z])(?=.*\\d).+$")
     @NotBlank
     private String password;
+
     @NotBlank
     private String name;
+
     @NotBlank
+    @Pattern( message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
     private String birthDate;
+
     @NotBlank
+    @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
     private String phone;
 
-    public MemberMapperDTO(String email, String password, String name, String birthDate, String phone) {
-        this.email = validateEmail(email);
-        this.password = validatePassword(password);
+    @Builder
+    private MemberMapperDTO(String email, String password, String name, String birthDate, String phone) {
+        this.email = email;
+        this.password = password;
         this.name = name;
-        this.birthDate = validateBirthDate(birthDate);
-        this.phone = validatePhone(phone);
+        this.birthDate = birthDate;
+        this.phone = phone;
     }
 
-    public String validateEmail(String email) {
-        String pattern = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$";
-        if (!Pattern.matches(pattern,email)) {
-            throw new MemberBadRequestException(CHECK_REQUEST_EMAIL);
-        }
-        return email;
-    }
-
-    public String validatePhone(String phone) {
-        String pattern = "^\\d{3}-\\d{3,4}-\\d{4}$";
-        if (!Pattern.matches(pattern,phone)) {
-            throw new MemberBadRequestException(CHECK_REQUEST_PHONE);
-        }
-        return phone;
-    }
-
-    public String validateBirthDate(String birthDate) {
-        String pattern = "^\\d{4}-\\d{2}-\\d{2}$";
-        if (!Pattern.matches(pattern, birthDate)) {
-            throw new MemberBadRequestException(CHECK_REQUEST_BIRTHDATE);
-        }
-        return birthDate;
-    }
-
-    public String validatePassword(String password) {
-        String pattern = "^(?=.*[a-z])(?=.*\\d).{8,13}$";
-        if (!Pattern.matches(pattern, password)) {
-            throw new MemberBadRequestException(CHECK_REQUEST_PASSWORD);
-        }
-        return password;
+    public static MemberMapperDTO create(String email, String password, String name, String birthDate, String phone) {
+        return MemberMapperDTO.builder()
+                .email(email)
+                .password(password)
+                .name(name)
+                .birthDate(birthDate)
+                .phone(phone)
+                .build();
     }
 }

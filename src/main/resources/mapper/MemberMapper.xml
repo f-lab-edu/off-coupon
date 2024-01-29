@@ -8,8 +8,8 @@
 <mapper namespace="com.flab.offcoupon.repository.MemberMapperRepository">
 
     <insert id="save" parameterType="com.flab.offcoupon.domain.Member">
-        INSERT INTO  member (email, password, name, birthDate, phone)
-        VALUES (#{email}, #{password}, #{name}, #{birthDate},#{phone} )
+        INSERT INTO  member (email, password, name, birthDate, phone, createdAt, updatedAt)
+        VALUES (#{email}, #{password}, #{name}, #{birthDate},#{phone},#{createdAt},#{updatedAt} )
     </insert>
 
 </mapper>

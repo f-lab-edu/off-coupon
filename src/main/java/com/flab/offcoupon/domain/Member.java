@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class Member {
@@ -15,20 +15,27 @@ public class Member {
     @NotNull
     @Id
     private int id;
+
     @NotNull
     private String email;
+
     @NotNull
     private String password;
+
     @NotNull
     private String name;
+
     @NotNull
     private String birthDate;
+
     @NotNull
     private String phone;
+
     @NotNull
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
+
     @NotNull
-    private LocalDateTime updatedAt;
+    private LocalDate updatedAt;
 
     @Builder
     private Member(String email, String password, String name, String birthDate, String phone) {
@@ -37,10 +44,12 @@ public class Member {
         this.name = name;
         this.birthDate = birthDate;
         this.phone = phone;
+        this.createdAt = LocalDate.now();
+        this.updatedAt = LocalDate.now();
     }
 
     public static Member toEntity(MemberMapperDTO memberMapperDTO) {
-        return new MemberBuilder()
+        return Member.builder()
                 .email(memberMapperDTO.getEmail())
                 .password(BcryptPassword.encrypt(memberMapperDTO.getPassword()))
                 .name(memberMapperDTO.getName())

@@ -13,6 +13,7 @@ public class MemberService {
 
     private final MemberMapperRepository memberMapperRepository;
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
+
         Member entity = Member.toEntity(memberMapperDTO);
         memberMapperRepository.save(entity);
         return ResponseDTO.getSuccessResult(memberMapperDTO);

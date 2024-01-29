@@ -7,5 +7,7 @@ CREATE TABLE member
     password VARCHAR(255) NOT NULL,
     name VARCHAR(40) NOT NULL,
     birthDate VARCHAR(40) NOT NULL,
-    phone VARCHAR(40) NOT NULL
+    phone VARCHAR(40) NOT NULL,
+    createdAt DATETIME NOT NULL,
+    updatedAt DATETIME NOT NULL
 );
