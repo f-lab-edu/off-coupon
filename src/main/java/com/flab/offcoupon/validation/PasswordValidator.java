@@ -14,17 +14,17 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 13;
-    private boolean isBlank = false;
+    private boolean isNull = false;
 
     @Override
     public void initialize(Password phone) {
-        this.isBlank = checkBlank(phone);
+        this.isNull = phone.isNull();
     }
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
 
-        if(!isBlank) {
+        if(checkNull(password)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(PASSWORD_MUST_NOT_EMPTY)
                     .addConstraintViolation();
@@ -73,8 +73,10 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         return true;
     }
 
-    private boolean checkBlank(Password phone) {
-        if (phone.isBlank()) return isBlank = true;
-        return false;
+    private boolean checkNull(String password) {
+        if (password == null) {
+            return isNull = true;
+        }
+        return  password.isBlank();
     }
 }
