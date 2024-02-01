@@ -7,7 +7,6 @@ import com.flab.offcoupon.repository.MemberMapperRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import com.flab.offcoupon.util.bcrypt.BcryptPassword;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;

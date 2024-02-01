@@ -1,8 +1,10 @@
 package com.flab.offcoupon.exception.member;
 
-import com.flab.offcoupon.exception.CustomBadRequestException;
+import com.flab.offcoupon.exception.CustomException;
+import lombok.NoArgsConstructor;
 
-public class MemberBadRequestException extends CustomBadRequestException {
+@NoArgsConstructor
+public class MemberBadRequestException extends CustomException {
     public MemberBadRequestException(String message) {
         super(message);
     }
