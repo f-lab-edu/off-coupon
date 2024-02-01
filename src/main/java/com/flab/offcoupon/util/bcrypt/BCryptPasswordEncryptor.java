@@ -2,7 +2,7 @@ package com.flab.offcoupon.util.bcrypt;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-public class BcryptPassword {
+public class BCryptPasswordEncryptor {
 
     public static String encrypt(String password) {
         return BCrypt.hashpw(password,BCrypt.gensalt());

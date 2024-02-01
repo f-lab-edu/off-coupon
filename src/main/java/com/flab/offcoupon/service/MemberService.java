@@ -5,7 +5,7 @@ import com.flab.offcoupon.domain.Member;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import com.flab.offcoupon.repository.MemberMapperRepository;
 import com.flab.offcoupon.util.ResponseDTO;
-import com.flab.offcoupon.util.bcrypt.BcryptPassword;
+import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +33,6 @@ public class MemberService {
     }
 
     private String encryptPassword(String password) {
-        return BcryptPassword.encrypt(password);
+        return BCryptPasswordEncryptor.encrypt(password);
     }
 }
