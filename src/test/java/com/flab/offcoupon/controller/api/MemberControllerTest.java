@@ -58,6 +58,28 @@ class MemberControllerTest {
                 .build();
     }
 
+    @Test
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이메일이 NULl인 경우")
+    @WithMockUser
+    void signup_fail_email_null() throws Exception {
+
+        // Given
+        sb.append("email=");
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create(null, "abcabc123", "name", "2024-12-12", "010-1234-1234");
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(EMAIL_MUST_NOT_EMPTY).append("}").toString());
+        given(memberService.signUp(any())).willReturn(failResponse);
+
+        // When & then
+        mvc.perform(post("/members/signup")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
+                .andDo(print());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"@naver", "email", "123!naver", "123#email", "123"})
     @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이메일 포맷이 틀린 경우")
@@ -81,16 +103,15 @@ class MemberControllerTest {
                         .andDo(print());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"1234123412", "bcdefgqwer", "SKQLaskd"})
-    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호 포맷이 틀린 경우")
+    @Test
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호가 NULl인 경우")
     @WithMockUser
-    void signup_fail_password_format(String password) throws Exception {
+    void signup_fail_password_null() throws Exception {
 
         // Given
         sb.append("password=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_FORMAT).append("}").toString());
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234");
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PASSWORD_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
@@ -104,15 +125,16 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
-    @Test
-    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호가 NULl인 경우")
+    @ParameterizedTest
+    @ValueSource(strings = {"1234123412", "bcdefgqwer", "SKQLaskd"})
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호 포맷이 틀린 경우")
     @WithMockUser
-    void signup_fail_password_null() throws Exception {
+    void signup_fail_password_format(String password) throws Exception {
 
         // Given
         sb.append("password=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PASSWORD_MUST_NOT_EMPTY).append("}").toString());
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_FORMAT).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
@@ -151,10 +173,11 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
+
     @Test
-    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이름이 없을 경우")
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이름이 NULL일 경우")
     @WithMockUser
-    void signup_fail_password_length() throws Exception {
+    void signup_fail_name_null() throws Exception {
 
         // Given
         sb.append("name=");
@@ -173,9 +196,31 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 휴대폰 번호가 NULL일 경우")
+    @WithMockUser
+    void signup_fail_birthdate_null() throws Exception {
+
+        // Given
+        sb.append("phone=");
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", null);
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PHONE_MUST_NOT_EMPTY).toString());
+        given(memberService.signUp(any())).willReturn(failResponse);
+
+        // When & then
+        mvc.perform(post("/members/signup")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
+                .andDo(print());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"01012341234","0101234-1234","010-12341234"})
-    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 전화번호 포맷이 틀린 경우")
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 휴대폰 번호 포맷이 틀린 경우")
     @WithMockUser
     void signup_fail_phone(String phone) throws Exception {
 
@@ -183,6 +228,28 @@ class MemberControllerTest {
         sb.append("phone=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", phone);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PHONE).append("}").toString());
+        given(memberService.signUp(any())).willReturn(failResponse);
+
+        // When & then
+        mvc.perform(post("/members/signup")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 생년월일이 NULL일 경우")
+    @WithMockUser
+    void signup_fail_phone_null() throws Exception {
+
+        // Given
+        sb.append("birthDate=");
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", null, "010-1234-1234");
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(BIRTHDATE_MUST_NOT_EMPTY).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
