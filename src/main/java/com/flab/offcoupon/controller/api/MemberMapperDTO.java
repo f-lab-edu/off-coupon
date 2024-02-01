@@ -7,7 +7,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
 
-import static com.flab.offcoupon.exception.Constant.*;
+import static com.flab.offcoupon.exception.ErrorMessage.*;
 
 @Generated
 @Getter
@@ -15,21 +15,21 @@ import static com.flab.offcoupon.exception.Constant.*;
 @NoArgsConstructor
 public class MemberMapperDTO {
 
-    @NotBlank
+    @NotBlank(message = EMAIL_MUST_NOT_EMPTY)
     @Email(message = CHECK_REQUEST_EMAIL)
     private String email;
 
     @Password
     private String password;
 
-    @NotBlank
+    @NotBlank (message = NAME_MUST_NOT_EMPTY)
     private String name;
 
-    @NotBlank
-    @Pattern( message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
+    @NotBlank(message = BIRTHDATE_MUST_NOT_EMPTY)
+    @Pattern(message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
     private String birthDate;
 
-    @NotBlank
+    @NotBlank(message = PHONE_MUST_NOT_EMPTY)
     @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
     private String phone;
 

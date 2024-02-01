@@ -8,7 +8,7 @@ import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import static com.flab.offcoupon.exception.Constant.DUPLICATED_EMAIL;
+import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;
 
 @RequiredArgsConstructor
 @Service

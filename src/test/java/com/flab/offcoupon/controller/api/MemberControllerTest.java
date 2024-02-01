@@ -25,7 +25,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.MessageFormat;
 
-import static com.flab.offcoupon.exception.Constant.*;
+import static com.flab.offcoupon.exception.ErrorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
