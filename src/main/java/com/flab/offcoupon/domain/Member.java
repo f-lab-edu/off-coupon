@@ -2,40 +2,39 @@ package com.flab.offcoupon.domain;
 
 import com.flab.offcoupon.controller.api.MemberMapperDTO;
 import com.flab.offcoupon.util.bcrypt.BcryptPassword;
-import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Generated;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
 @Generated
-@Data
+@Getter
+@ToString
 public class Member {
 
     @Id
     private int id;
 
-    @NotNull
+    @NotBlank
     private String email;
 
-    @NotNull
+    @NotBlank
     private String password;
 
-    @NotNull
+    @NotBlank
     private String name;
 
-    @NotNull
+    @NotBlank
     private String birthDate;
 
-    @NotNull
+    @NotBlank
     private String phone;
 
-    @NotNull
+    @NotBlank
     private LocalDate createdAt;
 
-    @NotNull
+    @NotBlank
     private LocalDate updatedAt;
 
     @Builder
