@@ -1,7 +1,8 @@
 package com.flab.offcoupon.controller.api;
 
+import com.flab.offcoupon.validation.Password;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -15,11 +16,10 @@ import static com.flab.offcoupon.exception.Constant.*;
 public class MemberMapperDTO {
 
     @NotBlank
-    @Pattern( message= CHECK_REQUEST_EMAIL , regexp = "^[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z]{2,3}$")
+    @Email(message = CHECK_REQUEST_EMAIL)
     private String email;
 
-    @Size(min = 8, max= 13, message = CHECK_REQUEST_PSWD_LENGTH)
-    @Pattern( message= CHECK_REQUEST_PSWD_FORMAT , regexp = "^(?=.*[a-z])(?=.*\\d).+$")
+    @Password
     @NotBlank
     private String password;
 

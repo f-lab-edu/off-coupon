@@ -23,6 +23,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.text.MessageFormat;
+
 import static com.flab.offcoupon.exception.Constant.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -57,7 +59,7 @@ class MemberControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"@naver", "email", "123@naver", "123#email.com", "123"})
+    @ValueSource(strings = {"@naver", "email", "123!naver", "123#email", "123"})
     @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이메일 포맷이 틀린 경우")
     @WithMockUser
     void signup_fail_email(String email) throws Exception {
@@ -110,8 +112,10 @@ class MemberControllerTest {
 
         // Given
         sb.append("password=");
+        int min = 8;
+        int max = 13;
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_LENGTH).append("}").toString());
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(MessageFormat.format(CHECK_REQUEST_PSWD_LENGTH, min, max)).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
