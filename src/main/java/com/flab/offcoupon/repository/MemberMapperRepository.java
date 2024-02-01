@@ -6,5 +6,5 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface MemberMapperRepository {
     void save(Member member);
-    int countByEmail(String mail);
+    boolean existMemberByEmail(String mail);
 }

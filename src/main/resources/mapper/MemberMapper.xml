@@ -12,8 +12,11 @@
         VALUES (#{email}, #{password}, #{name}, #{birthDate},#{phone},#{createdAt},#{updatedAt} )
     </insert>
 
-    <select id="countByEmail" parameterType="com.flab.offcoupon.domain.Member" resultType="int">
-        SELECT COUNT(*) FROM member WHERE email = #{email}
+    <select id="existMemberByEmail" parameterType="com.flab.offcoupon.domain.Member" resultType="boolean">
+        SELECT EXISTS (SELECT 1
+                      FROM member
+                      WHERE email = #{email}
+                      );
     </select>
 
 </mapper>

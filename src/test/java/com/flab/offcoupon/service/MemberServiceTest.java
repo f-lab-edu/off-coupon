@@ -42,7 +42,7 @@ class MemberServiceTest {
         MemberMapperDTO duplicateMemberMapperDTO = MemberMapperDTO.create("seijin0722@naver.com", "abcabc123", "name", "2024-12-12", "010-1234-1234");
 
         // when 이미 해당 이메일이 존재한다고 가정
-        when(memberMapperRepository.countByEmail(any())).thenReturn(1);
+        when(memberMapperRepository.existMemberByEmail(any())).thenReturn(true);
 
         // then
         assertThatThrownBy(() -> memberService.signUp(duplicateMemberMapperDTO))

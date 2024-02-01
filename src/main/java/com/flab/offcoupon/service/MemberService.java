@@ -18,16 +18,16 @@ public class MemberService {
     private final MemberMapperRepository memberMapperRepository;
 
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
-        checkDuplicatedEmail(memberMapperDTO.getEmail());
+        validateEmailNotDuplicated(memberMapperDTO.getEmail());
         Member entity = Member.toEntity(memberMapperDTO);
         entity.setPassword(encryptPassword(memberMapperDTO.getPassword()));
         memberMapperRepository.save(entity);
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
 
-    private void checkDuplicatedEmail(String email) {
-        int count = memberMapperRepository.countByEmail(email);
-        if (count != 0) {
+    private void validateEmailNotDuplicated(String email) {
+        boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
+        if (isDuplicated) {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);
         }
     }
