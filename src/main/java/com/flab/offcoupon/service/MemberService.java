@@ -5,7 +5,9 @@ import com.flab.offcoupon.domain.Member;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import com.flab.offcoupon.repository.MemberMapperRepository;
 import com.flab.offcoupon.util.ResponseDTO;
+import com.flab.offcoupon.util.bcrypt.BcryptPassword;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;
@@ -19,6 +21,7 @@ public class MemberService {
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
         checkDuplicatedEmail(memberMapperDTO.getEmail());
         Member entity = Member.toEntity(memberMapperDTO);
+        entity.setPassword(encryptPassword(memberMapperDTO.getPassword()));
         memberMapperRepository.save(entity);
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
@@ -28,5 +31,9 @@ public class MemberService {
         if (count != 0) {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);
         }
+    }
+
+    private String encryptPassword(String password) {
+        return BcryptPassword.encrypt(password);
     }
 }

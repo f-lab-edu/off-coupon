@@ -1,7 +1,6 @@
 package com.flab.offcoupon.domain;
 
 import com.flab.offcoupon.controller.api.MemberMapperDTO;
-import com.flab.offcoupon.util.bcrypt.BcryptPassword;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -37,24 +36,21 @@ public class Member {
     @NotBlank
     private LocalDate updatedAt;
 
-    @Builder
-    private Member(String email, String password, String name, String birthDate, String phone) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthDate = birthDate;
-        this.phone = phone;
+    private Member(MemberMapperDTO memberMapperDTO) {
+        this.email = memberMapperDTO.getEmail();
+        this.password = memberMapperDTO.getPassword();
+        this.name = memberMapperDTO.getName();
+        this.birthDate = memberMapperDTO.getBirthDate();
+        this.phone = memberMapperDTO.getPhone();
         this.createdAt = LocalDate.now();
         this.updatedAt = LocalDate.now();
     }
 
     public static Member toEntity(MemberMapperDTO memberMapperDTO) {
-        return Member.builder()
-                .email(memberMapperDTO.getEmail())
-                .password(BcryptPassword.encrypt(memberMapperDTO.getPassword()))
-                .name(memberMapperDTO.getName())
-                .birthDate(memberMapperDTO.getBirthDate())
-                .phone(memberMapperDTO.getPhone())
-                .build();
+        return new Member(memberMapperDTO);
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

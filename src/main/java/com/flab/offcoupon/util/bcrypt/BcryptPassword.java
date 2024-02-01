@@ -8,7 +8,7 @@ public class BcryptPassword {
         return BCrypt.hashpw(password,BCrypt.gensalt());
     }
 
-    public static boolean decrypt(String password, String hashedPassword) {
+    public static boolean match(String password, String hashedPassword) {
         return BCrypt.checkpw(password, hashedPassword);
     }
 }
