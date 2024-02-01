@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @Data
 public class Member {
 
-    @NotNull
     @Id
     private int id;
 
