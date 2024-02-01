@@ -5,8 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.text.MessageFormat;
 
-import static com.flab.offcoupon.exception.Constant.CHECK_REQUEST_PSWD_FORMAT;
-import static com.flab.offcoupon.exception.Constant.CHECK_REQUEST_PSWD_LENGTH;
+import static com.flab.offcoupon.exception.Constant.*;
 
 /**
  * @Password 어노테이션 구현체
@@ -15,13 +14,23 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 13;
+    private boolean isBlank = false;
 
     @Override
     public void initialize(Password phone) {
+        this.isBlank = checkBlank(phone);
     }
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
+
+        if(!isBlank) {
+            context.disableDefaultConstraintViolation();
+            context.buildConstraintViolationWithTemplate(PASSWORD_MUST_NOT_EMPTY)
+                    .addConstraintViolation();
+            return false;
+        }
+
         boolean isValidLength = checkPasswordLength(password);
         if (!isValidLength) {
             context.disableDefaultConstraintViolation();
@@ -62,5 +71,10 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
             return false;
         }
         return true;
+    }
+
+    private boolean checkBlank(Password phone) {
+        if (phone.isBlank()) return isBlank = true;
+        return false;
     }
 }

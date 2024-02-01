@@ -104,6 +104,28 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
+    @Test
+    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호가 NULl인 경우")
+    @WithMockUser
+    void signup_fail_password_null() throws Exception {
+
+        // Given
+        sb.append("password=");
+        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234");
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PASSWORD_MUST_NOT_EMPTY).append("}").toString());
+        given(memberService.signUp(any())).willReturn(failResponse);
+
+        // When & then
+        mvc.perform(post("/members/signup")
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
+                .andDo(print());
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"12ab", "123123asbasbasbasb"})
     @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 비밀번호 길이가 틀린 경우")

@@ -3,6 +3,7 @@ package com.flab.offcoupon.controller.api;
 import com.flab.offcoupon.validation.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -20,7 +21,6 @@ public class MemberMapperDTO {
     private String email;
 
     @Password
-    @NotBlank
     private String password;
 
     @NotBlank
