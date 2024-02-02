@@ -8,6 +8,7 @@ import com.flab.offcoupon.util.ResponseDTO;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;
 
@@ -17,6 +18,7 @@ public class MemberService {
 
     private final MemberMapperRepository memberMapperRepository;
 
+    @Transactional
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
         validateEmailNotDuplicated(memberMapperDTO.getEmail());
         Member entity = Member.toEntity(memberMapperDTO);
@@ -25,7 +27,8 @@ public class MemberService {
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
 
-    private void validateEmailNotDuplicated(String email) {
+    @Transactional(readOnly = true)
+    public void validateEmailNotDuplicated(String email) {
         boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
         if (isDuplicated) {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);

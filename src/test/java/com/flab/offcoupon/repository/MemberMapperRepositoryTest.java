@@ -9,17 +9,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
 @MybatisTest
+@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class MemberMapperRepositoryTest {
 
     @Autowired
     private MemberMapperRepository memberMapperRepository;
     @Test
     @Transactional
+    @Rollback
     @DisplayName("[SUCCESS] 회원 가입 성공")
     public void save() {
         // given
@@ -27,5 +33,17 @@ class MemberMapperRepositoryTest {
         Member entity = Member.toEntity(mapperDTO);
         //when
         memberMapperRepository.save(entity);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    @DisplayName("[SUCCESS] 중복 유저 찾기")
+    public void existMemberByEmail() {
+        // given
+        String email = "sejin@email.com"; // 웹서버 올라갈때 Insert된 이메일
+        //when
+        boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
+        assertThat(isDuplicated).isTrue();
     }
 }
