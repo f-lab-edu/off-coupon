@@ -111,7 +111,7 @@ class MemberControllerTest {
         // Given
         sb.append("password=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PASSWORD_MUST_NOT_EMPTY).append("}").toString());
+        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PSWD_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then

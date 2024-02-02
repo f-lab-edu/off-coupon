@@ -27,7 +27,7 @@ class MemberMapperRepositoryTest {
     @Transactional
     @Rollback
     @DisplayName("[SUCCESS] 회원 가입 성공")
-    public void save() {
+    void save() {
         // given
         MemberMapperDTO mapperDTO = MemberMapperDTO.create("test",",1234", "name", "20021223", "01075805060");
         Member entity = Member.toEntity(mapperDTO);
@@ -39,7 +39,7 @@ class MemberMapperRepositoryTest {
     @Transactional
     @Rollback
     @DisplayName("[SUCCESS] 중복 유저 찾기")
-    public void existMemberByEmail() {
+    void existMemberByEmail() {
         // given
         String email = "sejin@email.com"; // 웹서버 올라갈때 Insert된 이메일
         //when

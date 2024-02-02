@@ -16,10 +16,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(CsrfConfigurer::disable)
-                .headers((headerConfig) ->
+                .headers(headerConfig ->
                         headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
-                .authorizeHttpRequests((authorizeRequests) ->
+                .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/","/members/signup", "/members/signin").permitAll()
                                 .anyRequest().authenticated()

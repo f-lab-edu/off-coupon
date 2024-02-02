@@ -24,14 +24,14 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
 
-        if(checkNull(password)) {
+        if(validateIfNull(password)) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(PASSWORD_MUST_NOT_EMPTY)
+            context.buildConstraintViolationWithTemplate(PSWD_MUST_NOT_EMPTY)
                     .addConstraintViolation();
             return false;
         }
 
-        boolean isValidLength = checkPasswordLength(password);
+        boolean isValidLength = validatePasswordLength(password);
         if (!isValidLength) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
@@ -40,7 +40,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
             return false;
         }
 
-        boolean isValidFormat = checkLowerCaseAndDigit(password);
+        boolean isValidFormat = validateLowerCaseAndDigit(password);
         if (!isValidFormat) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(CHECK_REQUEST_PSWD_FORMAT)
@@ -50,14 +50,11 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
         return true;
     }
 
-    private boolean checkPasswordLength(String password) {
-        if (password.length() < MIN_SIZE || password.length() > MAX_SIZE) {
-            return false;
-        }
-        return true;
+    private boolean validatePasswordLength(String password) {
+        return !(password.length() < MIN_SIZE || password.length() > MAX_SIZE);
     }
 
-    private boolean checkLowerCaseAndDigit(String password) {
+    private boolean validateLowerCaseAndDigit(String password) {
         boolean hasLowerCase = false;
         boolean hasDigit = false;
         for (char ch : password.toCharArray()) {
@@ -67,16 +64,10 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
                 hasDigit = true;
             }
         }
-        if (!hasLowerCase || !hasDigit) {
-            return false;
-        }
-        return true;
+        return  (hasLowerCase && hasDigit);
     }
 
-    private boolean checkNull(String password) {
-        if (password == null) {
-            return isNull = true;
-        }
-        return  password.isBlank();
+    private boolean validateIfNull(String password) {
+        return password == null;
     }
 }
