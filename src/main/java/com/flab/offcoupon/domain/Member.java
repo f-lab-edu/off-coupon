@@ -7,7 +7,6 @@ import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
 
-@Generated
 @Getter
 @ToString
 public class Member {
