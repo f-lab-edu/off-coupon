@@ -34,13 +34,12 @@ public class MemberService {
         }
     }
     private Member toEntity(MemberMapperDTO memberMapperDTO) {
-        Member entity = Member.create(
+        return Member.create(
                 memberMapperDTO.getEmail(),
                 encryptPassword(memberMapperDTO.getPassword()),
                 memberMapperDTO.getName(),
                 memberMapperDTO.getBirthDate(),
                 memberMapperDTO.getPhone());
-        return entity;
     }
     private String encryptPassword(String password) {
         return BCryptPasswordEncryptor.encrypt(password);
