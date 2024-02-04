@@ -28,7 +28,7 @@ class MemberMapperRepositoryTest {
     void save() {
         // given
         MemberMapperDTO mapperDTO = MemberMapperDTO.create("test",",1234", "name", "20021223", "01075805060");
-        Member entity = mapperDTO.toEntity(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthDate(), mapperDTO.getPhone());
+        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthDate(), mapperDTO.getPhone());
         //when
         memberMapperRepository.save(entity);
     }
