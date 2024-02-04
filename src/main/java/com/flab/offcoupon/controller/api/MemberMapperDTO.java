@@ -12,28 +12,26 @@ import static com.flab.offcoupon.exception.ErrorMessage.*;
 @Generated
 @Getter
 @EqualsAndHashCode
-@NoArgsConstructor
-public class MemberMapperDTO {
+public final class MemberMapperDTO {
 
     @NotBlank(message = EMAIL_MUST_NOT_EMPTY)
     @Email(message = CHECK_REQUEST_EMAIL)
-    private String email;
+    private final String email;
 
     @Password
-    private String password;
+    private final String password;
 
     @NotBlank (message = NAME_MUST_NOT_EMPTY)
-    private String name;
+    private final String name;
 
     @NotBlank(message = BIRTHDATE_MUST_NOT_EMPTY)
     @Pattern(message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
-    private String birthDate;
+    private final String birthDate;
 
     @NotBlank(message = PHONE_MUST_NOT_EMPTY)
     @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
-    private String phone;
+    private final String phone;
 
-    @Builder
     private MemberMapperDTO(String email, String password, String name, String birthDate, String phone) {
         this.email = email;
         this.password = password;
@@ -43,12 +41,6 @@ public class MemberMapperDTO {
     }
 
     public static MemberMapperDTO create(String email, String password, String name, String birthDate, String phone) {
-        return MemberMapperDTO.builder()
-                .email(email)
-                .password(password)
-                .name(name)
-                .birthDate(birthDate)
-                .phone(phone)
-                .build();
+        return  new MemberMapperDTO (email, password, name, birthDate, phone);
     }
 }

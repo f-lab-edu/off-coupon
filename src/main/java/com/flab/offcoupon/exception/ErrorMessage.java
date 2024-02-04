@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor (access = AccessLevel.PRIVATE)
-public class ErrorMessage {
+public final class ErrorMessage {
 
     public static final String CHECK_REQUEST_EMAIL = "이메일 포맷은 'xxx@xxx.xx' 혹은 'xxx@xxx.xxx' 입니다.";
     public static final String CHECK_REQUEST_PHONE = "휴대폰 번호의 포맷은 '010-123-1234' 혹은 '010-1234-1234' 입니다.";

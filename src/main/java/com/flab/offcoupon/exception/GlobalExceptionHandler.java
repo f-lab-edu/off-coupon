@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public final class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDTO> handleValidationExceptions(
             MethodArgumentNotValidException ex,

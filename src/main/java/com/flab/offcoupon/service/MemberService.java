@@ -21,8 +21,7 @@ public class MemberService {
     @Transactional
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
         validateEmailNotDuplicated(memberMapperDTO.getEmail());
-        Member entity = Member.toEntity(memberMapperDTO);
-        entity.setPassword(encryptPassword(memberMapperDTO.getPassword()));
+        Member entity = toEntity(memberMapperDTO);
         memberMapperRepository.save(entity);
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
@@ -34,7 +33,15 @@ public class MemberService {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);
         }
     }
-
+    private Member toEntity(MemberMapperDTO memberMapperDTO) {
+        Member entity = Member.create(
+                memberMapperDTO.getEmail(),
+                encryptPassword(memberMapperDTO.getPassword()),
+                memberMapperDTO.getName(),
+                memberMapperDTO.getBirthDate(),
+                memberMapperDTO.getPhone());
+        return entity;
+    }
     private String encryptPassword(String password) {
         return BCryptPasswordEncryptor.encrypt(password);
     }

@@ -10,7 +10,7 @@ import static com.flab.offcoupon.exception.ErrorMessage.*;
 /**
  * @Password 어노테이션 구현체
  */
-public class PasswordValidator implements ConstraintValidator<Password, String> {
+public final class PasswordValidator implements ConstraintValidator<Password, String> {
 
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 13;

@@ -10,47 +10,48 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-public class Member {
+public final class Member {
 
     @Id
     private long id;
 
     @NotBlank
-    private String email;
+    private final String email;
 
     @NotBlank
-    private String password;
+    private final String password;
 
     @NotBlank
-    private String name;
+    private final String name;
 
     @NotBlank
-    private String birthDate;
+    private final String birthDate;
 
     @NotBlank
-    private String phone;
+    private final String phone;
 
     @NotBlank
-    private LocalDate createdAt;
+    private final LocalDate createdAt;
 
     @NotBlank
-    private LocalDate updatedAt;
+    private final LocalDate updatedAt;
 
-    private Member(MemberMapperDTO memberMapperDTO) {
-        this.email = memberMapperDTO.getEmail();
-        this.password = memberMapperDTO.getPassword();
-        this.name = memberMapperDTO.getName();
-        this.birthDate = memberMapperDTO.getBirthDate();
-        this.phone = memberMapperDTO.getPhone();
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
-    }
-
-    public static Member toEntity(MemberMapperDTO memberMapperDTO) {
-        return new Member(memberMapperDTO);
-    }
-
-    public void setPassword(String password) {
+    private Member(String email, String password, String name, String birthDate, String phone, LocalDate createdAt, LocalDate updatedAt) {
+        this.email = email;
         this.password = password;
+        this.name = name;
+        this.birthDate = birthDate;
+        this.phone = phone;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static Member create (String email, String password, String name, String birthDate, String phone) {
+        LocalDate now = LocalDate.now();
+        return new Member(email, password, name, birthDate, phone, now, now);
+    }
+
+    public Member toEntity(String email, String password, String name, String birthDate, String phone){
+        return Member.create(email, password, name, birthDate,phone);
     }
 }
