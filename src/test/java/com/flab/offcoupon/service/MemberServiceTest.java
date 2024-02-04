@@ -36,6 +36,13 @@ class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("[ERROR] 비밀번호가 null 일때 암호화 실패")
+    void signup_fail_with_null_password() {
+        MemberMapperDTO validMemberMapperDTO = MemberMapperDTO.create("seijin0722@naver.com", null, "name", "2024-12-12", "010-1234-1234");
+
+    }
+
+    @Test
     @DisplayName("[ERROR] 회원가입 실패 : 중복 이메일 입력")
     void singup_fail_duplicated_email() {
         // given

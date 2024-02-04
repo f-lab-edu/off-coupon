@@ -14,11 +14,8 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
 
     private static final int MIN_SIZE = 8;
     private static final int MAX_SIZE = 13;
-    private boolean isNull = false;
-
     @Override
     public void initialize(Password phone) {
-        this.isNull = phone.isNull();
     }
 
     @Override
@@ -31,8 +28,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
             return false;
         }
 
-        boolean isValidLength = validatePasswordLength(password);
-        if (!isValidLength) {
+        if (!validatePasswordLength(password)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(
                             MessageFormat.format(CHECK_REQUEST_PSWD_LENGTH, MIN_SIZE, MAX_SIZE))
@@ -40,8 +36,7 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
             return false;
         }
 
-        boolean isValidFormat = validateLowerCaseAndDigit(password);
-        if (!isValidFormat) {
+        if (!validateLowerCaseAndDigit(password)) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(CHECK_REQUEST_PSWD_FORMAT)
                     .addConstraintViolation();
@@ -51,20 +46,12 @@ public class PasswordValidator implements ConstraintValidator<Password, String> 
     }
 
     private boolean validatePasswordLength(String password) {
-        return !(password.length() < MIN_SIZE || password.length() > MAX_SIZE);
+        return MIN_SIZE <= password.length() && password.length() <= MAX_SIZE;
     }
 
     private boolean validateLowerCaseAndDigit(String password) {
-        boolean hasLowerCase = false;
-        boolean hasDigit = false;
-        for (char ch : password.toCharArray()) {
-            if (Character.isLowerCase(ch)) {
-                hasLowerCase = true;
-            } else if (Character.isDigit(ch)) {
-                hasDigit = true;
-            }
-        }
-        return  (hasLowerCase && hasDigit);
+        return password.chars().anyMatch(Character::isLowerCase) &&
+                password.chars().anyMatch(Character::isDigit);
     }
 
     private boolean validateIfNull(String password) {

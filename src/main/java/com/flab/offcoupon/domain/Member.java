@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 
 @Getter

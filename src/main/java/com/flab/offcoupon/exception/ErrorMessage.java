@@ -14,6 +14,7 @@ public class ErrorMessage {
     public static final String DUPLICATED_EMAIL = "이미 해당 이메일이 존재합니다.";
     public static final String EMAIL_MUST_NOT_EMPTY = "이메일을 입력해주세요.";
     public static final String PSWD_MUST_NOT_EMPTY = "비밀번호를 입력해주세요.";
+    public static final String HASHED_PSWD_MUST_NOT_EMPTY = "암호화된 비밀번호는 null일 수 없습니다.";
     public static final String NAME_MUST_NOT_EMPTY = "이름을 입력해주세요.";
     public static final String BIRTHDATE_MUST_NOT_EMPTY = "생년월일을 입력해주세요.";
     public static final String PHONE_MUST_NOT_EMPTY = "휴대폰 번호를 입력해주세요.";

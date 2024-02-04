@@ -6,6 +6,8 @@ import jakarta.validation.ReportAsSingleViolation;
 
 import java.lang.annotation.*;
 
+import static com.flab.offcoupon.exception.ErrorMessage.PSWD_MUST_NOT_EMPTY;
+
 
 @Documented
 @Constraint(validatedBy = PasswordValidator.class)
@@ -13,11 +15,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @ReportAsSingleViolation
 public @interface Password {
-    String message() default "please input a password.";
+    String message() default PSWD_MUST_NOT_EMPTY;
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    boolean isNull() default false;
 }

@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -25,7 +24,6 @@ class MemberMapperRepositoryTest {
     private MemberMapperRepository memberMapperRepository;
     @Test
     @Transactional
-    @Rollback
     @DisplayName("[SUCCESS] 회원 가입 성공")
     void save() {
         // given
@@ -37,7 +35,6 @@ class MemberMapperRepositoryTest {
 
     @Test
     @Transactional
-    @Rollback
     @DisplayName("[SUCCESS] 중복 유저 찾기")
     void existMemberByEmail() {
         // given
