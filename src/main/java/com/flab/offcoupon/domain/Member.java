@@ -50,8 +50,4 @@ public final class Member {
         LocalDate now = LocalDate.now();
         return new Member(email, password, name, birthDate, phone, now, now);
     }
-
-    public Member toEntity(String email, String password, String name, String birthDate, String phone){
-        return Member.create(email, password, name, birthDate,phone);
-    }
 }
