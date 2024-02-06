@@ -32,6 +32,7 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 # ERD
 
-<img width="902" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/8b11121d-0562-46f3-aae1-64938e7b694d">
+<img width="912" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d19bf553-c8c3-4fe8-b838-f6b2b21853af">
+
 
 
