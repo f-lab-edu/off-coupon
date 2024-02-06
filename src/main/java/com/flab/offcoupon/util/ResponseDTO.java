@@ -5,16 +5,16 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public final class ResponseDTO {
+public final class ResponseDTO<T> {
 
     private final Status status;
-    private final Object data;
+    private final T data;
     private final String message;
 
     /*
      * 응답 성공
      */
-    public static ResponseDTO getSuccessResult (Object data) {
+    public static <T> ResponseDTO getSuccessResult (T data) {
         return ResponseDTO.builder()
                 .status(Status.SUCCESS)
                 .data(data)
