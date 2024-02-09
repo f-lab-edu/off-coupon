@@ -8,7 +8,6 @@
 ✅ master : 릴리스 버전을 관리하는 메인 브랜치  
 ✅ develop : 개발이 진행되는 통합 브랜치  
 ✅ feature : 새로운 기능을 개발하는 브랜치  
-✅ release : 다가오는 릴리스를 준비하는 브랜치  
 ✅ hotfix : 실제 프로덕션에서 발생한 버그를 수정하는 브랜치  
 
 Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woowahan.com/2553/)
@@ -30,9 +29,9 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 - test : 테스트 코드, 리팩토링 테스트 코드  
 - chore : 빌드 업무 수정, 패키지 매니저 수정  
 
-# ERD
+# 트러블 슈팅
 
-<img width="912" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d19bf553-c8c3-4fe8-b838-f6b2b21853af">
+## 회원가입
 
-
+[@RequestBody는 어떻게 바인딩 되는걸까? (with. 디버깅 과정)](https://strong-park.tistory.com/entry/RequestBody%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%B0%94%EC%9D%B8%EB%94%A9-%EB%90%98%EB%8A%94%EA%B1%B8%EA%B9%8C-with-%EB%94%94%EB%B2%84%EA%B9%85-%EA%B3%BC%EC%A0%95)
 
