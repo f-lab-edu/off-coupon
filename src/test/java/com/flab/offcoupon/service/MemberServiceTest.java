@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
+import com.flab.offcoupon.dto.request.MemberMapperDTO;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import com.flab.offcoupon.repository.MemberMapperRepository;
 import com.flab.offcoupon.util.ResponseDTO;

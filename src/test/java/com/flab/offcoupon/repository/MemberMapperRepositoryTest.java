@@ -1,6 +1,6 @@
 package com.flab.offcoupon.repository;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
+import com.flab.offcoupon.dto.request.MemberMapperDTO;
 import com.flab.offcoupon.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +28,7 @@ class MemberMapperRepositoryTest {
     void save() {
         // given
         MemberMapperDTO mapperDTO = MemberMapperDTO.create("test",",1234", "name", "20021223", "01075805060");
-        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthDate(), mapperDTO.getPhone());
+        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthdate(), mapperDTO.getPhone());
         //when
         memberMapperRepository.save(entity);
     }

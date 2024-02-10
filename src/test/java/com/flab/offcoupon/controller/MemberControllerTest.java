@@ -1,9 +1,11 @@
-package com.flab.offcoupon.controller.api;
+package com.flab.offcoupon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.offcoupon.dto.request.MemberMapperDTO;
 import com.flab.offcoupon.exception.GlobalExceptionHandler;
 import com.flab.offcoupon.service.MemberService;
 import com.flab.offcoupon.util.ResponseDTO;
+import com.flab.offcoupon.util.SessionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,9 +52,13 @@ class MemberControllerTest {
     @MockBean
     MemberService memberService;
 
+    @MockBean
+    SessionManager sessionManager;
+
+
     @BeforeEach
     void init() {
-        this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService))
+        this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService, sessionManager))
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();

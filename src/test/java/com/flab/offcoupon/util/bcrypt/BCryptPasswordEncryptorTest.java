@@ -1,7 +1,5 @@
 package com.flab.offcoupon.util.bcrypt;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
-import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
