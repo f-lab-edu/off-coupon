@@ -29,8 +29,8 @@ public class MemberService {
     }
 
     public Member login(LoginMemberRequestDto loginMemberRequestDto) {
-        Member member = findMemberByEmail(loginMemberRequestDto);
-        validatePassword(loginMemberRequestDto, member);
+        Member member = findMemberByEmail(loginMemberRequestDto.getEmail());
+        validatePassword(loginMemberRequestDto.getPassword(), member.getPassword());
         return member;
     }
 
@@ -55,13 +55,13 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public Member findMemberByEmail(LoginMemberRequestDto loginMemberRequestDto) {
-        Member member = memberMapperRepository.findMemberByEmail(loginMemberRequestDto.getEmail())
+    public Member findMemberByEmail(String email) {
+        Member member = memberMapperRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(NOT_EXIST_EMAIL));
         return member;
     }
-    private static void validatePassword(LoginMemberRequestDto loginMemberRequestDto, Member member) {
-        if (!BCryptPasswordEncryptor.match(loginMemberRequestDto.getPassword(), member.getPassword())) {
+    private static void validatePassword(String password, String hashedPassword) {
+        if (!BCryptPasswordEncryptor.match(password, hashedPassword)) {
             throw new PasswordNotMatchException(WRONG_PSWD);
         }
     }

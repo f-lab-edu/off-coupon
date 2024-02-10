@@ -19,8 +19,12 @@ public final class LoginMemberRequestDto {
     @Password
     private final String password;
 
-    public LoginMemberRequestDto(String email, String password) {
+    private LoginMemberRequestDto(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public static LoginMemberRequestDto create(String email, String password) {
+        return new LoginMemberRequestDto(email, password);
     }
 }

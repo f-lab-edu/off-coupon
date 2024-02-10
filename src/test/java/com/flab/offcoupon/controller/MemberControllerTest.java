@@ -253,7 +253,7 @@ class MemberControllerTest {
     void signup_fail_phone_null() throws Exception {
 
         // Given
-        sb.append("birthDate=");
+        sb.append("birthdate=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", null, "010-1234-1234");
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(BIRTHDATE_MUST_NOT_EMPTY).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
@@ -276,7 +276,7 @@ class MemberControllerTest {
     void signup_fail_birthDate(String birthDate) throws Exception {
 
         // Given
-        sb.append("birthDate=");
+        sb.append("birthdate=");
         MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", birthDate, "010-1234-1234");
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_BIRTHDATE).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
