@@ -11,6 +11,7 @@ import com.flab.offcoupon.util.ResponseDTO;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
@@ -28,6 +29,7 @@ public class MemberService {
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
 
+    @Transactional
     public Member login(LoginMemberRequestDto loginMemberRequestDto) {
         Member member = findMemberByEmail(loginMemberRequestDto.getEmail());
         validatePassword(loginMemberRequestDto.getPassword(), member.getPassword());
@@ -54,7 +56,7 @@ public class MemberService {
         return BCryptPasswordEncryptor.encrypt(password);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.MANDATORY)
     public Member findMemberByEmail(String email) {
         Member member = memberMapperRepository.findMemberByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException(NOT_EXIST_EMAIL));
