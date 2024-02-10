@@ -1,4 +1,4 @@
-package com.flab.offcoupon.controller.api;
+package com.flab.offcoupon.dto.request;
 
 import com.flab.offcoupon.validation.Password;
 import jakarta.validation.constraints.Email;

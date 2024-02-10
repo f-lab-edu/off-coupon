@@ -5,8 +5,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor (access = AccessLevel.PRIVATE)
-public final class MemberBadRequestException extends CustomException {
-    public MemberBadRequestException(String message) {
+public class PasswordNotMatchException extends CustomException {
+    public PasswordNotMatchException(String message) {
         super(message);
+
     }
 }

@@ -1,8 +1,11 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
+import com.flab.offcoupon.dto.request.LoginMemberRequestDto;
+import com.flab.offcoupon.dto.request.MemberMapperDTO;
 import com.flab.offcoupon.domain.Member;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
+import com.flab.offcoupon.exception.member.MemberNotFoundException;
+import com.flab.offcoupon.exception.member.PasswordNotMatchException;
 import com.flab.offcoupon.repository.MemberMapperRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
@@ -10,7 +13,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;
+import java.util.Optional;
+
+import static com.flab.offcoupon.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +31,13 @@ public class MemberService {
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
 
+    public ResponseDTO login(LoginMemberRequestDto loginMemberRequestDto) {
+        Member member = findMemberByEmail(loginMemberRequestDto);
+        if (!BCryptPasswordEncryptor.match(loginMemberRequestDto.getPassword(), member.getPassword())) {
+            throw new PasswordNotMatchException(WRONG_PSWD);
+        }
+        return ResponseDTO.getSuccessResult(loginMemberRequestDto);
+    }
     @Transactional(readOnly = true)
     public void validateEmailNotDuplicated(String email) {
         boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
@@ -41,7 +53,15 @@ public class MemberService {
                 memberMapperDTO.getBirthDate(),
                 memberMapperDTO.getPhone());
     }
+
     private String encryptPassword(String password) {
         return BCryptPasswordEncryptor.encrypt(password);
     }
+    @Transactional(readOnly = true)
+    public Member findMemberByEmail(LoginMemberRequestDto loginMemberRequestDto) {
+        Member member = memberMapperRepository.findMemberByEmail(loginMemberRequestDto.getEmail())
+                .orElseThrow(() -> new MemberNotFoundException(NOT_EXIST_EMAIL));
+        return member;
+    }
+
 }

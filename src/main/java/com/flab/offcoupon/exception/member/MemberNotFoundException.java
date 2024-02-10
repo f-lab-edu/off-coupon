@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor (access = AccessLevel.PRIVATE)
-public final class MemberBadRequestException extends CustomException {
-    public MemberBadRequestException(String message) {
+public class MemberNotFoundException  extends CustomException {
+    public MemberNotFoundException(String message) {
         super(message);
     }
 }

@@ -18,4 +18,7 @@ public final class ErrorMessage {
     public static final String NAME_MUST_NOT_EMPTY = "이름을 입력해주세요.";
     public static final String BIRTHDATE_MUST_NOT_EMPTY = "생년월일을 입력해주세요.";
     public static final String PHONE_MUST_NOT_EMPTY = "휴대폰 번호를 입력해주세요.";
+    public static final String NOT_EXIST_EMAIL = "존재하지 않는 이메일 입니다.";
+    public static final String WRONG_PSWD = "비밀번호가 맞지 않습니다.";
+
 }
