@@ -1,5 +1,6 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -45,7 +46,7 @@ public final class Member {
     }
 
     public static Member create(String email, String password, String name, String birthDate, String phone) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = DateTimeUtils.nowFromZone();
         return new Member(email, password, name, birthDate, phone, now, now);
     }
 }
