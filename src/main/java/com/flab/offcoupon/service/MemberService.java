@@ -13,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static com.flab.offcoupon.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
@@ -22,7 +20,6 @@ import static com.flab.offcoupon.exception.ErrorMessage.*;
 public class MemberService {
 
     private final MemberMapperRepository memberMapperRepository;
-
     @Transactional
     public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
         validateEmailNotDuplicated(memberMapperDTO.getEmail());
@@ -31,13 +28,12 @@ public class MemberService {
         return ResponseDTO.getSuccessResult(memberMapperDTO);
     }
 
-    public ResponseDTO login(LoginMemberRequestDto loginMemberRequestDto) {
+    public Member login(LoginMemberRequestDto loginMemberRequestDto) {
         Member member = findMemberByEmail(loginMemberRequestDto);
-        if (!BCryptPasswordEncryptor.match(loginMemberRequestDto.getPassword(), member.getPassword())) {
-            throw new PasswordNotMatchException(WRONG_PSWD);
-        }
-        return ResponseDTO.getSuccessResult(loginMemberRequestDto);
+        validatePassword(loginMemberRequestDto, member);
+        return member;
     }
+
     @Transactional(readOnly = true)
     public void validateEmailNotDuplicated(String email) {
         boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
@@ -45,6 +41,7 @@ public class MemberService {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);
         }
     }
+
     private Member toEntity(MemberMapperDTO memberMapperDTO) {
         return Member.create(
                 memberMapperDTO.getEmail(),
@@ -53,14 +50,19 @@ public class MemberService {
                 memberMapperDTO.getBirthdate(),
                 memberMapperDTO.getPhone());
     }
-
     private String encryptPassword(String password) {
         return BCryptPasswordEncryptor.encrypt(password);
     }
+
     @Transactional(readOnly = true)
     public Member findMemberByEmail(LoginMemberRequestDto loginMemberRequestDto) {
         Member member = memberMapperRepository.findMemberByEmail(loginMemberRequestDto.getEmail())
                 .orElseThrow(() -> new MemberNotFoundException(NOT_EXIST_EMAIL));
         return member;
+    }
+    private static void validatePassword(LoginMemberRequestDto loginMemberRequestDto, Member member) {
+        if (!BCryptPasswordEncryptor.match(loginMemberRequestDto.getPassword(), member.getPassword())) {
+            throw new PasswordNotMatchException(WRONG_PSWD);
+        }
     }
 }

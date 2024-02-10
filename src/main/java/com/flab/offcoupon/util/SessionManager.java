@@ -11,11 +11,11 @@ public class SessionManager {
     private static final String MEMBER_ID = "LOGIN_MEMBER_ID";
     private final HttpSession session;
 
-    public String getLoginMember() {
-        return (String) session.getAttribute(MEMBER_ID);
+    public Long getLoginMember() {
+        return (Long) session.getAttribute(MEMBER_ID);
     }
 
-    public void setLoginMember(String id) {
+    public void setLoginMember(Long id) {
         session.setAttribute(MEMBER_ID, id);
     }
 
