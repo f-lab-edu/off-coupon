@@ -3,7 +3,6 @@ package com.flab.offcoupon.dto.request;
 import com.flab.offcoupon.validation.Password;
 import jakarta.validation.constraints.Email;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.NotBlank;
 
 import static com.flab.offcoupon.exception.ErrorMessage.CHECK_REQUEST_EMAIL;

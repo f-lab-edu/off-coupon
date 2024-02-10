@@ -3,7 +3,6 @@ package com.flab.offcoupon.service;
 import com.flab.offcoupon.domain.Member;
 import com.flab.offcoupon.dto.request.LoginMemberRequestDto;
 import com.flab.offcoupon.dto.request.MemberMapperDTO;
-import com.flab.offcoupon.dto.response.LoginMemberResponseDto;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import com.flab.offcoupon.exception.member.MemberNotFoundException;
 import com.flab.offcoupon.repository.MemberMapperRepository;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;

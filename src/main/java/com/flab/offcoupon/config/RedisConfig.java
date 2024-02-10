@@ -32,7 +32,7 @@ public class RedisConfig {
     }
 
     /*
-     * Redis template
+     * Redis template // TODO : redis-cli에서 역직렬화가 안되는 문제
      */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
