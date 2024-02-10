@@ -50,7 +50,7 @@ public class MemberService {
                 memberMapperDTO.getEmail(),
                 encryptPassword(memberMapperDTO.getPassword()),
                 memberMapperDTO.getName(),
-                memberMapperDTO.getBirthDate(),
+                memberMapperDTO.getBirthdate(),
                 memberMapperDTO.getPhone());
     }
 
@@ -63,5 +63,4 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(NOT_EXIST_EMAIL));
         return member;
     }
-
 }

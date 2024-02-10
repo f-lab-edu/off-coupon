@@ -26,17 +26,17 @@ public final class MemberMapperDTO {
 
     @NotBlank(message = BIRTHDATE_MUST_NOT_EMPTY)
     @Pattern(message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
-    private final String birthDate;
+    private final String birthdate;
 
     @NotBlank(message = PHONE_MUST_NOT_EMPTY)
     @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
     private final String phone;
 
-    private MemberMapperDTO(String email, String password, String name, String birthDate, String phone) {
+    private MemberMapperDTO(String email, String password, String name, String birthdate, String phone) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.birthDate = birthDate;
+        this.birthdate = birthdate;
         this.phone = phone;
     }
 

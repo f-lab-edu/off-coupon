@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface MemberMapperRepository {
     void save(Member member);
     boolean existMemberByEmail(String email);
-
     Optional<Member> findMemberByEmail(String email);
 
 }

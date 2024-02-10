@@ -3,10 +3,11 @@ package com.flab.offcoupon.domain;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Getter
 @ToString
+@Getter
+@AllArgsConstructor
 public final class Member {
 
     @Id
@@ -22,29 +23,29 @@ public final class Member {
     private final String name;
 
     @NotBlank
-    private final String birthDate;
+    private final String birthdate;
 
     @NotBlank
     private final String phone;
 
     @NotBlank
-    private final LocalDate createdAt;
+    private final LocalDateTime createdAt;
 
     @NotBlank
-    private final LocalDate updatedAt;
+    private final LocalDateTime updatedAt;
 
-    private Member(String email, String password, String name, String birthDate, String phone, LocalDate createdAt, LocalDate updatedAt) {
+    private Member(String email, String password, String name, String birthdate, String phone, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.birthDate = birthDate;
+        this.birthdate = birthdate;
         this.phone = phone;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static Member create (String email, String password, String name, String birthDate, String phone) {
-        LocalDate now = LocalDate.now();
+    public static Member create(String email, String password, String name, String birthDate, String phone) {
+        LocalDateTime now = LocalDateTime.now();
         return new Member(email, password, name, birthDate, phone, now, now);
     }
 }
