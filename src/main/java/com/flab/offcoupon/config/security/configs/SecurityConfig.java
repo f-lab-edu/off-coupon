@@ -1,18 +1,22 @@
 package com.flab.offcoupon.config.security.configs;
 
+import com.flab.offcoupon.config.security.provider.CustomAuthenticationProvider;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -20,6 +24,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
+    private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final AuthenticationFailureHandler customAuthenticationFailureHandler;
+    private final AccessDeniedHandler accessDeniedHandler;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -38,13 +45,8 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/")// 로그인 성공 후 이동할 URL
                         .usernameParameter("email") // 로그인 페이지의 username input name
                         .passwordParameter("password") // 로그인 페이지의 password input name
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/"); // 로그인 성공 후 이동할 URL
-                        })
-                        .failureHandler((request, response, exception) -> {
-                            System.out.println("exception = " + exception);
-                            response.sendRedirect("/login"); // 로그인 실패 후 이동할 URL
-                        })
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 );
         http
@@ -52,14 +54,18 @@ public class SecurityConfig {
                         .logoutUrl("/logout") // 로그아웃 URL
                         .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동할 URL
                         .invalidateHttpSession(true) // 로그아웃 후 세션 무효화
-                        .deleteCookies("JSESSIONID") // 로그아웃 후 쿠키 삭제
+                        .deleteCookies("SESSIONID") // 로그아웃 후 쿠키 삭제
                 );
+        http
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler)
+                ); // 접근 권한이 없는 경우 처리
 
         http.
                 rememberMe(rememberMe -> rememberMe
                         .rememberMeCookieName("remember") // remember-me 쿠키의 키
                         .tokenValiditySeconds(3600) // remember-me 쿠키의 유효시간
-                        .userDetailsService(userDetailsService) // // remember-me 쿠키 생성 시 사용할 UserDetailsService
+                        .userDetailsService(userDetailsService)// remember-me 쿠키 생성 시 사용할 UserDetailsService
                 );
         http
                 .sessionManagement(sessionManagement -> sessionManagement
@@ -68,6 +74,15 @@ public class SecurityConfig {
                         .expiredUrl("/login") // 세션이 만료된 경우 이동할 URL
                 );
         return http.build();
+    }
+
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authenticationProvider());
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
     }
     @Bean
     public PasswordEncoder passwordEncoder() {
