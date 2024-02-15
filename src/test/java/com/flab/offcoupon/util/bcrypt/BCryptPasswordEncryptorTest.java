@@ -13,7 +13,8 @@ class BCryptPasswordEncryptorTest {
     @DisplayName("[ERROR] 비밀번호가 null 일때 암호화 실패")
     void encrypt_fail_null_password() {
         String password = null;
-        assertThatThrownBy(() -> BCryptPasswordEncryptor.encrypt(password))
+        BCryptPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
+        assertThatThrownBy(() -> encryptor.encode(password))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith(PSWD_MUST_NOT_EMPTY);
     }
@@ -22,6 +23,7 @@ class BCryptPasswordEncryptorTest {
     @DisplayName("[SUCCESS] 비밀번호 암호화 성공")
     void encrypt_success() {
         String password = "abcabc123";
-        assertThat(BCryptPasswordEncryptor.encrypt(password)).isNotNull();
+        BCryptPasswordEncryptor encryptor = new BCryptPasswordEncryptor();
+        assertThat(encryptor.encode(password)).isNotNull();
     }
 }

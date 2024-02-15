@@ -5,11 +5,11 @@
 <!-- 위 코드가 mapper 설정을 하는 코드 -->
 
 <!-- Mapper를 사용하는 Repository의 전체 경로를 적어줘야함. -->
-<mapper namespace="com.flab.offcoupon.repository.MemberMapperRepository">
+<mapper namespace="com.flab.offcoupon.repository.MemberRepository">
 
     <insert id="save" parameterType="com.flab.offcoupon.domain.Member">
-        INSERT INTO  member (email, password, name, birthdate, phone, created_at, updated_at)
-        VALUES (#{email}, #{password}, #{name}, #{birthdate},#{phone},#{createdAt},#{updatedAt} )
+        INSERT INTO  member (email, password, name, birthdate, phone, role, created_at, updated_at)
+        VALUES (#{email}, #{password}, #{name}, #{birthdate},#{phone},#{role}, #{createdAt},#{updatedAt} )
     </insert>
 
     <select id="existMemberByEmail" parameterType="com.flab.offcoupon.domain.Member" resultType="boolean">
@@ -26,10 +26,11 @@
                name,
                birthdate,
                phone,
+               role,
                created_at,
                updated_at
            FROM  member
-           WHERE email = #{email} LIMIT 1;
+           WHERE email = #{email};
     </select>
 
 </mapper>

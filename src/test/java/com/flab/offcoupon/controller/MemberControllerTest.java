@@ -1,11 +1,11 @@
 package com.flab.offcoupon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.offcoupon.dto.request.MemberMapperDTO;
+import com.flab.offcoupon.domain.Role;
+import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.exception.GlobalExceptionHandler;
 import com.flab.offcoupon.service.MemberService;
 import com.flab.offcoupon.util.ResponseDTO;
-import com.flab.offcoupon.util.SessionManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -52,13 +52,10 @@ class MemberControllerTest {
     @MockBean
     MemberService memberService;
 
-    @MockBean
-    SessionManager sessionManager;
-
 
     @BeforeEach
     void init() {
-        this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService, sessionManager))
+        this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService))
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -71,14 +68,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("email=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create(null, "abcabc123", "name", "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(null, "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(EMAIL_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -94,14 +91,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("email=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create(email, "abcabc123", "name", "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(email, "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_EMAIL).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                         .andExpect(status().isBadRequest())
@@ -116,14 +113,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("password=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PSWD_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -139,14 +136,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("password=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_FORMAT).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -164,14 +161,14 @@ class MemberControllerTest {
         sb.append("password=");
         int min = 8;
         int max = 13;
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(MessageFormat.format(CHECK_REQUEST_PSWD_LENGTH, min, max)).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -187,14 +184,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("name=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", null, "2024-12-12", "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", null, "2024-12-12", "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -209,14 +206,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("phone=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", null);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", null, Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PHONE_MUST_NOT_EMPTY).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -232,14 +229,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("phone=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", phone);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", phone, Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PHONE).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -254,14 +251,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("birthdate=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", null, "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", null, "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(BIRTHDATE_MUST_NOT_EMPTY).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -277,14 +274,14 @@ class MemberControllerTest {
 
         // Given
         sb.append("birthdate=");
-        MemberMapperDTO invalidMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", birthDate, "010-1234-1234");
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", birthDate, "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_BIRTHDATE).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
         mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidMemberMapperDTO))
+                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -298,15 +295,15 @@ class MemberControllerTest {
     void signup_success() throws Exception {
 
         // Given
-        MemberMapperDTO validMemberMapperDTO = MemberMapperDTO.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", "010-1234-1234");
-        ResponseDTO successResponse = ResponseDTO.getSuccessResult(validMemberMapperDTO);
+        SignupMemberRequestDto validSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        ResponseDTO successResponse = ResponseDTO.getSuccessResult(validSignupMemberRequestDto);
         given(memberService.signUp(any())).willReturn(successResponse);
 
         // When
         ResultActions result = mvc.perform(post("/members/signup")
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validMemberMapperDTO)))
+                        .content(objectMapper.writeValueAsString(validSignupMemberRequestDto)))
                 .andExpect(status().isOk())
                 .andDo(print());
 

@@ -8,6 +8,7 @@ CREATE TABLE member
     name VARCHAR(40) NOT NULL COMMENT '회원 이름',
     birthdate VARCHAR(40) NOT NULL COMMENT '생년월일',
     phone VARCHAR(40) NOT NULL COMMENT '휴대폰 번호',
+    role VARCHAR(50) NOT NULL COMMENT '회원 권한',
     created_at DATETIME NOT NULL COMMENT '데이터 생성일',
     updated_at DATETIME NOT NULL COMMENT '데이터 변경일'
 );

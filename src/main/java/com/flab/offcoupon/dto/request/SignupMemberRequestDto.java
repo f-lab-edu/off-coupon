@@ -1,10 +1,12 @@
 package com.flab.offcoupon.dto.request;
 
+import com.flab.offcoupon.domain.Role;
 import com.flab.offcoupon.validation.Password;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.hibernate.validator.constraints.NotBlank;
 
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
@@ -12,7 +14,7 @@ import static com.flab.offcoupon.exception.ErrorMessage.*;
 @Generated
 @Getter
 @EqualsAndHashCode
-public final class MemberMapperDTO {
+public final class SignupMemberRequestDto {
 
     @NotBlank(message = EMAIL_MUST_NOT_EMPTY)
     @Email(message = CHECK_REQUEST_EMAIL)
@@ -32,15 +34,19 @@ public final class MemberMapperDTO {
     @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
     private final String phone;
 
-    private MemberMapperDTO(String email, String password, String name, String birthdate, String phone) {
+    @NotNull(message = ROLE_MUST_NOT_EMPTY)
+    private final Role role;
+
+    private SignupMemberRequestDto(String email, String password, String name, String birthdate, String phone,Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
         this.birthdate = birthdate;
         this.phone = phone;
+        this.role = role;
     }
 
-    public static MemberMapperDTO create(String email, String password, String name, String birthDate, String phone) {
-        return  new MemberMapperDTO (email, password, name, birthDate, phone);
+    public static SignupMemberRequestDto create(String email, String password, String name, String birthDate, String phone,Role role) {
+        return  new SignupMemberRequestDto(email, password, name, birthDate, phone,role);
     }
 }
