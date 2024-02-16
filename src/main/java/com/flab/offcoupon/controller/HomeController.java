@@ -12,4 +12,9 @@ public class HomeController {
     public String home() {
         return "home";
     }
+    /** 인가 체크용 **/
+    @GetMapping("/member")
+    public String onlyMember() {
+        return "member";
+    }
 }

@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
                                 .requestMatchers("/", "/members/signup").permitAll()
+                                .requestMatchers("/member").hasAnyRole("USER")
                                 .anyRequest().authenticated()
                 );
 
