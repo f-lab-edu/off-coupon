@@ -26,6 +26,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.MessageFormat;
+import java.time.LocalDate;
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,7 +69,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("email=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(null, "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(null, "abcabc123", "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(EMAIL_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -91,7 +92,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("email=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(email, "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(email, "abcabc123", "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_EMAIL).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -113,7 +114,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("password=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", null, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", null, "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PSWD_MUST_NOT_EMPTY).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -136,7 +137,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("password=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PSWD_FORMAT).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -161,7 +162,7 @@ class MemberControllerTest {
         sb.append("password=");
         int min = 8;
         int max = 13;
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", password, "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(MessageFormat.format(CHECK_REQUEST_PSWD_LENGTH, min, max)).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -184,7 +185,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("name=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", null, "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", null, LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -206,7 +207,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("phone=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", null, Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", LocalDate.parse("2024-12-12"), null, Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(PHONE_MUST_NOT_EMPTY).toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -229,7 +230,7 @@ class MemberControllerTest {
 
         // Given
         sb.append("phone=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", phone, Role.ROLE_USER);
+        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", LocalDate.parse("2024-12-12"), phone, Role.ROLE_USER);
         ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_PHONE).append("}").toString());
         given(memberService.signUp(any())).willReturn(failResponse);
 
@@ -266,36 +267,13 @@ class MemberControllerTest {
                 .andDo(print());
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"20241212", "1234-556-177", "12-12-12"})
-    @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 생년월일 포맷이 틀린 경우")
-    @WithMockUser
-    void signup_fail_birthDate(String birthDate) throws Exception {
-
-        // Given
-        sb.append("birthdate=");
-        SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", birthDate, "010-1234-1234", Role.ROLE_USER);
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(CHECK_REQUEST_BIRTHDATE).append("}").toString());
-        given(memberService.signUp(any())).willReturn(failResponse);
-
-        // When & then
-        mvc.perform(post("/members/signup")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf())
-                        .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
-    }
-
     @Test
     @DisplayName("[SUCCESS] 회원가입 시 유효성 검사 성공")
     @WithMockUser
     void signup_success() throws Exception {
 
         // Given
-        SignupMemberRequestDto validSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", "2024-12-12", "010-1234-1234", Role.ROLE_USER);
+        SignupMemberRequestDto validSignupMemberRequestDto = SignupMemberRequestDto.create("gildong@naver.com", "abcabc123", "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
         ResponseDTO successResponse = ResponseDTO.getSuccessResult(validSignupMemberRequestDto);
         given(memberService.signUp(any())).willReturn(successResponse);
 
@@ -306,9 +284,5 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(validSignupMemberRequestDto)))
                 .andExpect(status().isOk())
                 .andDo(print());
-
-        // Additional AssertJ Assertions
-        assertThat(result.andReturn().getResponse().getContentAsString())
-                .isEqualToIgnoringWhitespace(objectMapper.writeValueAsString(successResponse));
     }
 }

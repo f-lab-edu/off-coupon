@@ -4,20 +4,22 @@ import com.flab.offcoupon.domain.Member;
 import lombok.Generated;
 import lombok.Getter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Generated
 @Getter
 public final class SignupMemberResponseDto {
 
     private final String email;
 
-
     private final String name;
 
-    private final String birthdate;
+    private final LocalDate birthdate;
 
     private final String phone;
 
-    private SignupMemberResponseDto(String email, String name, String birthdate, String phone) {
+    private SignupMemberResponseDto(String email, String name, LocalDate birthdate, String phone) {
         this.email = email;
         this.name = name;
         this.birthdate = birthdate;
@@ -25,6 +27,6 @@ public final class SignupMemberResponseDto {
     }
 
     public static SignupMemberResponseDto create (Member member) {
-        return  new SignupMemberResponseDto(member.getEmail(), member.getName(), member.getBirthdate(), member.getBirthdate());
+        return  new SignupMemberResponseDto(member.getEmail(), member.getName(), member.getBirthdate(), member.getPhone());
     }
 }

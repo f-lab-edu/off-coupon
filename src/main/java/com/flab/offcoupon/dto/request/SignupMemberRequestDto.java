@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static com.flab.offcoupon.exception.ErrorMessage.*;
 
 @Generated
@@ -26,9 +29,8 @@ public final class SignupMemberRequestDto {
     @NotBlank (message = NAME_MUST_NOT_EMPTY)
     private final String name;
 
-    @NotBlank(message = BIRTHDATE_MUST_NOT_EMPTY)
-    @Pattern(message= CHECK_REQUEST_BIRTHDATE , regexp = "^\\d{4}-\\d{2}-\\d{2}$")
-    private final String birthdate;
+    @NotNull(message = BIRTHDATE_MUST_NOT_EMPTY)
+    private final LocalDate birthdate;
 
     @NotBlank(message = PHONE_MUST_NOT_EMPTY)
     @Pattern( message= CHECK_REQUEST_PHONE , regexp = "^\\d{3}-\\d{3,4}-\\d{4}$")
@@ -37,7 +39,7 @@ public final class SignupMemberRequestDto {
     @NotNull(message = ROLE_MUST_NOT_EMPTY)
     private final Role role;
 
-    private SignupMemberRequestDto(String email, String password, String name, String birthdate, String phone,Role role) {
+    private SignupMemberRequestDto(String email, String password, String name, LocalDate birthdate, String phone, Role role) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -46,7 +48,7 @@ public final class SignupMemberRequestDto {
         this.role = role;
     }
 
-    public static SignupMemberRequestDto create(String email, String password, String name, String birthDate, String phone,Role role) {
+    public static SignupMemberRequestDto create(String email, String password, String name, LocalDate birthDate, String phone,Role role) {
         return  new SignupMemberRequestDto(email, password, name, birthDate, phone,role);
     }
 }

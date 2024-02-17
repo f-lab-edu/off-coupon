@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @ToString
@@ -26,7 +27,7 @@ public final class Member implements Serializable {
     private final String name;
 
     @NotBlank
-    private final String birthdate;
+    private final LocalDate birthdate;
 
     @NotBlank
     private final String phone;
@@ -40,7 +41,7 @@ public final class Member implements Serializable {
     @NotBlank
     private final LocalDateTime updatedAt;
 
-    private Member(String email, String password, String name, String birthdate, String phone, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Member(String email, String password, String name, LocalDate birthdate, String phone, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -51,7 +52,7 @@ public final class Member implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public static Member create(String email, String password, String name, String birthDate, String phone, Role role) {
+    public static Member create(String email, String password, String name, LocalDate birthDate, String phone, Role role) {
         LocalDateTime now = DateTimeUtils.nowFromZone();
         return new Member(email, password, name, birthDate, phone, role, now, now);
     }
