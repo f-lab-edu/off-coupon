@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -26,7 +27,7 @@ public class SecurityConfig {
     private final UserDetailsService userDetailsService;
     private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final AuthenticationFailureHandler customAuthenticationFailureHandler;
-    private final AccessDeniedHandler accessDeniedHandler;
+    private final AccessDeniedHandler customAccessDeniedHandler;
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -38,41 +39,42 @@ public class SecurityConfig {
                         authorizeRequests
                                 .requestMatchers("/", "/members/signup").permitAll()
                                 .requestMatchers("/member").hasAnyRole("USER")
+                                .requestMatchers("/admin").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
 
         http    // 로그인 설정
-                .formLogin(form -> form //  스프링 시큐리티가 제공하는 로그인 페이지 주소는 "/login"이다.
-                        .defaultSuccessUrl("/")// 로그인 성공 후 이동할 URL
-                        .usernameParameter("email") // 로그인 페이지의 username input name
-                        .passwordParameter("password") // 로그인 페이지의 password input name
+                .formLogin(form -> form
+                        .loginProcessingUrl("/members/login")
+                        .defaultSuccessUrl("/")
+                        .usernameParameter("email")
+                        .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
                         .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 );
         http
                 .logout(logout -> logout
-                        .logoutUrl("/logout") // 로그아웃 URL
-                        .logoutSuccessUrl("/login") // 로그아웃 성공 후 이동할 URL
-                        .invalidateHttpSession(true) // 로그아웃 후 세션 무효화
-                        .deleteCookies("SESSIONID") // 로그아웃 후 쿠키 삭제
+                        .logoutUrl("/members/logout")
+                        .logoutSuccessUrl("/login")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("SESSIONID")
                 );
-        http
+        http    /** 인가 예외 ExceptionTranslationFilter **/
                 .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(accessDeniedHandler)
-                ); // 접근 권한이 없는 경우 처리
-
+                        .accessDeniedHandler(customAccessDeniedHandler)
+                );
         http.
                 rememberMe(rememberMe -> rememberMe
-                        .rememberMeCookieName("remember") // remember-me 쿠키의 키
-                        .tokenValiditySeconds(3600) // remember-me 쿠키의 유효시간
-                        .userDetailsService(userDetailsService)// remember-me 쿠키 생성 시 사용할 UserDetailsService
+                        .rememberMeCookieName("remember")
+                        .tokenValiditySeconds(3600)
+                        .userDetailsService(userDetailsService)
                 );
         http
                 .sessionManagement(sessionManagement -> sessionManagement
-                        .maximumSessions(1) // 최대 세션 허용 개수
-                        .maxSessionsPreventsLogin(false) // 최대 세션 허용 개수 초과 시 로그인 차단 여부
-                        .expiredUrl("/login") // 세션이 만료된 경우 이동할 URL
+                        .maximumSessions(1)
+                        .maxSessionsPreventsLogin(false)
+                        .expiredUrl("/login")
                 );
         return http.build();
     }
@@ -85,6 +87,8 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
     }
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncryptor();

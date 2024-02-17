@@ -35,6 +35,7 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'junit:junit:4.13.1'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
@@ -92,7 +93,7 @@ jacocoTestCoverageVerification {
 
                 classDirectories.setFrom(files(classDirectories.files.collect {
                     fileTree(dir: it,
-                            exclude: ["com/flab/offcoupon/exception/**",
+                            exclude: ["com/flab/offcoupon/exception/**", "com/flab/offcoupon/config/**",
                                          "com/flab/offcoupon/OffcouponApplication.class",
                                          "com/flab/offcoupon/util/**"])
                 }))

@@ -1,18 +1,14 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.dto.request.LoginMemberRequestDto;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.domain.Member;
+import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
-import com.flab.offcoupon.exception.member.MemberNotFoundException;
-import com.flab.offcoupon.exception.member.PasswordNotMatchException;
 import com.flab.offcoupon.repository.MemberRepository;
 import com.flab.offcoupon.util.ResponseDTO;
-import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
@@ -29,7 +25,7 @@ public class MemberService {
         validateEmailNotDuplicated(signupMemberRequestDto.getEmail());
         Member entity = toEntity(signupMemberRequestDto);
         memberRepository.save(entity);
-        return ResponseDTO.getSuccessResult(signupMemberRequestDto);
+        return ResponseDTO.getSuccessResult(SignupMemberResponseDto.create(entity));
     }
 
     @Transactional(readOnly = true)

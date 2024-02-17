@@ -1,5 +1,6 @@
 package com.flab.offcoupon.controller;
 
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

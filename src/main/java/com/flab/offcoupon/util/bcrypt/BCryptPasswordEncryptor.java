@@ -1,9 +1,6 @@
 package com.flab.offcoupon.util.bcrypt;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
@@ -23,10 +20,5 @@ public final class BCryptPasswordEncryptor implements PasswordEncoder {
         Assert.hasText((String) rawPassword, PSWD_MUST_NOT_EMPTY);
         Assert.hasText((String) rawPassword, HASHED_PSWD_MUST_NOT_EMPTY);
         return BCrypt.checkpw((String) rawPassword, encodedPassword);
-    }
-
-    @Override
-    public boolean upgradeEncoding(String encodedPassword) {
-        return PasswordEncoder.super.upgradeEncoding(encodedPassword);
     }
 }

@@ -19,7 +19,8 @@ public final class ErrorMessage {
     public static final String BIRTHDATE_MUST_NOT_EMPTY = "생년월일을 입력해주세요.";
     public static final String PHONE_MUST_NOT_EMPTY = "휴대폰 번호를 입력해주세요.";
     public static final String ROLE_MUST_NOT_EMPTY = "회원 권한을 입력해주세요.";
-    public static final String NOT_EXIST_EMAIL = "존재하지 않는 이메일 입니다.";
-    public static final String WRONG_PSWD = "비밀번호가 맞지 않습니다.";
+    public static final String CHECK_EMAIL_OR_PSWD = "아이디 또는 비밀번호가 일치하지 않습니다.";
+    public static final String AUTHORIZED_BUT_NOT_AUTHENTICATED = "인증되었지만 접근 권한이 없습니다.";
+    public static final String NOT_AUTHORIZED_AND_NOT_AUTHENTICATED = "인증되지 않아 접근 권한이 없습니다.";
 
 }
