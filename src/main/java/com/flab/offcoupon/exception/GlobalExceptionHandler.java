@@ -48,11 +48,4 @@ public final class GlobalExceptionHandler {
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseDTO.getFailResult(ex.getMessage()));
     }
-
-    @ExceptionHandler(PasswordNotMatchException.class)
-    public ResponseEntity<ResponseDTO> passwordNotMatchException(PasswordNotMatchException ex, HttpServletRequest request) {
-        log.info("> Http Method : {},  URI : {}, msg : {}, status : {}", request.getMethod(), request.getRequestURI(),
-                ex.getMessage(), HttpStatus.BAD_REQUEST);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
-    }
 }

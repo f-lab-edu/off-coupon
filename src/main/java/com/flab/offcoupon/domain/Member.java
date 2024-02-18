@@ -1,5 +1,6 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
