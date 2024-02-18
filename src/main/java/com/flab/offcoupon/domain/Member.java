@@ -3,6 +3,7 @@ package com.flab.offcoupon.domain;
 import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
@@ -34,13 +35,13 @@ public final class Member implements Serializable {
     @NotBlank
     private final String phone;
 
-    @NotBlank
+    @NotNull
     private final Role role;
 
-    @NotBlank
+    @NotNull
     private final LocalDateTime createdAt;
 
-    @NotBlank
+    @NotNull
     private final LocalDateTime updatedAt;
 
     private Member(String email, String password, String name, LocalDate birthdate, String phone, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
