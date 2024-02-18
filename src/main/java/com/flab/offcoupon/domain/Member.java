@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @ToString
 @Getter
 @AllArgsConstructor
+@EqualsAndHashCode
 public final class Member implements Serializable {
 
     @Id

@@ -10,7 +10,6 @@ import lombok.*;
 
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 import static com.flab.offcoupon.exception.ErrorMessage.*;
 

@@ -5,7 +5,6 @@ import lombok.Generated;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Generated
 @Getter

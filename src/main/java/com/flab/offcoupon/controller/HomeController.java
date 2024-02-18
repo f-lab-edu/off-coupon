@@ -1,6 +1,5 @@
 package com.flab.offcoupon.controller;
 
-import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,7 @@ public class HomeController {
         return "home";
     }
     /** 인가 체크용 **/
-    @GetMapping("/member")
+    @GetMapping("member")
     public String onlyMember() {
         return "member";
     }

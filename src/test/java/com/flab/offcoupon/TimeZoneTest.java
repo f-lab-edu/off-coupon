@@ -11,10 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @SpringBootTest
-public class TimeZoneTest{
+class TimeZoneTest{
 
     @Test
-    public void springBootTimezoneTest() {
+    void springBootTimezoneTest() {
         /* 국제 표준 시간 */
         LocalDateTime globalTime = LocalDateTime.now();
         /* 한국 시간 */

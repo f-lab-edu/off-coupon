@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
-@Service("UserDetailsService")
+@Service("userDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final MemberRepository memberRepository;

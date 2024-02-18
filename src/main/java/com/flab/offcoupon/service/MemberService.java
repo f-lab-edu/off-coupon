@@ -21,7 +21,7 @@ public class MemberService {
 
     private final PasswordEncoder passwordEncoder;
     @Transactional
-    public ResponseDTO signUp(SignupMemberRequestDto signupMemberRequestDto) {
+    public ResponseDTO<SignupMemberResponseDto> signUp(SignupMemberRequestDto signupMemberRequestDto) {
         validateEmailNotDuplicated(signupMemberRequestDto.getEmail());
         Member entity = toEntity(signupMemberRequestDto);
         memberRepository.save(entity);

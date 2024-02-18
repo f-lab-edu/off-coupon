@@ -1,7 +1,7 @@
 package com.flab.offcoupon.security;
 
 import com.flab.offcoupon.repository.MemberRepository;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class SecurityTest {
+class SecurityTest {
     @Autowired
     MockMvc mockMvc;
 
@@ -42,8 +42,8 @@ public class SecurityTest {
     @Autowired
     MemberRepository memberRepository;
     //mockMvc 객체 생성, Spring Security 환경 setup
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(this.context)
                 .apply(springSecurity())
@@ -52,14 +52,14 @@ public class SecurityTest {
 
     @Test
     @WithAnonymousUser
-    public void anonymous_authorization_home() throws Exception {
+    void anonymous_authorization_home() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
     @Test
     @WithMockUser(username = "sejin", roles = "USER")
-    public void authentication_member() throws Exception {
+    void authentication_member() throws Exception {
         mockMvc.perform(get("/member"))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -78,7 +78,7 @@ public class SecurityTest {
 //    }
 
     @Test
-    public void login_fail_not_exist() throws Exception{
+    void login_fail_not_exist() throws Exception{
         String email = "존재하지 않는 유저";
         String password = "123";
         mockMvc.perform(formLogin("/members/login")
