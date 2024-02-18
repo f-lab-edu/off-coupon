@@ -10,6 +10,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import static com.flab.offcoupon.exception.ErrorMessage.DO_NOT_MATCHES_PSWD;
+
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
@@ -24,7 +26,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(username);
 
         if (!passwordEncoder.matches(password, memberContext.getPassword())) {
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException(DO_NOT_MATCHES_PSWD);
         }
 
         return new UsernamePasswordAuthenticationToken(memberContext, null, memberContext.getAuthorities());
