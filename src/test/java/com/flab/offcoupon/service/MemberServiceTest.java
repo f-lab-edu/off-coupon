@@ -28,6 +28,9 @@ class MemberServiceTest {
     @Mock
     MemberRepository memberRepository;
 
+    @Mock
+    PasswordEncoder passwordEncoder;
+
     @Test
     @DisplayName("[SUCCESS] 회원가입 성공")
     void singup_success() {
