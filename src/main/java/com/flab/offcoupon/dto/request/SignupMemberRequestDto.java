@@ -16,6 +16,7 @@ import static com.flab.offcoupon.exception.ErrorMessage.*;
 @Generated
 @Getter
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public final class SignupMemberRequestDto {
 
     @NotBlank(message = EMAIL_MUST_NOT_EMPTY)
@@ -37,15 +38,6 @@ public final class SignupMemberRequestDto {
 
     @NotNull(message = ROLE_MUST_NOT_EMPTY)
     private final Role role;
-
-    private SignupMemberRequestDto(String email, String password, String name, LocalDate birthdate, String phone, Role role) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.birthdate = birthdate;
-        this.phone = phone;
-        this.role = role;
-    }
 
     public static SignupMemberRequestDto create(String email, String password, String name, LocalDate birthDate, String phone,Role role) {
         return  new SignupMemberRequestDto(email, password, name, birthDate, phone,role);

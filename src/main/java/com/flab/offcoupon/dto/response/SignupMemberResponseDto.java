@@ -1,13 +1,16 @@
 package com.flab.offcoupon.dto.response;
 
 import com.flab.offcoupon.domain.Member;
+import lombok.AllArgsConstructor;
 import lombok.Generated;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 
 @Generated
 @Getter
+@RequiredArgsConstructor
 public final class SignupMemberResponseDto {
 
     private final String email;
@@ -18,14 +21,10 @@ public final class SignupMemberResponseDto {
 
     private final String phone;
 
-    private SignupMemberResponseDto(String email, String name, LocalDate birthdate, String phone) {
-        this.email = email;
-        this.name = name;
-        this.birthdate = birthdate;
-        this.phone = phone;
-    }
-
-    public static SignupMemberResponseDto create (Member member) {
-        return  new SignupMemberResponseDto(member.getEmail(), member.getName(), member.getBirthdate(), member.getPhone());
+    public SignupMemberResponseDto(Member entity) {
+        this.email = entity.getEmail();
+        this.name = entity.getName();
+        this.birthdate = entity.getBirthdate();
+        this.phone = entity.getPhone();
     }
 }

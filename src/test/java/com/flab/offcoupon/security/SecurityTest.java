@@ -2,15 +2,15 @@ package com.flab.offcoupon.security;
 
 import com.flab.offcoupon.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +23,9 @@ import static org.springframework.security.test.web.servlet.response.SecurityMoc
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -51,6 +51,7 @@ class SecurityTest {
     }
 
     @Test
+    @DisplayName("[SUCCESS] 비회원 권한으로 홈 접근")
     @WithAnonymousUser
     void anonymous_authorization_home() throws Exception {
         mockMvc.perform(get("/"))
@@ -58,33 +59,68 @@ class SecurityTest {
                 .andExpect(status().isOk());
     }
     @Test
-    @WithMockUser(username = "sejin", roles = "USER")
+    @DisplayName("[SUCCESS] 회원 권한으로 홈 접근")
+    @WithMockUser(authorities = "USER")
     void authentication_member() throws Exception {
-        mockMvc.perform(get("/member"))
+        mockMvc.perform(get("/"))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
 
-//    @Test //TODO : 테스트 실패함 (시큐리티 내부에서 email이랑 password 입력값을 제대로 못받음)
-//    public void login_success() throws Exception {
-//        String email = "sejin@email.com";
-//        String password = "ababab123123";
-//        mockMvc.perform(formLogin("/members/login")
-//                .user(email, password))
-//                .andDo(print())
-//                .andExpect(authenticated())
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(redirectedUrl("/"));
-//    }
+    @Test
+    @DisplayName("[SUCCESS] 로그인 성공")
+    void login_success() throws Exception {
+        String email = "sejin@email.com";
+        String password = "ababab123123";
+        mockMvc.perform(formLogin("/members/login")
+                        .user("email",email)
+                        .password("password",password))
+                .andDo(print())
+                .andExpect(authenticated())
+                .andExpect(status().is2xxSuccessful());
+    }
 
     @Test
+    @DisplayName("[ERROR] 접근 권한 없음 : USER가 ADMIN 권한으로 접근")
+    @WithMockUser(authorities="USER")
+    void endpoint_with_user_authority_authorized() throws Exception {
+        mockMvc.perform(get("/admin"))
+                .andExpect(status().isForbidden());
+    }
+
+
+    @Test
+    @DisplayName("[ERROR] 로그인 실패 : 비밀번호 불일치")
+    public void login_fail_with_wrong_pwsd() throws Exception {
+        String email = "sejin@email.com";
+        String password = "ab";
+        mockMvc.perform(formLogin("/members/login")
+                        .user("email",email)
+                        .password("password",password))
+                .andDo(print())
+                .andExpect(unauthenticated())
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @DisplayName("[ERROR] 로그인 실패 : 존재하지 않는 유저")
     void login_fail_not_exist() throws Exception{
         String email = "존재하지 않는 유저";
         String password = "123";
         mockMvc.perform(formLogin("/members/login")
-                        .user(email)
-                        .password(password))
+                        .user("email", email)
+                        .password("password", password))
                 .andDo(print())
-                .andExpect(unauthenticated());
+                .andExpect(unauthenticated())
+                .andExpect(status().is2xxSuccessful());
+    }
+
+    @Test
+    @DisplayName("[SUCCESS] 로그아웃")
+    void logout() throws Exception{
+        mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/members/logout"))
+                .andDo(print())
+                .andExpect(unauthenticated())
+                .andExpect(redirectedUrl("/members/login"));
     }
 }

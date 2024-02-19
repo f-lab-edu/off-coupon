@@ -25,7 +25,7 @@ public class MemberService {
         validateEmailNotDuplicated(signupMemberRequestDto.getEmail());
         Member entity = toEntity(signupMemberRequestDto);
         memberRepository.save(entity);
-        return ResponseDTO.getSuccessResult(SignupMemberResponseDto.create(entity));
+        return ResponseDTO.getSuccessResult(new SignupMemberResponseDto(entity));
     }
 
     @Transactional(readOnly = true)
