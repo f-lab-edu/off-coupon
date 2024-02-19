@@ -1,7 +1,6 @@
 package com.flab.offcoupon.dto.response;
 
 import com.flab.offcoupon.domain.Member;
-import lombok.AllArgsConstructor;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

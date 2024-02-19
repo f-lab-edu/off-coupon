@@ -2,7 +2,6 @@ package com.flab.offcoupon.exception;
 
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
 import com.flab.offcoupon.exception.member.MemberNotFoundException;
-import com.flab.offcoupon.exception.member.PasswordNotMatchException;
 import com.flab.offcoupon.util.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
