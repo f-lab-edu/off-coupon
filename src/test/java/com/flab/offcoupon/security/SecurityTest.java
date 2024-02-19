@@ -49,6 +49,8 @@ class SecurityTest {
                 .apply(springSecurity())
                 .build();
     }
+    
+    private static final String MEMBER_LOGIN_URL = "/members/login";
 
     @Test
     @DisplayName("[SUCCESS] 비회원 권한으로 홈 접근")
@@ -72,7 +74,7 @@ class SecurityTest {
     void login_success() throws Exception {
         String email = "sejin@email.com";
         String password = "ababab123123";
-        mockMvc.perform(formLogin("/members/login")
+        mockMvc.perform(formLogin(MEMBER_LOGIN_URL)
                         .user("email",email)
                         .password("password",password))
                 .andDo(print())
@@ -94,7 +96,7 @@ class SecurityTest {
     public void login_fail_with_wrong_pwsd() throws Exception {
         String email = "sejin@email.com";
         String password = "ab";
-        mockMvc.perform(formLogin("/members/login")
+        mockMvc.perform(formLogin(MEMBER_LOGIN_URL)
                         .user("email",email)
                         .password("password",password))
                 .andDo(print())
@@ -107,7 +109,7 @@ class SecurityTest {
     void login_fail_not_exist() throws Exception{
         String email = "존재하지 않는 유저";
         String password = "123";
-        mockMvc.perform(formLogin("/members/login")
+        mockMvc.perform(formLogin(MEMBER_LOGIN_URL)
                         .user("email", email)
                         .password("password", password))
                 .andDo(print())
@@ -121,6 +123,6 @@ class SecurityTest {
         mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/members/logout"))
                 .andDo(print())
                 .andExpect(unauthenticated())
-                .andExpect(redirectedUrl("/members/login"));
+                .andExpect(redirectedUrl(MEMBER_LOGIN_URL));
     }
 }
