@@ -1,6 +1,7 @@
 package com.flab.offcoupon.repository;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
+import com.flab.offcoupon.domain.Role;
+import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,25 +13,27 @@ import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
 @ExtendWith(MockitoExtension.class)
 @MybatisTest
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
-class MemberMapperRepositoryTest {
+class MemberRepositoryTest {
 
     @Autowired
-    private MemberMapperRepository memberMapperRepository;
+    private MemberRepository memberRepository;
     @Test
     @Transactional
     @DisplayName("[SUCCESS] 회원 가입 성공")
     void save() {
         // given
-        MemberMapperDTO mapperDTO = MemberMapperDTO.create("test",",1234", "name", "20021223", "01075805060");
-        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthDate(), mapperDTO.getPhone());
+        SignupMemberRequestDto mapperDTO = SignupMemberRequestDto.create("test",",1234", "name", LocalDate.parse("2002-12-23"), "01075805060", Role.ROLE_USER);
+        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthdate(), mapperDTO.getPhone(), mapperDTO.getRole());
         //when
-        memberMapperRepository.save(entity);
+        memberRepository.save(entity);
     }
 
     @Test
@@ -40,7 +43,7 @@ class MemberMapperRepositoryTest {
         // given
         String email = "sejin@email.com"; // 웹서버 올라갈때 Insert된 이메일
         //when
-        boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
+        boolean isDuplicated = memberRepository.existMemberByEmail(email);
         assertThat(isDuplicated).isTrue();
     }
 }

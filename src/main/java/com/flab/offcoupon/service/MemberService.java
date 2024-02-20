@@ -1,47 +1,48 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.controller.api.MemberMapperDTO;
+import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.domain.Member;
+import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
-import com.flab.offcoupon.repository.MemberMapperRepository;
+import com.flab.offcoupon.repository.MemberRepository;
 import com.flab.offcoupon.util.ResponseDTO;
-import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.offcoupon.exception.ErrorMessage.DUPLICATED_EMAIL;
+import static com.flab.offcoupon.exception.ErrorMessage.*;
 
 @RequiredArgsConstructor
 @Service
 public class MemberService {
 
-    private final MemberMapperRepository memberMapperRepository;
+    private final MemberRepository memberRepository;
 
+    private final PasswordEncoder passwordEncoder;
     @Transactional
-    public ResponseDTO signUp(MemberMapperDTO memberMapperDTO) {
-        validateEmailNotDuplicated(memberMapperDTO.getEmail());
-        Member entity = toEntity(memberMapperDTO);
-        memberMapperRepository.save(entity);
-        return ResponseDTO.getSuccessResult(memberMapperDTO);
+    public ResponseDTO<SignupMemberResponseDto> signUp(SignupMemberRequestDto signupMemberRequestDto) {
+        validateEmailNotDuplicated(signupMemberRequestDto.getEmail());
+        Member entity = toEntity(signupMemberRequestDto);
+        memberRepository.save(entity);
+        return ResponseDTO.getSuccessResult(new SignupMemberResponseDto(entity));
     }
 
     @Transactional(readOnly = true)
     public void validateEmailNotDuplicated(String email) {
-        boolean isDuplicated = memberMapperRepository.existMemberByEmail(email);
+        boolean isDuplicated = memberRepository.existMemberByEmail(email);
         if (isDuplicated) {
             throw new MemberBadRequestException(DUPLICATED_EMAIL);
         }
     }
-    private Member toEntity(MemberMapperDTO memberMapperDTO) {
+
+    private Member toEntity(SignupMemberRequestDto signupMemberRequestDto) {
         return Member.create(
-                memberMapperDTO.getEmail(),
-                encryptPassword(memberMapperDTO.getPassword()),
-                memberMapperDTO.getName(),
-                memberMapperDTO.getBirthDate(),
-                memberMapperDTO.getPhone());
-    }
-    private String encryptPassword(String password) {
-        return BCryptPasswordEncryptor.encrypt(password);
+                signupMemberRequestDto.getEmail(),
+                passwordEncoder.encode(signupMemberRequestDto.getPassword()),
+                signupMemberRequestDto.getName(),
+                signupMemberRequestDto.getBirthdate(),
+                signupMemberRequestDto.getPhone(),
+                signupMemberRequestDto.getRole());
     }
 }

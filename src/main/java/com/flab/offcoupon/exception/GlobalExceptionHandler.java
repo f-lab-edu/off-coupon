@@ -1,6 +1,7 @@
 package com.flab.offcoupon.exception;
 
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
+import com.flab.offcoupon.exception.member.MemberNotFoundException;
 import com.flab.offcoupon.util.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -38,5 +39,12 @@ public final class GlobalExceptionHandler {
         log.info("> Http Method : {},  URI : {}, msg : {}, status : {}", request.getMethod(), request.getRequestURI(),
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ResponseDTO> memberNotFountException(MemberNotFoundException ex, HttpServletRequest request) {
+        log.info("> Http Method : {},  URI : {}, msg : {}, status : {}", request.getMethod(), request.getRequestURI(),
+                ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseDTO.getFailResult(ex.getMessage()));
     }
 }
