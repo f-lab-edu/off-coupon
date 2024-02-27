@@ -21,7 +21,6 @@ class EventTest {
     @BeforeEach
     void init() {
         event = new Event(1,
-                1,
                 "바디케어 상품",
                 "바디케어 상품 50%할인",
                 LocalDate.of(2024,02,01),
@@ -51,7 +50,6 @@ class EventTest {
     @DisplayName("[ERROR] 이벤트 발급 기간이 설정되어 있지 않은 경우")
     void event_period_is_null() {
         event = new Event(1,
-                1,
                 "바디케어 상품",
                 "바디케어 상품 50%할인",
                 null,
@@ -85,7 +83,6 @@ class EventTest {
     @DisplayName("[ERROR] 이벤트 발급 시간이 설정되어 있지 않은 경우")
     void event_time_is_null() {
         event = new Event(1,
-                1,
                 "바디케어 상품",
                 "바디케어 상품 50%할인",
                 LocalDate.of(2024,02,01),

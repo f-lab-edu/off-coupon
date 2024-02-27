@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.offcoupon.repository.CouponRepository">
+
+    <select id="findCouponById" resultType="Coupon">
+        SELECT id,
+               event_id,
+               discount_type,
+               discount_rate,
+               discount_price,
+               coupon_type,
+               max_quantity,
+               issued_quantity,
+               validate_start_date,
+               validate_end_date,
+               created_at,
+               updated_at
+        FROM coupon
+        WHERE id = #{id};
+    </select>
+
+    <update id="increaseIssuedQuantity">
+        UPDATE coupon
+        SET
+            issued_quantity = #{issuedQuantity}
+        WHERE id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 위 코드가 mapper 설정을 하는 코드 -->
+
+<!-- Mapper를 사용하는 Repository의 전체 경로를 적어줘야함. -->
+<mapper namespace="com.flab.offcoupon.repository.EventRepository">
+
+    <select id="findEventById" resultType="Event">
+        SELECT id,
+               category,
+               description,
+               start_date,
+               end_date,
+               daily_issue_start_time,
+               daily_issue_end_time,
+               created_at,
+                updated_at
+        FROM  event
+        WHERE id = #{id};
+    </select>
+</mapper>

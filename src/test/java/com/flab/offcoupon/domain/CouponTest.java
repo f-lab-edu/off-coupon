@@ -17,7 +17,7 @@ class CouponTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 수량 확인 - 잔여 수량이 없으면 FALSE 반환")
     void over_issue_coupon_count() {
-        Coupon coupon = new Coupon(1,
+        Coupon coupon = new Coupon(1, 1,
                 DiscountType.PERCENT,
                 20L,
                 null,
@@ -33,7 +33,7 @@ class CouponTest {
     @Test
     @DisplayName("[SUCCESS] 쿠폰 발급 수량 확인 - 잔여 수량이 남아있으면 TRUE 반환")
     void available_issue_coupon_count() {
-        Coupon coupon = new Coupon(1,
+        Coupon coupon = new Coupon(1, 1,
                 DiscountType.PERCENT,
                 20L,
                 null,
@@ -50,7 +50,7 @@ class CouponTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 수량 업데이트 - 잔여 수량이 없어서 Exception 발생")
     void issue_coupon_exception() {
-        Coupon coupon = new Coupon(1,
+        Coupon coupon = new Coupon(1,1,
                 DiscountType.PERCENT,
                 20L,
                 null,
@@ -69,7 +69,7 @@ class CouponTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 수량 업데이트 - 발급 가능 수량이 설정되어있지 않을 경우 Exception 발생")
     void null_coupon_exception() {
-        Coupon coupon = new Coupon(1,
+        Coupon coupon = new Coupon(1,1,
                 DiscountType.PERCENT,
                 20L,
                 null,
@@ -88,7 +88,7 @@ class CouponTest {
     @Test
     @DisplayName("[SUCCESS] 쿠폰 수량 업데이트 - 잔여 수량 남아서 수량 업데이트 성공")
     void issue_coupon_increase_quantity() {
-        Coupon coupon = new Coupon(1,
+        Coupon coupon = new Coupon(1, 1,
                 DiscountType.PERCENT,
                 20L,
                 null,

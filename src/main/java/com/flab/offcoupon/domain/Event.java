@@ -3,6 +3,8 @@ package com.flab.offcoupon.domain;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
 import java.time.LocalDate;
@@ -12,11 +14,11 @@ import java.time.format.DateTimeFormatter;
 
 import static com.flab.offcoupon.exception.event.ErrorMessage.*;
 
+@ToString
 @AllArgsConstructor
 public final class Event {
     @Id
-    private final long eventId;
-    private final long couponId;
+    private long eventId;
     private final String category;
     private final String description;
     private final LocalDate startDate;

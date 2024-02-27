@@ -2,16 +2,19 @@ package com.flab.offcoupon.domain;
 
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_QUANTITY_IS_NULL;
 import static com.flab.offcoupon.exception.coupon.ErrorMessage.INVALID_COUPON_QUANTITY;
 
+@ToString
 @AllArgsConstructor
 public final class Coupon {
 
-    private final long id;
+    private long id;
+    private final long eventId;
     private final DiscountType discountType;
     private final Long discountRate; // NULL 일 경우 AMOUNT
     private final Long discountPrice; // NULL 일 경우 PERCENT
@@ -36,6 +39,7 @@ public final class Coupon {
         }
         return new Coupon(
                 originalCoupon.id,
+                originalCoupon.eventId,
                 originalCoupon.discountType,
                 originalCoupon.discountRate,
                 originalCoupon.discountPrice,
