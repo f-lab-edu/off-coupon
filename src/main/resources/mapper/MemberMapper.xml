@@ -8,15 +8,15 @@
 <mapper namespace="com.flab.offcoupon.repository.MemberMapperRepository">
 
     <insert id="save" parameterType="com.flab.offcoupon.domain.Member">
-        INSERT INTO  member (email, password, name, birthDate, phone, createdAt, updatedAt)
-        VALUES (#{email}, #{password}, #{name}, #{birthDate},#{phone},#{createdAt},#{updatedAt} )
+        INSERT INTO  member (email, password, name, birthdate, phone, role, created_at, updated_at)
+        VALUES (#{email}, #{password}, #{name}, #{birthdate},#{phone},#{role}, #{createdAt},#{updatedAt} )
     </insert>
 
     <select id="existMemberByEmail" parameterType="com.flab.offcoupon.domain.Member" resultType="boolean">
         SELECT EXISTS (SELECT 1
-                      FROM member
-                      WHERE email = #{email}
-                      );
+                       FROM member
+                       WHERE email = #{email}
+        );
     </select>
 
 </mapper>
