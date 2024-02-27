@@ -1,12 +1,19 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import java.time.LocalDate;
 
-@Getter
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @ToString
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
 public final class Member {
 
     @Id
@@ -22,29 +29,33 @@ public final class Member {
     private final String name;
 
     @NotBlank
-    private final String birthDate;
+    private final LocalDate birthdate;
 
     @NotBlank
     private final String phone;
 
-    @NotBlank
-    private final LocalDate createdAt;
+    @NotNull
+    private final Role role;
 
-    @NotBlank
-    private final LocalDate updatedAt;
+    @NotNull
+    private final LocalDateTime createdAt;
 
-    private Member(String email, String password, String name, String birthDate, String phone, LocalDate createdAt, LocalDate updatedAt) {
+    @NotNull
+    private final LocalDateTime updatedAt;
+
+    private Member(String email, String password, String name, LocalDate birthdate, String phone, Role role, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.email = email;
         this.password = password;
         this.name = name;
-        this.birthDate = birthDate;
+        this.birthdate = birthdate;
         this.phone = phone;
+        this.role = role;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
 
-    public static Member create (String email, String password, String name, String birthDate, String phone) {
-        LocalDate now = LocalDate.now();
-        return new Member(email, password, name, birthDate, phone, now, now);
+    public static Member create(String email, String password, String name, LocalDate birthDate, String phone, Role role) {
+        LocalDateTime now = DateTimeUtils.nowFromZone();
+        return new Member(email, password, name, birthDate, phone, role, now, now);
     }
 }

@@ -30,6 +30,10 @@ dependencies {
     // DB
     implementation 'mysql:mysql-connector-java:8.0.32'
 
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.session:spring-session-data-redis'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -88,7 +92,7 @@ jacocoTestCoverageVerification {
 
                 classDirectories.setFrom(files(classDirectories.files.collect {
                     fileTree(dir: it,
-                            exclude: ["com/flab/offcoupon/exception/**",
+                            exclude: ["com/flab/offcoupon/exception/**", "com/flab/offcoupon/config/**",
                                          "com/flab/offcoupon/OffcouponApplication.class",
                                          "com/flab/offcoupon/util/**"])
                 }))
