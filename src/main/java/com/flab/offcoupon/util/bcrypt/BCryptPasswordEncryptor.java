@@ -4,8 +4,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-import static com.flab.offcoupon.exception.ErrorMessage.HASHED_PSWD_MUST_NOT_EMPTY;
-import static com.flab.offcoupon.exception.ErrorMessage.PSWD_MUST_NOT_EMPTY;
+import static com.flab.offcoupon.exception.member.ErrorMessage.HASHED_PSWD_MUST_NOT_EMPTY;
+import static com.flab.offcoupon.exception.member.ErrorMessage.PSWD_MUST_NOT_EMPTY;
 
 public final class BCryptPasswordEncryptor implements PasswordEncoder {
 

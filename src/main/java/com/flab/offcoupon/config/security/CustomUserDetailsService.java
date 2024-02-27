@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flab.offcoupon.exception.ErrorMessage.NOT_EXIST_MEMBER;
+import static com.flab.offcoupon.exception.member.ErrorMessage.NOT_EXIST_MEMBER;
 
 @RequiredArgsConstructor
 @Service("userDetailsService")

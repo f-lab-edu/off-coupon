@@ -28,7 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 
-import static com.flab.offcoupon.exception.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.ErrorMessage.*;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

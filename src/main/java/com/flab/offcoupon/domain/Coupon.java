@@ -1,8 +1,12 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
+
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_QUANTITY_IS_NULL;
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.INVALID_COUPON_QUANTITY;
 
 @AllArgsConstructor
 public final class Coupon {
@@ -21,14 +25,14 @@ public final class Coupon {
 
     public boolean availableIssueQuantity() {
         if (maxQuantity == null || issuedQuantity == null) {
-            throw new RuntimeException("쿠폰의 발급 가능 수량이 설정되어있지 않습니다.");
+            throw new CouponQuantityException(COUPON_QUANTITY_IS_NULL.formatted(maxQuantity, issuedQuantity));
         }
         return maxQuantity > issuedQuantity;
     }
 
     public Coupon increaseIssuedQuantity(Coupon originalCoupon) {
         if (!originalCoupon.availableIssueQuantity()) {
-            throw new RuntimeException("발급 가능한 쿠폰이 없습니다.");
+            throw new CouponQuantityException(INVALID_COUPON_QUANTITY.formatted(maxQuantity, issuedQuantity));
         }
         return new Coupon(
                 originalCoupon.id,

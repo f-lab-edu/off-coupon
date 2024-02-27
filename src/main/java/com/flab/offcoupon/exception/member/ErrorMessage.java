@@ -1,4 +1,4 @@
-package com.flab.offcoupon.exception;
+package com.flab.offcoupon.exception.member;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

@@ -1,5 +1,7 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.exception.event.EventPeriodException;
+import com.flab.offcoupon.exception.event.EventTimeException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.annotation.Id;
 
@@ -7,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+
+import static com.flab.offcoupon.exception.event.ErrorMessage.*;
 
 @AllArgsConstructor
 public final class Event {
@@ -24,7 +28,7 @@ public final class Event {
 
     public boolean availableIssueDate(LocalDateTime requestDate) {
         if (startDate == null || endDate == null) {
-            throw new RuntimeException("이벤트 기간이 설정되어있지 않습니다.");
+            throw new EventPeriodException(EVENT_PERIOD_IS_NULL.formatted(startDate, endDate));
         }
         LocalDate currentDate = requestDate.toLocalDate();
         return startDate.isEqual(currentDate) || endDate.isEqual(currentDate) ||
@@ -33,7 +37,7 @@ public final class Event {
 
     public boolean availableIssueTime(LocalDateTime requestTime) {
         if (dailyIssueStartTime == null || dailyIssueEndTime == null) {
-            throw new RuntimeException("이벤트 시간이 설정되어있지 않습니다.");
+            throw new EventTimeException(EVENT_TIME_IS_NULL.formatted(dailyIssueStartTime, dailyIssueEndTime));
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime currentTime = requestTime.toLocalTime();
@@ -47,10 +51,10 @@ public final class Event {
 
     public void availableIssuePeriodAndTime (LocalDateTime localDateTime) {
         if (!availableIssueDate(localDateTime)) {
-            throw new RuntimeException("이벤트 기간이 아닙니다.");
+            throw new EventPeriodException(INVALID_EVENT_PERIOD.formatted(startDate, endDate));
         }
         if(!availableIssueTime(localDateTime)) {
-            throw new RuntimeException("이벤트 시간이 아닙니다.");
+            throw new EventTimeException(INVALID_EVENT_TIME.formatted(dailyIssueStartTime, dailyIssueEndTime));
         }
     }
 }

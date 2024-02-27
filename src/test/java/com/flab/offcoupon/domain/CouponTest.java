@@ -1,10 +1,13 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_QUANTITY_IS_NULL;
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.INVALID_COUPON_QUANTITY;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -59,8 +62,8 @@ class CouponTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
         assertThatThrownBy(() -> coupon.increaseIssuedQuantity(coupon))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("발급 가능한 쿠폰이 없습니다.");
+                .isInstanceOf(CouponQuantityException.class)
+                .hasMessage(INVALID_COUPON_QUANTITY.formatted(100L,100L));
     }
 
     @Test
@@ -78,8 +81,8 @@ class CouponTest {
                 LocalDateTime.now(),
                 LocalDateTime.now());
         assertThatThrownBy(() -> coupon.increaseIssuedQuantity(coupon))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("쿠폰의 발급 가능 수량이 설정되어있지 않습니다.");
+                .isInstanceOf(CouponQuantityException.class)
+                .hasMessage(COUPON_QUANTITY_IS_NULL.formatted(null, null));
     }
 
     @Test

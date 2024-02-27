@@ -6,7 +6,7 @@ import jakarta.validation.ReportAsSingleViolation;
 
 import java.lang.annotation.*;
 
-import static com.flab.offcoupon.exception.ErrorMessage.PSWD_MUST_NOT_EMPTY;
+import static com.flab.offcoupon.exception.member.ErrorMessage.PSWD_MUST_NOT_EMPTY;
 
 
 @Documented
