@@ -19,6 +19,7 @@ CREATE TABLE member
 CREATE TABLE event
 (
     event_id               BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '이벤트 식별자',
+    coupon_id              BIGINT UNSIGNED NOT NULL COMMENT '쿠폰 식별자',
     category               VARCHAR(100) NOT NULL COMMENT '이벤트 카테고리',
     description            VARCHAR(255) NOT NULL COMMENT '이벤트 설명',
     start_date             DATE         NOT NULL COMMENT '이벤트 시작일',
@@ -40,8 +41,7 @@ CREATE TABLE `coupon`
     max_quantity        BIGINT UNSIGNED NULL COMMENT '무제한 발행일 경우 NULL',
     issued_quantity     BIGINT UNSIGNED NULL COMMENT '무제한 발행일 경우 NULL',
     created_at          DATETIME        NOT NULL COMMENT '데이터 생성일',
-    updated_at          DATETIME        NOT NULL COMMENT '데이터 변경일',
-    event_id            BIGINT UNSIGNED NULL COMMENT '비식별 관계 / null이어도 쿠폰 발급 가능(e.g. 회원가입))'
+    updated_at          DATETIME        NOT NULL COMMENT '데이터 변경일'
 );
 
 CREATE TABLE coupon_issue
