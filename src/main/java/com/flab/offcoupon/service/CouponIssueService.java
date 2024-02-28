@@ -21,16 +21,17 @@ import static com.flab.offcoupon.exception.event.ErrorMessage.EVENT_NOT_EXIST;
 public class CouponIssueService {
 
     private final EventRepository eventRepository;
-
     private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
 
     @Transactional
-    public ResponseDTO issueCoupon(long eventId, long couponId, long memberId) {
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 01, 13, 0, 0);
+    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+        // 이벤트 기간 및 시간 검증
         checkEventPeriodAndTime(eventId, currentDateTime);
+        // 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
         increaseIssuedCouponQuantity(couponId);
-        saveCouponIssue(memberId, couponId);
+        // 쿠폰 발급 이력 저장 (CouponIssue 테이블) 및 중복 발급 제한
+        saveCouponIssue(memberId, couponId, currentDateTime);
         return ResponseDTO.getSuccessResult("Test");
     }
 
@@ -46,15 +47,16 @@ public class CouponIssueService {
         couponRepository.increaseIssuedQuantity(updatecoupon);
     }
     @Transactional
-    public void saveCouponIssue(long memberId, long couponId) {
-        checkAlreadyIssueHistory(memberId, couponId);
+    public void saveCouponIssue(long memberId, long couponId, LocalDateTime currentDateTime) {
+        LocalDateTime tt = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        checkAlreadyIssueHistory(memberId, couponId, tt);
         CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
         couponIssueRepository.save(couponIssue);
     }
 
-    private void checkAlreadyIssueHistory(long memberId, long couponId) {
-        if(couponIssueRepository.existCouponIssueByMemberIdAndCouponId(memberId, couponId)) {
-            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
+    private void checkAlreadyIssueHistory(long memberId, long couponId, LocalDateTime currentDateTime ) {
+        if(couponIssueRepository.existCouponIssueByMemberIdAndCouponId(memberId, couponId, currentDateTime)) {
+            throw new IllegalArgumentException("오늘은 이미 발급 완료되었습니다.");
         }
     }
 

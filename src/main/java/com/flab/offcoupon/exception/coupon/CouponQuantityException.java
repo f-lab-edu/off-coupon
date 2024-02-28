@@ -6,8 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CouponQuantityException extends CustomException {
-
-        public CouponQuantityException(String message) {
+    public CouponQuantityException(String message) {
             super(message);
         }
 }

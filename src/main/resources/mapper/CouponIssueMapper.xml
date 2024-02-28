@@ -10,11 +10,12 @@
         VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt},#{updatedAt} )
     </insert>
 
-    <select id="existCouponIssueByMemberIdAndCouponId" parameterType="long" resultType="boolean">
+    <select id="existCouponIssueByMemberIdAndCouponId" resultType="boolean">
         SELECT EXISTS (SELECT 1
                        FROM coupon_issue
                        WHERE member_id = #{memberId}
                          AND coupon_id = #{couponId}
+                       AND DATE(created_at)= #{currentDateTime}
             LIMIT 1);
     </select>
 </mapper>
