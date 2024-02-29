@@ -28,7 +28,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.text.MessageFormat;
 import java.time.LocalDate;
 
-import static com.flab.offcoupon.exception.member.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -42,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class)})
 class MemberControllerTest {
     private StringBuilder sb = new StringBuilder("{");
+    private String URL = "/api/v1/members/signup";
 
     @Autowired
     MockMvc mvc;
@@ -73,7 +74,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +97,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -118,7 +119,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -141,7 +142,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -166,7 +167,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -189,7 +190,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -211,7 +212,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -234,7 +235,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -256,7 +257,7 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(failResponse);
 
         // When & then
-        mvc.perform(post("/members/signup")
+        mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -277,11 +278,11 @@ class MemberControllerTest {
         given(memberService.signUp(any())).willReturn(successResponse);
 
         // When
-        ResultActions result = mvc.perform(post("/members/signup")
+        ResultActions result = mvc.perform(post(URL)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validSignupMemberRequestDto)))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print());
     }
 }

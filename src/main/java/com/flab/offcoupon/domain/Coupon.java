@@ -6,8 +6,8 @@ import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_QUANTITY_IS_NULL;
-import static com.flab.offcoupon.exception.coupon.ErrorMessage.INVALID_COUPON_QUANTITY;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_QUANTITY_IS_NULL;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.INVALID_COUPON_QUANTITY;
 
 @ToString
 @AllArgsConstructor

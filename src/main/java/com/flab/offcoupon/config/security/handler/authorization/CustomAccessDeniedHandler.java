@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static com.flab.offcoupon.exception.member.ErrorMessage.AUTHORIZED_BUT_NOT_AUTHENTICATED;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.AUTHORIZED_BUT_NOT_AUTHENTICATED;
 
 @Slf4j
 @Component

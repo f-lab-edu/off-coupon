@@ -40,7 +40,7 @@ class CouponIssueConcurrencyTest {
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
-            final int currentThreadCount = i;
+            final int currentThreadCount = i+1;
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 01, 13, 0, 0);

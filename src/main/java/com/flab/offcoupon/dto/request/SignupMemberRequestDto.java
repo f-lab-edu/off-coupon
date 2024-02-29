@@ -11,7 +11,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-import static com.flab.offcoupon.exception.member.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 
 @Generated
 @Getter

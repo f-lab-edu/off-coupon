@@ -3,7 +3,7 @@ package com.flab.offcoupon.service;
 import com.flab.offcoupon.domain.Coupon;
 import com.flab.offcoupon.domain.CouponIssue;
 import com.flab.offcoupon.domain.Event;
-import com.flab.offcoupon.domain.CouponIssueCheckVo;
+import com.flab.offcoupon.domain.persistence.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
@@ -18,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_NOT_EXIST;
-import static com.flab.offcoupon.exception.coupon.ErrorMessage.DUPLICATED_COUPON;
-import static com.flab.offcoupon.exception.event.ErrorMessage.EVENT_NOT_EXIST;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
+import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
 
 @RequiredArgsConstructor
 @Service

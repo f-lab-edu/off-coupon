@@ -50,7 +50,7 @@ class SecurityTest {
                 .build();
     }
     
-    private static final String MEMBER_LOGIN_URL = "/members/login";
+    private static final String MEMBER_LOGIN_URL = "/api/v1/members/login";
 
     @Test
     @DisplayName("[SUCCESS] 비회원 권한으로 홈 접근")
@@ -120,7 +120,7 @@ class SecurityTest {
     @Test
     @DisplayName("[SUCCESS] 로그아웃")
     void logout() throws Exception{
-        mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/members/logout"))
+        mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/api/v1/members/logout"))
                 .andDo(print())
                 .andExpect(unauthenticated())
                 .andExpect(redirectedUrl(MEMBER_LOGIN_URL));
