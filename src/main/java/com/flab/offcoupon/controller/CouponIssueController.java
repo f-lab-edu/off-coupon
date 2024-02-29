@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
-@RequestMapping("/issues")
+@RequestMapping("/event")
 @RestController
 public class CouponIssueController {
 
     private final CouponIssueService couponIssueService;
 
-    @PostMapping("/{eventId}")
+    @PostMapping("/{eventId}/issues")
     public ResponseEntity<ResponseDTO> issue(@PathVariable final long eventId,
                                              @RequestParam final long couponId,
                                              @RequestParam final long memberId) {
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 01, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 29, 13, 0, 0);
         return ResponseEntity.ok(couponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId));
     }
 }

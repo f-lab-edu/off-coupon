@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     testImplementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2")
+    // mybatis sql log
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
     // DB
     implementation 'mysql:mysql-connector-java:8.0.32'
 

@@ -6,16 +6,16 @@
 <mapper namespace="com.flab.offcoupon.repository.CouponIssueRepository">
 
     <insert id="save" parameterType="CouponIssue">
-        INSERT INTO  coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at)
-        VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt},#{updatedAt} )
+        INSERT INTO coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at)
+        VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt}, #{updatedAt})
     </insert>
 
-    <select id="existCouponIssueByMemberIdAndCouponId" resultType="boolean">
+    <select id="existCouponIssue" parameterType="CouponIssueCheckVo" resultType="boolean">
         SELECT EXISTS (SELECT 1
                        FROM coupon_issue
                        WHERE member_id = #{memberId}
                          AND coupon_id = #{couponId}
-                       AND DATE(created_at)= #{currentDateTime}
+                         AND DATE (created_at) = #{currentDateTime}
             LIMIT 1);
     </select>
 </mapper>

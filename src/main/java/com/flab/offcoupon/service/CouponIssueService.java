@@ -3,6 +3,9 @@ package com.flab.offcoupon.service;
 import com.flab.offcoupon.domain.Coupon;
 import com.flab.offcoupon.domain.CouponIssue;
 import com.flab.offcoupon.domain.Event;
+import com.flab.offcoupon.domain.CouponIssueCheckVo;
+import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
+import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.repository.CouponIssueRepository;
 import com.flab.offcoupon.repository.CouponRepository;
@@ -12,8 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.COUPON_NOT_EXIST;
+import static com.flab.offcoupon.exception.coupon.ErrorMessage.DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.event.ErrorMessage.EVENT_NOT_EXIST;
 
 @RequiredArgsConstructor
@@ -40,23 +46,25 @@ public class CouponIssueService {
         Event event = findEvent(eventId);
         event.availableIssuePeriodAndTime(currentDateTime);
     }
+
     @Transactional
     public void increaseIssuedCouponQuantity(long couponId) {
         Coupon existingCoupon = findCoupon(couponId);
         Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
         couponRepository.increaseIssuedQuantity(updatecoupon);
     }
+
     @Transactional
     public void saveCouponIssue(long memberId, long couponId, LocalDateTime currentDateTime) {
-        LocalDateTime tt = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-        checkAlreadyIssueHistory(memberId, couponId, tt);
+        LocalDate currentDate = currentDateTime.toLocalDate();
+        checkAlreadyIssueHistory(memberId, couponId, currentDate);
         CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
         couponIssueRepository.save(couponIssue);
     }
-
-    private void checkAlreadyIssueHistory(long memberId, long couponId, LocalDateTime currentDateTime ) {
-        if(couponIssueRepository.existCouponIssueByMemberIdAndCouponId(memberId, couponId, currentDateTime)) {
-            throw new IllegalArgumentException("오늘은 이미 발급 완료되었습니다.");
+    @Transactional(readOnly = true)
+    public void checkAlreadyIssueHistory(long memberId, long couponId, LocalDate currentDate) {
+        if(couponIssueRepository.existCouponIssue(new CouponIssueCheckVo(memberId, couponId, currentDate))) {
+            throw new DuplicatedCouponException(DUPLICATED_COUPON.formatted(memberId, couponId));
         }
     }
 
@@ -69,6 +77,6 @@ public class CouponIssueService {
     @Transactional(readOnly = true)
     public Coupon findCoupon(long couponId) {
         return couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(couponId)));
+                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
     }
 }
