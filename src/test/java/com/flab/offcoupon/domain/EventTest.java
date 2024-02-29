@@ -1,5 +1,6 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
 import org.assertj.core.api.Assertions;

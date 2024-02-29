@@ -1,7 +1,7 @@
 package com.flab.offcoupon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.offcoupon.domain.Role;
+import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.exception.GlobalExceptionHandler;
 import com.flab.offcoupon.service.MemberService;

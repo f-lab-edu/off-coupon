@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;

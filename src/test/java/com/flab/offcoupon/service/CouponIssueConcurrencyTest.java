@@ -1,7 +1,7 @@
 package com.flab.offcoupon.service;
 
 
-import com.flab.offcoupon.domain.Coupon;
+import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.repository.CouponIssueRepository;
 import com.flab.offcoupon.repository.CouponRepository;
 import com.flab.offcoupon.repository.EventRepository;

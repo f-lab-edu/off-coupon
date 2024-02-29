@@ -1,6 +1,6 @@
-package com.flab.offcoupon.config.security;
+package com.flab.offcoupon.config.security.service;
 
-import com.flab.offcoupon.domain.Member;
+import com.flab.offcoupon.domain.entity.Member;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

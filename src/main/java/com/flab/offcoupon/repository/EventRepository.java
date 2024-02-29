@@ -1,6 +1,6 @@
 package com.flab.offcoupon.repository;
 
-import com.flab.offcoupon.domain.Event;
+import com.flab.offcoupon.domain.entity.Event;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;

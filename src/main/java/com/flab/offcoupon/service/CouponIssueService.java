@@ -1,9 +1,9 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.domain.Coupon;
-import com.flab.offcoupon.domain.CouponIssue;
-import com.flab.offcoupon.domain.Event;
-import com.flab.offcoupon.domain.persistence.couponissue.CouponIssueCheckVo;
+import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.domain.entity.CouponIssue;
+import com.flab.offcoupon.domain.entity.Event;
+import com.flab.offcoupon.domain.vo.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;

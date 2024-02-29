@@ -1,5 +1,8 @@
 package com.flab.offcoupon.domain;
 
+import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.domain.entity.CouponType;
+import com.flab.offcoupon.domain.entity.DiscountType;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

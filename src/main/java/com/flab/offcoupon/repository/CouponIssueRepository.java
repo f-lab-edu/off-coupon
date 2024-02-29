@@ -1,7 +1,7 @@
 package com.flab.offcoupon.repository;
 
-import com.flab.offcoupon.domain.CouponIssue;
-import com.flab.offcoupon.domain.persistence.couponissue.CouponIssueCheckVo;
+import com.flab.offcoupon.domain.entity.CouponIssue;
+import com.flab.offcoupon.domain.vo.couponissue.CouponIssueCheckVo;
 import org.apache.ibatis.annotations.Mapper;
 
 

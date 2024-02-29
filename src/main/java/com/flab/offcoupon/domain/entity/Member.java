@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 

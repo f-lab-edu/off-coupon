@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain.persistence.couponissue;
+package com.flab.offcoupon.domain.vo.couponissue;
 
 
 import java.time.LocalDate;

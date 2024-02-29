@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.util.DateTimeUtils;
 import lombok.AllArgsConstructor;

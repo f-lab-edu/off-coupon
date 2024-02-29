@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
 public enum CouponStatus {
     NOT_ACTIVE("유효기간 시작 전"),

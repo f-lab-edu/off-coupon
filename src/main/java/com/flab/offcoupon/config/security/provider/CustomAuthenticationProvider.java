@@ -1,6 +1,6 @@
 package com.flab.offcoupon.config.security.provider;
 
-import com.flab.offcoupon.config.security.MemberContext;
+import com.flab.offcoupon.config.security.service.MemberContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;

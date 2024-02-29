@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import lombok.AllArgsConstructor;
