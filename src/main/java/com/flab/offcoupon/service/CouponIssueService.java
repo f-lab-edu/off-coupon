@@ -12,7 +12,9 @@ import com.flab.offcoupon.repository.CouponRepository;
 import com.flab.offcoupon.repository.EventRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.relational.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -32,13 +34,15 @@ public class CouponIssueService {
 
     @Transactional
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
-        // 이벤트 기간 및 시간 검증
-        checkEventPeriodAndTime(eventId, currentDateTime);
-        // 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
-        increaseIssuedCouponQuantity(couponId);
-        // 쿠폰 발급 이력 저장 (CouponIssue 테이블) 및 중복 발급 제한
-        saveCouponIssue(memberId, couponId, currentDateTime);
-        return ResponseDTO.getSuccessResult("Test");
+
+            // 이벤트 기간 및 시간 검증
+            checkEventPeriodAndTime(eventId, currentDateTime);
+            // 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
+            increaseIssuedCouponQuantity(couponId);
+            // 쿠폰 발급 이력 저장 (CouponIssue 테이블) 및 중복 발급 제한
+            saveCouponIssue(memberId, couponId, currentDateTime);
+
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
 
 
@@ -47,17 +51,17 @@ public class CouponIssueService {
         event.availableIssuePeriodAndTime(currentDateTime);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void increaseIssuedCouponQuantity(long couponId) {
         Coupon existingCoupon = findCoupon(couponId);
         Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
         couponRepository.increaseIssuedQuantity(updatecoupon);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveCouponIssue(long memberId, long couponId, LocalDateTime currentDateTime) {
         LocalDate currentDate = currentDateTime.toLocalDate();
-        checkAlreadyIssueHistory(memberId, couponId, currentDate);
+//        checkAlreadyIssueHistory(memberId, couponId, currentDate);
         CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
         couponIssueRepository.save(couponIssue);
     }

@@ -14,14 +14,18 @@ import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-@Transactional
 class CouponIssueConcurrencyTest {
     @Autowired
+    private CouponIssueFacade couponIssueFacade;
+
+    @Autowired
     private CouponIssueService couponIssueService;
+
 
     @Autowired
     private CouponIssueRepository couponIssueRepository;
@@ -40,11 +44,11 @@ class CouponIssueConcurrencyTest {
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
-            final int currentThreadCount = i+1;
+            final int currentMemberId = i+1;
             executorService.submit(() -> {
                 try {
-                    LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 01, 13, 0, 0);
-                    couponIssueService.issueCoupon(currentDateTime,1, 1, currentThreadCount);
+                    LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+                    couponIssueFacade.issueRequestV1(currentDateTime,1, 1,currentMemberId);
                 } finally {
                     latch.countDown();
                 }
@@ -56,5 +60,4 @@ class CouponIssueConcurrencyTest {
         // 500 - 100 == 400
         assertEquals(400,coupon.remainedCoupon());
     }
-
 }

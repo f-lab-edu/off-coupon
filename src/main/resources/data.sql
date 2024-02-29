@@ -12,3 +12,4 @@ VALUES (1,1,'PERCENT',50,null,'FIRST_COME_FIRST_SERVED',500,0,'2024-02-01','2024
 INSERT INTO event (id, category, description, start_date, end_date, daily_issue_start_time,
                               daily_issue_end_time, created_at, updated_at)
 VALUES (1, '바디케어' , '바디케어 전품목 이벤트', '2024-02-01','2024-02-05','13:00:00','15:00:00','2024-02-01','2024-02-01');
+

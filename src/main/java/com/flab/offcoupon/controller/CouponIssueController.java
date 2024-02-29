@@ -1,6 +1,6 @@
 package com.flab.offcoupon.controller;
 
-import com.flab.offcoupon.service.CouponIssueService;
+import com.flab.offcoupon.service.CouponIssueFacade;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @RestController
 public class CouponIssueController {
 
-    private final CouponIssueService couponIssueService;
+    private final CouponIssueFacade couponIssueFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{eventId}/issues")
@@ -22,6 +22,6 @@ public class CouponIssueController {
                                              @RequestParam final long couponId,
                                              @RequestParam final long memberId) {
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 29, 13, 0, 0);
-        return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueFacade.issueRequestV1(currentDateTime, eventId, couponId, memberId));
     }
 }
