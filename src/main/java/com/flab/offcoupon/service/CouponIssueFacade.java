@@ -14,7 +14,7 @@ public class CouponIssueFacade {
 
     private final CouponIssueService couponIssueService;
 
-    public ResponseDTO issueRequestV1(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+    public ResponseDTO issueRequestV1(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws Exception {
         log.info("락 획득");
         ResponseDTO responseDTO;
         synchronized (this) {
@@ -23,5 +23,4 @@ public class CouponIssueFacade {
         log.info("락 반납. 쿠폰 발급 완료. memberId : {}, couponId : {}", memberId, couponId);
         return responseDTO;
     }
-
 }

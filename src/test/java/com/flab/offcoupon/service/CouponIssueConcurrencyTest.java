@@ -8,38 +8,23 @@ import com.flab.offcoupon.repository.EventRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 class CouponIssueConcurrencyTest {
     @Autowired
-    private CouponIssueFacade couponIssueFacade;
-
-    @Autowired
-    private CouponIssueService couponIssueService;
-
-
-    @Autowired
-    private CouponIssueRepository couponIssueRepository;
-
+    private OptimisticLockFacade optimisticLockFacade;
     @Autowired
     private CouponRepository couponRepository;
-
-    @Autowired
-    private EventRepository eventRepository;
-
     @Test
-    public void 동시에_100개_요청_실패() throws InterruptedException {
-        final int threadCount = 100;
-
+    public void 동시에_1000개_요청() throws Exception {
+        final int threadCount = 1000;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -48,7 +33,9 @@ class CouponIssueConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    couponIssueFacade.issueRequestV1(currentDateTime,1, 1,currentMemberId);
+                    optimisticLockFacade.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 } finally {
                     latch.countDown();
                 }
@@ -58,6 +45,6 @@ class CouponIssueConcurrencyTest {
 
         Coupon coupon = couponRepository.findCouponById(1).orElseThrow();
         // 500 - 100 == 400
-        assertEquals(400,coupon.remainedCoupon());
+        assertEquals(0,coupon.remainedCoupon());
     }
 }
