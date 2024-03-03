@@ -28,7 +28,6 @@ import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXI
 public class CouponIssueService {
 
     private final EventRepository eventRepository;
-    private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
     private final NamedLockRepository namedLockRepository;
     private final IncreaseIssuedCoupon increaseIssuedCoupon;
@@ -60,12 +59,6 @@ public class CouponIssueService {
         event.availableIssuePeriodAndTime(currentDateTime);
     }
 
-    @Transactional
-    public void increaseIssuedCouponQuantity(long couponId) {
-        Coupon existingCoupon = findCoupon(couponId);
-        Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
-        couponRepository.increaseIssuedQuantity(updatecoupon);
-    }
 
     @Transactional
     public void saveCouponIssue(long memberId, long couponId, LocalDateTime currentDateTime) {
@@ -86,33 +79,5 @@ public class CouponIssueService {
     public Event findEvent(long eventId) {
         return eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
-    }
-
-    @Transactional(readOnly = true)
-    public Coupon findCoupon(long couponId) {
-        return couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
-    }
-
-    @Transactional()
-    public Coupon findCouponPessimisticLock(long couponId) {
-        return couponRepository.findCouponByIdPessimisticLock(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
-    }
-
-    @Transactional
-    public void increaseIssuedCouponQuantityWithOptimisticLock(long couponId) {
-        Coupon existingCoupon = findCouponWithOptimisticLock(couponId);
-        Coupon updateCoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
-        int count = couponRepository.increaseIssuedQuantityWithOptimisticLock(existingCoupon.getVersion(), updateCoupon);
-        if (count == 0) {
-            throw new RuntimeException("버전 업데이트 실패");
-        }
-    }
-
-    @Transactional
-    public Coupon findCouponWithOptimisticLock(long couponId) {
-        return couponRepository.findCouponByIdWithOptimisticLock(couponId)
-                .orElseThrow(() -> new RuntimeException(COUPON_NOT_EXIST.formatted(couponId)));
     }
 }

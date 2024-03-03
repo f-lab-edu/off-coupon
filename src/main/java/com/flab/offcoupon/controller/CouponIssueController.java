@@ -1,8 +1,6 @@
 package com.flab.offcoupon.controller;
 
-import com.flab.offcoupon.service.CouponIssueFacade;
 import com.flab.offcoupon.service.CouponIssueService;
-import com.flab.offcoupon.service.OptimisticLockFacade;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,8 +14,6 @@ import java.time.LocalDateTime;
 @RestController
 public class CouponIssueController {
 
-    private final CouponIssueFacade couponIssueFacade;
-    private final OptimisticLockFacade optimisticLockFacade;
     private final CouponIssueService couponIssueService;
 
     @ResponseStatus(HttpStatus.CREATED)

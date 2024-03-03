@@ -16,8 +16,7 @@
                validate_start_date,
                validate_end_date,
                created_at,
-               updated_at,
-               version
+               updated_at
         FROM coupon
         WHERE id = #{id};
     </select>
@@ -27,51 +26,5 @@
         SET
             issued_quantity = #{issuedQuantity}
         WHERE id = #{id}
-    </update>
-
-    <select id="findCouponByIdPessimisticLock" resultType="Coupon" timeout="5000">
-        SELECT id,
-               event_id,
-               discount_type,
-               discount_rate,
-               discount_price,
-               coupon_type,
-               max_quantity,
-               issued_quantity,
-               validate_start_date,
-               validate_end_date,
-               created_at,
-               updated_at,
-               version
-        FROM coupon
-        WHERE id = #{id}
-        FOR UPDATE;
-    </select>
-
-    <select id="findCouponByIdWithOptimisticLock" resultType="Coupon">
-        SELECT id,
-               event_id,
-               discount_type,
-               discount_rate,
-               discount_price,
-               coupon_type,
-               max_quantity,
-               issued_quantity,
-               validate_start_date,
-               validate_end_date,
-               created_at,
-               updated_at,
-               version
-        FROM coupon
-        WHERE id = #{id};
-    </select>
-
-
-    <update id="increaseIssuedQuantityWithOptimisticLock">
-        UPDATE coupon
-        SET
-            issued_quantity = #{coupon.issuedQuantity},
-            version = version + 1
-        WHERE id = #{coupon.id} and version = #{originVersion};
     </update>
 </mapper>

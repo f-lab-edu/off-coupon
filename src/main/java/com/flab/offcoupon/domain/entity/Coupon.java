@@ -27,8 +27,6 @@ public final class Coupon {
     private final LocalDateTime validateEndDate;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
-    @Getter
-    private final BigInteger version; // Check Optimistic Locking
 
     public boolean availableIssueQuantity() {
         if (maxQuantity == null || issuedQuantity == null) {
@@ -53,8 +51,7 @@ public final class Coupon {
                 originalCoupon.validateStartDate,
                 originalCoupon.validateEndDate,
                 originalCoupon.createdAt,
-                originalCoupon.updatedAt,
-                originalCoupon.version // Optimistic Locking Version Update
+                originalCoupon.updatedAt
         );
     }
 
