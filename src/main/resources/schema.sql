@@ -54,3 +54,6 @@ CREATE TABLE coupon_issue
     created_at      DATETIME        NOT NULL COMMENT '데이터 생성일',
     updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일'
 );
+
+ALTER TABLE coupon
+    ADD COLUMN version bigint;

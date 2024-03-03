@@ -1,5 +1,6 @@
 package com.flab.offcoupon.service;
 
+import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +12,12 @@ public class OptimisticLockFacade {
 
     private final CouponIssueService couponIssueService;
 
-    public void issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+        ResponseDTO responseDTO;
         int retryCount = 0;
         while (true) {
             try {
-                couponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+                responseDTO = couponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
                 break;
             } catch (Exception e) {
                 // retry
@@ -28,5 +30,6 @@ public class OptimisticLockFacade {
                 }
             }
         }
+        return responseDTO;
     }
 }

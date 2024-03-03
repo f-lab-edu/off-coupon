@@ -12,7 +12,8 @@
     <logger name="jdbc.audit" level="OFF" />
     <logger name="jdbc.resultset" level="OFF" />
     <logger name="jdbc.resultsettable" level="DEBUG" />
-    <logger name="jdbc.connection" level="OFF" />
+    <logger name="jdbc.connection" level="DEBUG" />
+    <logger name="org.springframework.transaction" level="TRACE" />
     <root level="INFO">
         <appender-ref ref="STDOUT" />
     </root>

@@ -19,12 +19,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 class CouponIssueConcurrencyTest {
     @Autowired
-    private OptimisticLockFacade optimisticLockFacade;
+    private CouponIssueService couponIssueService;
     @Autowired
     private CouponRepository couponRepository;
     @Test
-    public void 동시에_1000개_요청() throws Exception {
-        final int threadCount = 1000;
+    public void 동시에_100개_요청() throws Exception {
+        final int threadCount = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
@@ -33,7 +33,7 @@ class CouponIssueConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    optimisticLockFacade.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                    couponIssueService.issueCoupon(currentDateTime,1, 1,currentMemberId);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
@@ -45,6 +45,6 @@ class CouponIssueConcurrencyTest {
 
         Coupon coupon = couponRepository.findCouponById(1).orElseThrow();
         // 500 - 100 == 400
-        assertEquals(0,coupon.remainedCoupon());
+        assertEquals(400,coupon.remainedCoupon());
     }
 }

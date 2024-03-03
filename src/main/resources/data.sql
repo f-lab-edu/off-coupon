@@ -11,26 +11,5 @@ VALUES (1,1,'PERCENT',50,null,'FIRST_COME_FIRST_SERVED',500,0,'2024-02-01','2024
 ## EVENT
 INSERT INTO event (id, category, description, start_date, end_date, daily_issue_start_time,
                               daily_issue_end_time, created_at, updated_at)
-VALUES (1, '바디케어' , '바디케어 전품목 이벤트', '2024-02-01','2024-02-05','13:00:00','15:00:00','2024-02-01','2024-02-01');
+VALUES (1, '바디케어' , '바디케어 전품목 이벤트', '2024-02-27','2024-02-29','13:00:00','15:00:00','2024-02-01','2024-02-01');
 
-
-SELECT max_quantity, issued_quantity
-FROM coupon;
-
-SELECT count(*)
-FROM coupon_issue;
-
--- 칼럼 추가
-ALTER TABLE coupon
-    ADD COLUMN version bigint;
-
--- 데이터 삽입
-UPDATE coupon
-SET version = 1
-WHERE id = 1;
-
-UPDATE coupon
-SET
-    issued_quantity = 1,
-    version = 2
-WHERE id = 1 and version = 1;
