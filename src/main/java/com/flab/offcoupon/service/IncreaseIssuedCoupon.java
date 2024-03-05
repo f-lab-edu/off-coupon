@@ -6,6 +6,7 @@ import com.flab.offcoupon.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +18,7 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_
 public class IncreaseIssuedCoupon {
 
     private final CouponRepository couponRepository;
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(isolation = Isolation.READ_COMMITTED, propagation = Propagation.REQUIRES_NEW)
     public void increaseIssuedCouponQuantity(long couponId) {
         log.info("트랜잭션 2 쿠폰 발급 수 증가. couponId : {}", couponId);
         Coupon existingCoupon = findCoupon(couponId);

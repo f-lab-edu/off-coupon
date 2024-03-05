@@ -1,3 +1,4 @@
+
 package com.flab.offcoupon.service;
 
 import com.flab.offcoupon.domain.entity.Coupon;
@@ -21,6 +22,8 @@ import java.time.LocalDateTime;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+import static org.springframework.transaction.annotation.Isolation.REPEATABLE_READ;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,22 +32,44 @@ public class CouponIssueService {
 
     private final EventRepository eventRepository;
     private final CouponIssueRepository couponIssueRepository;
+    private final CouponRepository couponRepository;
     private final NamedLockRepository namedLockRepository;
     private final IncreaseIssuedCoupon increaseIssuedCoupon;
 
+//    @Transactional
+//    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws Exception {
+//        // 이벤트(Event 테이블) 기간 및 시간 검증
+//        checkEventPeriodAndTime(eventId, currentDateTime);
+//        // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
+//        increaseIssuedCouponQuantity(couponId);
+//        // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
+//        saveCouponIssue(memberId, couponId, currentDateTime);
+//        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+//    }
+//
+//    @Transactional
+//    public void increaseIssuedCouponQuantity(long couponId) {
+//        Coupon existingCoupon = findCoupon(couponId);
+//        Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
+//        couponRepository.increaseIssuedQuantity(updatecoupon);
+//    }
+//
+//    @Transactional(readOnly = true)
+//    public Coupon findCoupon(long couponId) {
+//        return couponRepository.findCouponById(couponId)
+//                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
+//    }
+
     @Transactional
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws Exception {
-        log.info("트랜잭션 1 : 쿠폰 발급 요청. eventId : {}, couponId : {}, memberId : {}", eventId, couponId, memberId);
         // 이벤트(Event 테이블) 기간 및 시간 검증
         checkEventPeriodAndTime(eventId, currentDateTime);
         try {
-            // Named Lock 획득
-            int namedLock = namedLockRepository.getLock("namedLock");
-            log.info("getLock = {}", namedLock);
+            int getLock = namedLockRepository.getLock("namedLock");
+            log.info("getLock = {}", getLock);
             // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
             increaseIssuedCoupon.increaseIssuedCouponQuantity(couponId);
         } finally {
-            // Named Lock 해제
             int releaseLock = namedLockRepository.releaseLock("namedLock");
             log.info("releaseLock = {}", releaseLock);
         }
@@ -52,7 +77,6 @@ public class CouponIssueService {
         saveCouponIssue(memberId, couponId, currentDateTime);
         return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
-
 
     private void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
         Event event = findEvent(eventId);
