@@ -36,47 +36,47 @@ public class CouponIssueService {
     private final NamedLockRepository namedLockRepository;
     private final IncreaseIssuedCoupon increaseIssuedCoupon;
 
-//    @Transactional
-//    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws Exception {
-//        // 이벤트(Event 테이블) 기간 및 시간 검증
-//        checkEventPeriodAndTime(eventId, currentDateTime);
-//        // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
-//        increaseIssuedCouponQuantity(couponId);
-//        // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
-//        saveCouponIssue(memberId, couponId, currentDateTime);
-//        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
-//    }
-//
-//    @Transactional
-//    public void increaseIssuedCouponQuantity(long couponId) {
-//        Coupon existingCoupon = findCoupon(couponId);
-//        Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
-//        couponRepository.increaseIssuedQuantity(updatecoupon);
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public Coupon findCoupon(long couponId) {
-//        return couponRepository.findCouponById(couponId)
-//                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
-//    }
-
     @Transactional
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws Exception {
+    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         // 이벤트(Event 테이블) 기간 및 시간 검증
         checkEventPeriodAndTime(eventId, currentDateTime);
-        try {
-            int getLock = namedLockRepository.getLock("namedLock");
-            log.info("getLock = {}", getLock);
-            // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
-            increaseIssuedCoupon.increaseIssuedCouponQuantity(couponId);
-        } finally {
-            int releaseLock = namedLockRepository.releaseLock("namedLock");
-            log.info("releaseLock = {}", releaseLock);
-        }
+        // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
+        increaseIssuedCouponQuantity(couponId);
         // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
         saveCouponIssue(memberId, couponId, currentDateTime);
         return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
+
+    @Transactional
+    public void increaseIssuedCouponQuantity(long couponId) {
+        Coupon existingCoupon = findCoupon(couponId);
+        Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
+        couponRepository.increaseIssuedQuantity(updatecoupon);
+    }
+
+    @Transactional(readOnly = true)
+    public Coupon findCoupon(long couponId) {
+        return couponRepository.findCouponById(couponId)
+                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
+    }
+
+//    @Transactional
+//    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+//        // 이벤트(Event 테이블) 기간 및 시간 검증
+//        checkEventPeriodAndTime(eventId, currentDateTime);
+//        try {
+//            int getLock = namedLockRepository.getLock("namedLock");
+//            log.info("getLock = {}", getLock);
+//            // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
+//            increaseIssuedCoupon.increaseIssuedCouponQuantity(couponId);
+//        } finally {
+//            int releaseLock = namedLockRepository.releaseLock("namedLock");
+//            log.info("releaseLock = {}", releaseLock);
+//        }
+//        // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
+//        saveCouponIssue(memberId, couponId, currentDateTime);
+//        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+//    }
 
     private void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
         Event event = findEvent(eventId);

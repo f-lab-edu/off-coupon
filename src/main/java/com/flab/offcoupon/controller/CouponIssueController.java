@@ -2,6 +2,7 @@ package com.flab.offcoupon.controller;
 
 import com.flab.offcoupon.service.CouponIssueFacade;
 import com.flab.offcoupon.service.CouponIssueService;
+import com.flab.offcoupon.service.LettuceLockCouponIssueFacade;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ public class CouponIssueController {
 
     private final CouponIssueService couponIssueService;
     private final CouponIssueFacade couponIssueFacade;
+    private final LettuceLockCouponIssueFacade lettuceLockCouponIssueFacade;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{eventId}/issues")
@@ -24,6 +26,6 @@ public class CouponIssueController {
                                              @RequestParam final long couponId,
                                              @RequestParam final long memberId) throws Exception {
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-        return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueFacade.issueCoupon(currentDateTime, eventId, couponId, memberId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(lettuceLockCouponIssueFacade.issueCoupon(currentDateTime, eventId, couponId, memberId));
     }
 }
