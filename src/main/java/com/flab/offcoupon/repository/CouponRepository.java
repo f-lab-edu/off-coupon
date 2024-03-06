@@ -11,8 +11,5 @@ import java.util.Optional;
 public interface CouponRepository {
     Optional<Coupon> findCouponById(long couponId);
     Optional<Coupon> findCouponByIdPessimisticLock(long couponId);
-    Optional<Coupon> findCouponByIdWithOptimisticLock(long couponId);
     void increaseIssuedQuantity(Coupon coupon);
-    int increaseIssuedQuantityWithOptimisticLock(@Param("originVersion") BigInteger originVersion,
-                                                  @Param("coupon") Coupon coupon);
 }

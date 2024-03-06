@@ -38,12 +38,10 @@ public class NamedLockCouponIssue implements CouponIssueFacade {
         checkEventPeriodAndTime(eventId, currentDateTime);
         try {
             int getLock = namedLockRepository.getLock("namedLock");
-            log.info("getLock = {}", getLock);
             // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
             increaseIssuedCouponWithReadCommitted.increaseIssuedCouponQuantity(couponId);
         } finally {
             int releaseLock = namedLockRepository.releaseLock("namedLock");
-            log.info("releaseLock = {}", releaseLock);
         }
         // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
         saveCouponIssue(memberId, couponId, currentDateTime);
