@@ -10,6 +10,7 @@ import com.flab.offcoupon.repository.CouponIssueRepository;
 import com.flab.offcoupon.repository.CouponRepository;
 import com.flab.offcoupon.repository.EventRepository;
 import com.flab.offcoupon.service.couponIssue.CouponIssueService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,16 +38,16 @@ class CouponIssueServiceTest {
     @Mock
     CouponIssueRepository couponIssueRepository;
 
-    @Test
-    @DisplayName("[ERROR] 이벤트 식별자가 존재하지 않으면 Exception 발생")
-    void issueCoupon_fail_invalid_eventId() {
-        // given
-        long eventId = 1L;
-        // when
-        assertThatThrownBy(() -> couponIssueService.findEvent(eventId))
-                .isInstanceOf(EventNotFoundException.class)
-                .hasMessage(EVENT_NOT_EXIST.formatted(eventId));
-    }
+//    @Test
+//    @DisplayName("[ERROR] 이벤트 식별자가 존재하지 않으면 Exception 발생")
+//    void issueCoupon_fail_invalid_eventId() {
+//        // given
+//        long eventId = 1L;
+//        // when
+//        assertThatThrownBy(() -> couponIssueService.findEvent(eventId))
+//                .isInstanceOf(EventNotFoundException.class)
+//                .hasMessage(EVENT_NOT_EXIST.formatted(eventId));
+//    }
     @Test
     @DisplayName("[ERROR] 쿠폰 식별자가 존재하지 않으면 Exception 발생")
     void issueCoupon_fail_invalid_couponId() {

@@ -38,6 +38,10 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.23.2'
 
+    // jackson
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

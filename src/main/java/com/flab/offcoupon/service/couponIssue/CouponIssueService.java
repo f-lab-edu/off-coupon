@@ -3,11 +3,13 @@ package com.flab.offcoupon.service.couponIssue;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.domain.entity.Event;
+import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.vo.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.repository.*;
+import com.flab.offcoupon.service.cache.EventCacheService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ public class CouponIssueService {
     private final EventRepository eventRepository;
     private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
+    private final EventCacheService eventCacheService;
 
     @Transactional
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
@@ -43,7 +46,7 @@ public class CouponIssueService {
 
 
     private void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
-        Event event = findEvent(eventId);
+        EventRedisEntity event = eventCacheService.getEvent(eventId);
         event.availableIssuePeriodAndTime(currentDateTime);
     }
 
@@ -67,12 +70,6 @@ public class CouponIssueService {
         if (couponIssueRepository.existCouponIssue(new CouponIssueCheckVo(memberId, couponId, currentDate))) {
             throw new DuplicatedCouponException(DUPLICATED_COUPON.formatted(memberId, couponId));
         }
-    }
-
-    @Transactional(readOnly = true)
-    public Event findEvent(long eventId) {
-        return eventRepository.findEventById(eventId)
-                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
     }
 
     @Transactional(readOnly = true)

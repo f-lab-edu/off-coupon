@@ -4,6 +4,7 @@ import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_QUANTITY_IS_NULL;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.INVALID_COUPON_QUANTITY;
 
+@Getter
 @ToString
 @AllArgsConstructor
 public final class Coupon {

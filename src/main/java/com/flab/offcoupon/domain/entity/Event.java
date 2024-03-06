@@ -3,6 +3,7 @@ package com.flab.offcoupon.domain.entity;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 
+@Getter
 @ToString
 @AllArgsConstructor
 public final class Event {
