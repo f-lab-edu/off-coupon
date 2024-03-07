@@ -26,7 +26,7 @@ import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
  */
 @RequiredArgsConstructor
 @Service
-public class AsyncCouponIssueServiceV1 {
+public class AsyncCouponIssueService {
 
     private final RedisRepository redisRepository;
     private final CouponIssueRedisService couponIssueRedisService;
@@ -66,7 +66,9 @@ public class AsyncCouponIssueServiceV1 {
     }
 
     /**
-     * 쿠폰 발급 요청을 큐에 데이터를 적재하는 메서드입니다.
+     * 검증이 완료된 이후, 쿠폰 발급 요청을 처리하는 메서드 입니다.
+     * 1. SET에 쿠폰 발급 요청 추가 : 중복 발급 요청을 방지 및 총 요청 개수 카운팅을 하기 위해 사용됩니다
+     * 2. LIST에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다
      *
      * @param couponId 쿠폰 ID
      * @param memberId 회원 ID
@@ -80,6 +82,5 @@ public class AsyncCouponIssueServiceV1 {
         } catch (JsonProcessingException e) {
             throw new CouponIssueException(FAIL_COUPON_ISSUE_REQUEST.formatted(issueRequestForQueue));
         }
-
     }
 }

@@ -3,6 +3,7 @@ package com.flab.offcoupon.service.couponIssue.sync;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.domain.entity.Event;
+import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
@@ -47,7 +48,7 @@ public class DefaultCouponIssueService {
 
 
     public void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
-        Event event = findEvent(eventId);
+        EventRedisEntity event = eventCacheService.getEvent(eventId);
         event.availableIssuePeriodAndTime(currentDateTime);
     }
 

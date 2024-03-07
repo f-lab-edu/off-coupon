@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
-/*
+/**
  * RedissonLockCouponIssue는 CouponIssueFacade 인터페이스를 구현한 쿠폰 발급 서비스입니다.
  * Redisson을 사용하여 분산 환경에서 안전하게 락을 처리합니다.
  */

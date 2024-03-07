@@ -1,10 +1,7 @@
 package com.flab.offcoupon.domain.redis;
 
-import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
-import com.fasterxml.jackson.databind.ser.std.StringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.flab.offcoupon.domain.entity.Event;
@@ -21,6 +18,16 @@ import java.time.format.DateTimeFormatter;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.INVALID_EVENT_TIME;
 
+/**
+ * Redis에서 캐시로 사용될 이벤트 엔티티
+ * @param eventId
+ * @param category
+ * @param description
+ * @param startDate
+ * @param endDate
+ * @param dailyIssueStartTime
+ * @param dailyIssueEndTime
+ */
 @RedisHash("event")
 public record EventRedisEntity(
         @Id

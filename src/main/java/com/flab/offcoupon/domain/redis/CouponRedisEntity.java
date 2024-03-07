@@ -3,6 +3,12 @@ package com.flab.offcoupon.domain.redis;
 import com.flab.offcoupon.domain.entity.Coupon;
 import org.springframework.data.redis.core.RedisHash;
 
+/**
+ * Redis에서 캐시로 사용될 쿠폰 엔티티
+ * @param id
+ * @param eventId
+ * @param maxQuantity
+ */
 @RedisHash("coupon")
 public record CouponRedisEntity(
         long id,

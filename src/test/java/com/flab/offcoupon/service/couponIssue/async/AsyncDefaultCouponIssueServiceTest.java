@@ -29,10 +29,10 @@ import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
 
 @SpringBootTest
-class AsyncDefaultCouponIssueServiceV1Test {
+class AsyncDefaultCouponIssueServiceTest {
 
     @Autowired
-    AsyncCouponIssueServiceV1 asyncCouponIssueServiceV1;
+    AsyncCouponIssueService asyncCouponIssueService;
 
     @Autowired
     DefaultCouponIssueService defaultCouponIssueService;
@@ -56,7 +56,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         long memberId = 1L;
         // when & then
         CouponNotFoundException exception = Assertions.assertThrows(CouponNotFoundException.class, () -> {
-            asyncCouponIssueServiceV1.issueCoupon(currentDateTime, eventId, couponId, memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         });
         Assertions.assertEquals(exception.getMessage(), COUPON_NOT_EXIST.formatted(couponId));
     }
@@ -74,7 +74,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         });
         // when & then
         CouponQuantityException exception = Assertions.assertThrows(CouponQuantityException.class, () -> {
-            asyncCouponIssueServiceV1.issueCoupon(currentDateTime, 1L, coupon.getId(), memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, 1L, coupon.getId(), memberId);
         });
         Assertions.assertEquals(exception.getMessage(), ASYNC_INVALID_COUPON_QUANTITY.formatted(coupon.getId()));
     }
@@ -89,7 +89,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         redisTemplate.opsForSet().add(getIssueRequestKey(coupon.getId()), String.valueOf(memberId));
         // when & then
         DuplicatedCouponException exception = Assertions.assertThrows(DuplicatedCouponException.class, () -> {
-            asyncCouponIssueServiceV1.issueCoupon(currentDateTime, 1L, coupon.getId(), memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, 1L, coupon.getId(), memberId);
         });
         Assertions.assertEquals(exception.getMessage(),ASYNC_DUPLICATED_COUPON.formatted(memberId, coupon.getId()));
     }
@@ -105,7 +105,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         Event event = defaultCouponIssueService.findEvent(eventId);
         // when & then
         EventPeriodException exception = Assertions.assertThrows(EventPeriodException.class, () -> {
-            asyncCouponIssueServiceV1.issueCoupon(currentDateTime, eventId, couponId, memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         });
         Assertions.assertEquals(exception.getMessage(),INVALID_EVENT_PERIOD.formatted(event.getStartDate(), event.getEndDate()));
     }
@@ -121,7 +121,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         Event event = defaultCouponIssueService.findEvent(eventId);
         // when & then
         EventTimeException exception = Assertions.assertThrows(EventTimeException.class, () -> {
-            asyncCouponIssueServiceV1.issueCoupon(currentDateTime, eventId, couponId, memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         });
         Assertions.assertEquals(exception.getMessage(),INVALID_EVENT_TIME.formatted(event.getDailyIssueStartTime(), event.getDailyIssueEndTime()));
     }
@@ -135,7 +135,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         long eventId = 1L;
         long couponId = 1L;
         // when
-        asyncCouponIssueServiceV1.issueCoupon(currentDateTime, eventId, couponId, memberId);
+        asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         // then
         Boolean isSaved = redisTemplate.opsForSet().isMember(getIssueRequestKey(couponId), String.valueOf(memberId));
         Assertions.assertTrue(isSaved);
@@ -151,7 +151,7 @@ class AsyncDefaultCouponIssueServiceV1Test {
         long couponId = 1L;
         CouponIssueRequestForQueue request = new CouponIssueRequestForQueue(couponId, memberId);
         // when
-        asyncCouponIssueServiceV1.issueCoupon(currentDateTime, eventId, couponId, memberId);
+        asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         // then
         String saveIssueRequest = redisTemplate.opsForList().leftPop(getIssueRequestQueueKey());
         Assertions.assertEquals(new ObjectMapper().writeValueAsString(request), saveIssueRequest);
