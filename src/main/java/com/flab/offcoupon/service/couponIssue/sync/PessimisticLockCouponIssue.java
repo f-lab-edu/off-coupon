@@ -15,7 +15,7 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_
 
 /**
  * PessimisticLockCouponIssue CouponIssueFacade 인터페이스를 구현한 쿠폰 발급 서비스입니다.
- * 비관적락을 사용하여 락을 처리합니다.
+ * <p>SELECT... FOR UPDATE을 사용해서 레코드 락 기반의 비관적 락을 구현했습니다.</p>
  */
 @RequiredArgsConstructor
 @Service

@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * LettuceLockCouponIssue CouponIssueFacade 인터페이스를 구현한 쿠폰 발급 서비스입니다.
- * Lettuce의 SETNEX명령어를 사용하여 분산 환경에서 안전하게 락을 처리합니다.
+ * <p>Lettuce의 SETNEX명령어를 사용하여 분산 환경에서 락을 처리할 수 있습니다.</p>
+ * Spinlock 방식으로 100ms마다 락 획득 요청을 하기 때문에 Redis에 많은 부하를 줄 수 있습니다.
+ * 또한 <a href="https://redis.io/commands/setnx/">Redis 공식문서 SETNX Command</a>에 따르면 해당 명령어는 2.6.12버전부터 권장하지 않습니다.
  */
 @RequiredArgsConstructor
 @Component

@@ -25,6 +25,10 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
 
+/**
+ * 동기적으로 쿠폰을 발급하는 서비스 클래스입니다.
+ * <p>이 클래스는 요청이 들어오자마자 MySQL에 쿠폰 수량(issuedQuantity)을 증가시키고, 쿠폰 발급 이력을 저장합니다.</p>
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Service
