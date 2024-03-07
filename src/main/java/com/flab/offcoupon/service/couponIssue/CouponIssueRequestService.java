@@ -21,7 +21,7 @@ public class CouponIssueRequestService {
      *     <li> {@link LettuceLockCouponIssue} </li>
      *     <li> {@link RedissonLockCouponIssue} </li>
      * </ul>
-     * 현재 프로젝트에서는 Redisson의 pub/sub기반인 RLock을 의존성 주입하도록 했습니다.
+     * 현재 프로젝트에서는 Redisson의 pub/sub기반인 RLock을 사용해서 락을 구현할 수 있도록 의존성을 주입했습니다.
      *
      * <p>AsyncCouponIssueService은 비동기식으로 쿠폰을 발급할때 사용하는 클래스입니다.</p>
      * API서버에서 쿠폰 발급 요청만 처리한다면 문제가 없겠지만, 다른 API와 병행시 처리량이 낮아지거나 MySQL이 트랜잭션을 처리할때 부하가 걸릴 수 있습니다.
