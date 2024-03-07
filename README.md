@@ -33,7 +33,8 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
-  
+[쿠폰 발급에 대한 동시성 처리 (2) - MySQL의 NamedLock, Redis의 분산락(Lettuce, Redisson)](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-2-MySQL%EC%9D%98-NamedLock-Redis%EC%9D%98-%EB%B6%84%EC%82%B0%EB%9D%BDLettuce-Redisson)
+
 ## 회원가입
 
 [@RequestBody는 어떻게 바인딩 되는걸까? (with. 디버깅 과정)](https://strong-park.tistory.com/entry/RequestBody%EB%8A%94-%EC%96%B4%EB%96%BB%EA%B2%8C-%EB%B0%94%EC%9D%B8%EB%94%A9-%EB%90%98%EB%8A%94%EA%B1%B8%EA%B9%8C-with-%EB%94%94%EB%B2%84%EA%B9%85-%EA%B3%BC%EC%A0%95)  
