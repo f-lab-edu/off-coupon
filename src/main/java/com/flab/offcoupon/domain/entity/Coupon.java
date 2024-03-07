@@ -18,7 +18,7 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.INVALID_COU
 public final class Coupon {
 
     private long id;
-    private final long eventId;
+    private final Long eventId; // NULL 일 경우 이벤트와 관련 없는 쿠폰(e.g. 회원가입 쿠폰)
     private final DiscountType discountType;
     private final Long discountRate; // NULL 일 경우 AMOUNT
     private final Long discountPrice; // NULL 일 경우 PERCENT

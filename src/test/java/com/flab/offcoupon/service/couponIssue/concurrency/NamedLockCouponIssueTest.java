@@ -1,7 +1,8 @@
-package com.flab.offcoupon.service.couponIssue;
+package com.flab.offcoupon.service.couponIssue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.repository.CouponRepository;
+import com.flab.offcoupon.repository.mysql.CouponRepository;
+import com.flab.offcoupon.service.couponIssue.sync.NamedLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,6 @@ class NamedLockCouponIssueTest {
 
         Coupon coupon = couponRepository.findCouponById(1).orElseThrow();
         // 500 - 100 == 400
-        assertEquals(490,coupon.remainedCoupon());
+        assertEquals(400,coupon.remainedCoupon());
     }
 }

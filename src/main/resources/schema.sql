@@ -32,7 +32,7 @@ CREATE TABLE event
 CREATE TABLE coupon
 (
     id                  BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '쿠폰 식별자',
-    event_id              BIGINT UNSIGNED NOT NULL COMMENT '이벤트 식별자',
+    event_id            BIGINT UNSIGNED NULL COMMENT '이벤트 식별자 / NULL일 경우 이벤트와 관련 없는 쿠폰(e.g. 회원가입 쿠폰)',
     discount_type       VARCHAR(40)     NOT NULL COMMENT '정액, 정률 등',
     discount_rate       BIGINT UNSIGNED NULL COMMENT '정률 할인',
     discount_price      BIGINT UNSIGNED NULL COMMENT '정액 할인',
@@ -55,5 +55,3 @@ CREATE TABLE coupon_issue
     updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일'
 );
 
-ALTER TABLE coupon
-    ADD COLUMN version bigint;

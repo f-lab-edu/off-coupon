@@ -3,6 +3,7 @@ package com.flab.offcoupon.repository;
 import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.domain.entity.Member;
+import com.flab.offcoupon.repository.mysql.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

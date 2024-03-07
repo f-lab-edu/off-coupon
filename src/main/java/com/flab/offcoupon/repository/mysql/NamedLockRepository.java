@@ -1,4 +1,4 @@
-package com.flab.offcoupon.repository;
+package com.flab.offcoupon.repository.mysql;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

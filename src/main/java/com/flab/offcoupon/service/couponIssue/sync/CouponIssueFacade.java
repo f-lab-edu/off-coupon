@@ -1,4 +1,4 @@
-package com.flab.offcoupon.service.couponIssue;
+package com.flab.offcoupon.service.couponIssue.sync;
 
 import com.flab.offcoupon.util.ResponseDTO;
 

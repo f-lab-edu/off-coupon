@@ -1,15 +1,15 @@
-package com.flab.offcoupon.service.couponIssue;
+package com.flab.offcoupon.service.couponIssue.sync;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.domain.entity.Event;
-import com.flab.offcoupon.domain.redis.EventRedisEntity;
-import com.flab.offcoupon.domain.vo.couponissue.CouponIssueCheckVo;
+import com.flab.offcoupon.domain.vo.persistence.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
-import com.flab.offcoupon.repository.*;
-import com.flab.offcoupon.service.cache.EventCacheService;
+import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
+import com.flab.offcoupon.repository.mysql.CouponRepository;
+import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,17 +23,16 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
-public class CouponIssueService {
+@Slf4j
+public class PessimisticLockCouponIssue implements CouponIssueFacade {
 
     private final EventRepository eventRepository;
     private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
-    private final EventCacheService eventCacheService;
-
     @Transactional
+    @Override
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         // 이벤트(Event 테이블) 기간 및 시간 검증
         checkEventPeriodAndTime(eventId, currentDateTime);
@@ -46,13 +45,13 @@ public class CouponIssueService {
 
 
     private void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
-        EventRedisEntity event = eventCacheService.getEvent(eventId);
+        Event event = findEvent(eventId);
         event.availableIssuePeriodAndTime(currentDateTime);
     }
 
     @Transactional
     public void increaseIssuedCouponQuantity(long couponId) {
-        Coupon existingCoupon = findCoupon(couponId);
+        Coupon existingCoupon = findCouponPessimisticLock(couponId);
         Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
         couponRepository.increaseIssuedQuantity(updatecoupon);
     }
@@ -73,8 +72,14 @@ public class CouponIssueService {
     }
 
     @Transactional(readOnly = true)
-    public Coupon findCoupon(long couponId) {
-        return couponRepository.findCouponById(couponId)
+    public Event findEvent(long eventId) {
+        return eventRepository.findEventById(eventId)
+                .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
+    }
+
+    @Transactional(readOnly = true)
+    public Coupon findCouponPessimisticLock(long couponId) {
+        return couponRepository.findCouponByIdPessimisticLock(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
     }
 }

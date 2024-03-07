@@ -1,6 +1,6 @@
 package com.flab.offcoupon.security;
 
-import com.flab.offcoupon.repository.MemberRepository;
+import com.flab.offcoupon.repository.mysql.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

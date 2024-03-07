@@ -1,7 +1,9 @@
-package com.flab.offcoupon.service.couponIssue;
+package com.flab.offcoupon.service.couponIssue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.repository.CouponRepository;
+import com.flab.offcoupon.repository.mysql.CouponRepository;
+import com.flab.offcoupon.service.couponIssue.sync.RedissonLockCouponIssue;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +15,7 @@ import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled("using only for concurrent testing")
 @SpringBootTest
 class RedissonLockCouponIssueTest {
 

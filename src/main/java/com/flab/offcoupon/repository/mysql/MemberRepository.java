@@ -1,4 +1,4 @@
-package com.flab.offcoupon.repository;
+package com.flab.offcoupon.repository.mysql;
 
 import com.flab.offcoupon.domain.entity.Member;
 import org.apache.ibatis.annotations.Mapper;
