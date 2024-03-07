@@ -1,13 +1,5 @@
 package com.flab.offcoupon.exception;
 
-import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
-import com.flab.offcoupon.exception.coupon.CouponQuantityException;
-import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
-import com.flab.offcoupon.exception.event.EventNotFoundException;
-import com.flab.offcoupon.exception.event.EventPeriodException;
-import com.flab.offcoupon.exception.event.EventTimeException;
-import com.flab.offcoupon.exception.member.MemberBadRequestException;
-import com.flab.offcoupon.exception.member.MemberNotFoundException;
 import com.flab.offcoupon.util.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;

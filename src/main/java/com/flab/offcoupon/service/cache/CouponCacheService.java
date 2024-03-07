@@ -1,11 +1,8 @@
 package com.flab.offcoupon.service.cache;
 
 import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.domain.redis.CouponRedisEntity;
-import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
-import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;

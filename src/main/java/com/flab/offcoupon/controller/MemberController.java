@@ -1,7 +1,6 @@
 package com.flab.offcoupon.controller;
 
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
-import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.service.MemberService;
 import com.flab.offcoupon.util.ResponseDTO;
 import jakarta.validation.Valid;
