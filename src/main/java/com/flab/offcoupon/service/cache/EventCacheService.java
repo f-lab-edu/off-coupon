@@ -28,6 +28,7 @@ public class EventCacheService {
      * @return 이벤트 정보를 담은 EventRedisEntity 객체
      */
     @Cacheable(key = "#eventId",value = "event")
+    @Transactional(readOnly = true)
     public EventRedisEntity getEvent(long eventId) {
         Event event = findEvent(eventId);
         return new EventRedisEntity(event);

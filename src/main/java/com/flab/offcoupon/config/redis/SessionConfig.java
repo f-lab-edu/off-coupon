@@ -25,6 +25,8 @@ public class SessionConfig {
 //    @Value("${spring.data.redis.password}")
 //    private String redisPassword;
 
+//    private static final String REDISSON_HOST_PREFIX = "rediss://";
+
     /*
      * Lettuce
      */
@@ -36,6 +38,15 @@ public class SessionConfig {
 //        redisStandaloneConfiguration.setPassword(redisPassword);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
+//    @Bean
+//    public RedissonClient redissonClient() {
+//        RedissonClient redisson = null;
+//        Config config = new Config();
+//        config.useSingleServer().setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort);
+//        config.useSingleServer().setPassword(redisPassword);
+//        redisson = Redisson.create(config);
+//        return redisson;
+//    }
 
     /*
      * Redis template

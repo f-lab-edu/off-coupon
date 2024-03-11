@@ -50,7 +50,7 @@ public class DefaultCouponIssueService {
         return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
 
-
+    @Transactional(readOnly = true)
     public void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {
         EventRedisEntity event = eventCacheService.getEvent(eventId);
         event.availableIssuePeriodAndTime(currentDateTime);

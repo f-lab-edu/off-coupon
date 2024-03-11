@@ -31,7 +31,7 @@ public class CouponIssueController {
     public ResponseEntity<ResponseDTO> syncIssue(@PathVariable final long eventId,
                                                  @RequestParam final long couponId,
                                                  @RequestParam final long memberId) throws InterruptedException {
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }
 

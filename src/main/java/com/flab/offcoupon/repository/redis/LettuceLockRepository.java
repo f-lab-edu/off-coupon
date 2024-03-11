@@ -21,29 +21,32 @@ public class LettuceLockRepository {
      * 락을 획득하는 메서드
      *
      * @param key 락의 대상이 되는 키
+     * @param prefix 락의 키에 붙일 prefix
      * @return 락 획득 성공 여부 (true: 성공, false: 실패)
      */
-    public Boolean lock(Long key) {
+    public Boolean lock(Long key, String prefix) {
         return redisTemplate
                 .opsForValue()
-                .setIfAbsent(generateKey(key), "lock", Duration.ofSeconds(3_000));
+                .setIfAbsent(generateKey(key, prefix), "lock", Duration.ofSeconds(3_000));
     }
     /**
      * 락을 해제하는 메서드
      *
      * @param key 락의 대상이 되는 키
+     * @param prefix 락의 키에 붙일 prefix
      * @return 락 해제 성공 여부 (true: 성공, false: 실패)
      */
-    public Boolean unlock(Long key) {
-        return redisTemplate.delete(generateKey(key));
+    public Boolean unlock(Long key, String prefix) {
+        return redisTemplate.delete(generateKey(key, prefix));
     }
     /**
      * 락의 키를 생성하는 메서드
      *
      * @param key 락의 대상이 되는 키
+     * @param prefix 락의 키에 붙일 prefix
      * @return 생성된 락의 키
      */
-    private String generateKey(Long key) {
-        return key.toString();
+    private String generateKey(Long key, String prefix) {
+        return prefix + key.toString();
     }
 }

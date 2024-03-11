@@ -99,7 +99,7 @@ class EventTest {
     }
 
     @Test
-    @DisplayName("[ERROR] 이벤트 발급 기간 및 시간이 아닐 경우")
+    @DisplayName("[ERROR] 이벤트 발급 기간 및 시간이 아닐 경우(기간)")
     void event_period_is_not_satisfied() {
         LocalDateTime testTime = LocalDateTime.of(2024, 01, 01, 13, 0, 0);
             assertThatThrownBy(() -> event.availableIssuePeriodAndTime(testTime))
@@ -110,7 +110,7 @@ class EventTest {
     }
 
     @Test
-    @DisplayName("[ERROR] 이벤트 발급 시간 및 시간이 아닐 경우")
+    @DisplayName("[ERROR] 이벤트 발급 기간 및 시간이 아닐 경우(시간)")
     void event_time_is_not_satisfied() {
         LocalDateTime testTime = LocalDateTime.of(2024, 02, 01, 20, 0, 0);
 

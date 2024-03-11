@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
+import static com.flab.offcoupon.util.LockMagicNumber.LOCK_LEASE_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumber.LOCK_WAIT_MILLI_SECOND;
 
 /**
  * 비동기적으로 쿠폰을 발급하는 서비스 클래스입니다.
@@ -52,7 +54,7 @@ public class AsyncCouponIssueService {
         // 레디스 명령 자체는 싱글 스레드에서 처리되기 때문에 본래 동시성 이슈는 발생하지 않습니다.
         // 그러나 레디스를 호출하는 부분이 여러 곳으로 분리되어 있다면 동시성 문제가 발생할 수 있습니다.
         // 따라서 Redisson의 분산 락을 활용하여 동시성 문제를 안전하게 해결합니다.
-        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, 3000, 3000, () -> {
+        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () -> {
             couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, memberId);
             issueRequest(couponId, memberId);
         });

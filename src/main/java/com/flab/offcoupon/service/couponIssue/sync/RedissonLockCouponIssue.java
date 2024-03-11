@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.flab.offcoupon.util.LockMagicNumber.LOCK_LEASE_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumber.LOCK_WAIT_MILLI_SECOND;
+
 /**
  * RedissonLockCouponIssue는 CouponIssueFacade 인터페이스를 구현한 쿠폰 발급 서비스입니다.
  * <p>Redisson의 pub/sub기능을 활용하여 분산 환경에서 안전하게 락을 처리합니다.</p>
@@ -27,7 +30,7 @@ public class RedissonLockCouponIssue implements CouponIssueFacade {
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
         AtomicReference<ResponseDTO> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithRedisson을 사용하여 락을 획득합니다.
-        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, 1000, 1000, () -> {
+        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () -> {
             // 락을 획득한 후, 실제 쿠폰 발급 서비스를 호출합니다.
             responseDTO.set(defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId));
         });

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class DistributeLockExecutorWithLettuce {
 
     private final LettuceLockRepository lettuceLockRepository;
+    private final static long TRY_GET_LOCK_INTERVAL = 100L;
 
     /**
      * Lettuce를 사용하여 분산 락을 처리하는 컴포넌트 클래스
@@ -20,16 +21,16 @@ public class DistributeLockExecutorWithLettuce {
      * @throws InterruptedException 락을 기다리는 동안 인터럽트가 발생한 경우
      */
     public void execute(long couponId, Runnable runnable) throws InterruptedException {
-        while (!lettuceLockRepository.lock(couponId)) {
-            // Spin Lock: 100밀리초 동안 계속해서 락을 시도합니다.
-            Thread.sleep(100);
+        while (!lettuceLockRepository.lock(couponId, "coupon_issue")) {
+            // Spin Lock: 100밀리초 동안 계속해서 락 획득을 시도합니다.
+            Thread.sleep(TRY_GET_LOCK_INTERVAL);
         }
         try {
             // 락 획득 후 실행할 작업 실행
             runnable.run();
         } finally {
             // 락 해제
-            lettuceLockRepository.unlock(couponId);
+            lettuceLockRepository.unlock(couponId,"coupon_issue");
         }
     }
 }

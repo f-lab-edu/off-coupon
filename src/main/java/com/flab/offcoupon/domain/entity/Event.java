@@ -7,9 +7,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
@@ -29,29 +27,64 @@ public final class Event {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
+    /**
+     * 이벤트 발급 기간 검증
+     *
+     * @param requestDate
+     * @return boolean
+     * @throws EventPeriodException 이벤트 기간이 아닐 경우(NULL체크)
+     */
     public boolean availableIssueDate(LocalDateTime requestDate) {
         if (startDate == null || endDate == null) {
             throw new EventPeriodException(EVENT_PERIOD_IS_NULL.formatted(startDate, endDate));
         }
         LocalDate currentDate = requestDate.toLocalDate();
-        return startDate.isEqual(currentDate) || endDate.isEqual(currentDate) ||
-                (startDate.isBefore(currentDate) && endDate.isAfter(currentDate));
+
+        /**
+         * 요청 날짜가 startDate와 endDate 사이에 있는지 확인
+         * Period.between(a,b) : a와 b 사이의 기간을 반환, a가 b보다 날짜상으로 이전이면 양수, 이후면 음수
+         */
+        Period periodFromStart = Period.between(startDate, currentDate);
+        Period periodFromEnd = Period.between(currentDate, endDate);
+
+        return (periodFromStart.isZero() || !periodFromStart.isNegative()) &&
+                (periodFromEnd.isZero() || !periodFromEnd.isNegative());
     }
 
+    /**
+     * 이벤트 발급 시간 검증
+     *
+     * @param requestTime
+     * @return boolean
+     * @throws EventTimeException 이벤트 시간이 아닐 경우(NULL체크)
+     */
     public boolean availableIssueTime(LocalDateTime requestTime) {
         if (dailyIssueStartTime == null || dailyIssueEndTime == null) {
             throw new EventTimeException(EVENT_TIME_IS_NULL.formatted(dailyIssueStartTime, dailyIssueEndTime));
         }
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalTime currentTime = requestTime.toLocalTime();
 
         LocalTime startTime = LocalTime.parse(dailyIssueStartTime, formatter);
         LocalTime endTime = LocalTime.parse(dailyIssueEndTime, formatter);
 
-        return startTime.equals(currentTime) || endTime.equals(currentTime) ||
-                (startTime.isBefore(currentTime) && endTime.isAfter(currentTime));
+        /**
+         * 요청 시간이 dailyIssueStartTime과 dailyIssueEndTime 사이에 있는지 확인
+         * Duration.between(a,b) : a와 b 사이의 시간을 반환, a가 b보다 시간상으로 이전이면 양수, 이후면 음수
+         */
+        Duration startDuration = Duration.between(startTime, requestTime.toLocalTime());
+        Duration endDuration = Duration.between(requestTime.toLocalTime(), endTime);
+
+        return (startDuration.isZero() || !startDuration.isNegative()) &&
+                (endDuration.isZero() || !endDuration.isNegative());
     }
 
+    /**
+     * 이벤트 발급 기간 및 시간 검증
+     *
+     * @param localDateTime
+     * @throws EventPeriodException 이벤트 기간이 아닐 경우
+     * @throws EventTimeException 이벤트 시간이 아닐 경우
+     */
     public void availableIssuePeriodAndTime (LocalDateTime localDateTime) {
         if (!availableIssueDate(localDateTime)) {
             throw new EventPeriodException(INVALID_EVENT_PERIOD.formatted(startDate, endDate));
