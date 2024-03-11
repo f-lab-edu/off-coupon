@@ -27,6 +27,7 @@ import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
  */
 @RedisHash("event")
 public record EventRedisEntity(
+
         @Id
         long eventId,
 
@@ -44,7 +45,6 @@ public record EventRedisEntity(
         String dailyIssueStartTime,
         String dailyIssueEndTime
 ) {
-
     public EventRedisEntity(Event event) {
         this(
                 event.getEventId(),

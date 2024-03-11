@@ -29,6 +29,10 @@ public class DistributeLockExecutorWithRedisson {
         try {
             // 락을 기다리는 최대 시간(waitMilliSecond)동안 락을 획득 시도
             if (!lock.tryLock(waitMilliSecond, leaseMilliSecond, TimeUnit.MILLISECONDS)) {
+                /**
+                 * 락을 기다리는 동안 인터럽트가 발생한 경우 중단하기 전에 처리해야 할 정리 작업 수행
+                 */
+                Thread.currentThread().interrupt();
                 throw new IllegalStateException("Redisson 락 획득 실패 [ " + lockName + " ]");
             }
             // 락 획득 후 실행할 작업 실행

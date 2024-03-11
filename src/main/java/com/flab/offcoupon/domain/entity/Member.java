@@ -3,9 +3,14 @@ package com.flab.offcoupon.domain.entity;
 import com.flab.offcoupon.util.DateTimeUtils;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -13,8 +18,10 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
-public final class Member {
+public final class Member implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 4074593846206721580L;
     @Id
     private long id;
 

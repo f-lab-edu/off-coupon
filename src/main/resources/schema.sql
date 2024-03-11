@@ -9,7 +9,7 @@ CREATE TABLE member
     email VARCHAR(40) NOT NULL COMMENT '회원 이메일',
     password VARCHAR(255) NOT NULL COMMENT '비밀번호',
     name VARCHAR(40) NOT NULL COMMENT '회원 이름',
-    birthdate DATETIME NOT NULL COMMENT '생년월일',
+    birthdate DATE NOT NULL COMMENT '생년월일',
     phone VARCHAR(40) NOT NULL COMMENT '휴대폰 번호',
     role VARCHAR(50) NOT NULL COMMENT '회원 권한',
     created_at DATETIME NOT NULL COMMENT '데이터 생성일',

@@ -16,12 +16,13 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
+    public static final String HTTP_REQUEST = "> Http Method : {},  URI : {}, msg : {}, status : {}";
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDTO> handleValidationExceptions(
             MethodArgumentNotValidException ex,
             HttpServletRequest request
             ) {
-        log.info("> Http Method : {},  URI : {}, msg : {}, status : {}", request.getMethod(), request.getRequestURI(),
+        log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         Map<String, String> fieldErrors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
