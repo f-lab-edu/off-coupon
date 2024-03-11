@@ -28,6 +28,7 @@ public class CouponCacheService {
      * @return 쿠폰 정보를 담은 CouponRedisEntity 객체
      */
     @Cacheable(key = "#couponId",value = "coupon")
+    @Transactional(readOnly = true)
     public CouponRedisEntity getCoupon(long couponId) {
         Coupon coupon = findCoupon(couponId);
         return new CouponRedisEntity(coupon);
