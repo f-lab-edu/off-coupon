@@ -18,7 +18,7 @@ import java.util.Map;
 public final class GlobalExceptionHandler {
     public static final String HTTP_REQUEST = "> Http Method : {},  URI : {}, msg : {}, status : {}";
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseDTO> handleValidationExceptions(
+    public ResponseEntity<ResponseDTO<String>> handleValidationExceptions(
             MethodArgumentNotValidException ex,
             HttpServletRequest request
             ) {
