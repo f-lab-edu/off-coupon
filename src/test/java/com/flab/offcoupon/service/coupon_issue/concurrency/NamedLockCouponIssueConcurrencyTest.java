@@ -2,7 +2,7 @@ package com.flab.offcoupon.service.coupon_issue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.service.coupon_issue.sync.RedissonLockCouponIssue;
+import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +18,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled("using only for concurrent testing")
 @SpringBootTest
-class RedissonLockCouponIssueTest {
+class NamedLockCouponIssueConcurrencyTest {
 
     @Autowired
-    private RedissonLockCouponIssue redissonLockCouponIssue;
+    private NamedLockCouponIssue namedLockCouponIssue;
     @Autowired
     private CouponRepository couponRepository;
     @Transactional
@@ -36,7 +36,7 @@ class RedissonLockCouponIssueTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    redissonLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                    namedLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {

@@ -3,6 +3,8 @@ package com.flab.offcoupon.service.coupon_issue.async;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.domain.entity.CouponType;
+import com.flab.offcoupon.domain.entity.DiscountType;
 import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.dto.request.CouponIssueRequestForQueue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
@@ -20,7 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.LongStream;
@@ -30,6 +34,7 @@ import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
 
+@Transactional
 @SpringBootTest
 class AsyncDefaultCouponIssueServiceTest {
 
@@ -51,11 +56,42 @@ class AsyncDefaultCouponIssueServiceTest {
         redisTemplate.delete(redisKeys);
     }
 
+    @BeforeEach
+    void setUp() {
+        Event event = new Event(
+                1L,
+                "바디케어",
+                "바디케어 전품목 이벤트",
+                LocalDate.now(),
+                LocalDate.now(),
+                "13:00:00",
+                "15:00:00",
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        eventRepository.save(event);
+
+        Coupon coupon = new Coupon(
+                1L,
+                1L,
+                DiscountType.PERCENT,
+                50L,
+                null,
+                CouponType.FIRST_COME_FIRST_SERVED,
+                500L,
+                0L,
+                LocalDateTime.now().plusMonths(1L),
+                LocalDateTime.now().plusMonths(2L),
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        couponRepository.save(coupon);
+    }
+
+
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")
     void test() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long eventId = 1L;
         long couponId = 2L;
         long memberId = 1L;
@@ -70,7 +106,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰 발급 수량이 존재하지 않는다면 예외를 반환한다")
     void issueCoupon_fail_with_run_out_of_coupon() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1000L;
         long couponId = 1L;
         Coupon coupon = couponRepository.findCouponById(couponId)
@@ -90,7 +126,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[ERROR] 쿠폰 발급 - 이미 발급된 유저라면 예외를 반환한다")
     void issueCoupon_fail_with_duplicated_user() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1L;
         long couponId = 1L;
         Coupon coupon = couponRepository.findCouponById(couponId)
@@ -107,7 +143,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[ERROR] 쿠폰발급 - 발급 기간이 일치하지 않는다면 예외를 반환한다")
     void issueCoupon_fail_with_invalid_period() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 20, 13, 0, 0).plusDays(2);
+        LocalDateTime currentDateTime = LocalDateTime.now().minusDays(1L).withHour(13).withMinute(0).withSecond(0);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
@@ -123,7 +159,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[ERROR] 쿠폰발급 - 발급 시간이 일치하지 않는다면 예외를 반환한다")
     void issueCoupon_fail_with_invalid_time() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0).plusHours(4);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
@@ -139,7 +175,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급을 기록한다")
     void issueCoupon_success_and_redis_history() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
@@ -154,7 +190,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급 요청이 성공하면 쿠폰 발급 큐에 적재된다")
     void issueCoupon_success_and_redis_queue() throws JsonProcessingException {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;

@@ -28,6 +28,25 @@ public final class Coupon {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
+    private Coupon(Long eventId, DiscountType discountType, Long discountRate, Long discountPrice, CouponType couponType, Long maxQuantity, Long issuedQuantity, LocalDateTime validateStartDate, LocalDateTime validateEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.eventId = eventId;
+        this.discountType = discountType;
+        this.discountRate = discountRate;
+        this.discountPrice = discountPrice;
+        this.couponType = couponType;
+        this.maxQuantity = maxQuantity;
+        this.issuedQuantity = issuedQuantity;
+        this.validateStartDate = validateStartDate;
+        this.validateEndDate = validateEndDate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
+    public static Coupon create(Long eventId, DiscountType discountType, Long discountRate, Long discountPrice, CouponType couponType, Long maxQuantity, Long issuedQuantity, LocalDateTime validateStartDate, LocalDateTime validateEndDate) {
+        LocalDateTime now = LocalDateTime.now();
+        return new Coupon(eventId, discountType, discountRate, discountPrice, couponType, maxQuantity, issuedQuantity, validateStartDate, validateEndDate, now, now);
+    }
+
     public boolean availableIssueQuantity() {
         if (maxQuantity == null || issuedQuantity == null) {
             throw new CouponQuantityException(COUPON_QUANTITY_IS_NULL.formatted(maxQuantity, issuedQuantity));

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @Mapper
 public interface EventRepository {
-
+    void save(Event event);
     Optional<Event> findEventById(long eventId);
 
 

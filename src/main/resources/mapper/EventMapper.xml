@@ -7,6 +7,11 @@
 <!-- Mapper를 사용하는 Repository의 전체 경로를 적어줘야함. -->
 <mapper namespace="com.flab.offcoupon.repository.mysql.EventRepository">
 
+    <insert id="save" parameterType="com.flab.offcoupon.domain.entity.Event">
+        INSERT INTO  event (id, category, description, start_date, end_date, daily_issue_start_time, daily_issue_end_time, created_at, updated_at)
+        VALUES (#{id}, #{category}, #{description}, #{startDate}, #{endDate},#{dailyIssueStartTime},#{dailyIssueEndTime}, #{createdAt},#{updatedAt} );
+    </insert>
+
     <select id="findEventById" resultType="Event">
         SELECT id,
                category,

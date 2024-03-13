@@ -47,7 +47,7 @@ public record EventRedisEntity(
 ) {
     public EventRedisEntity(Event event) {
         this(
-                event.getEventId(),
+                event.getId(),
                 event.getCategory(),
                 event.getDescription(),
                 event.getStartDate(),

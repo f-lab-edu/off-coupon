@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled("using only for concurrent testing")
 @SpringBootTest
-class LettuceLockCouponIssueTest {
+class LettuceLockCouponIssueConcurrencyTest {
     @Autowired
     private LettuceLockCouponIssue lettuceLockCouponIssue;
     @Autowired

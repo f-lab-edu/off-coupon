@@ -2,11 +2,12 @@ package com.flab.offcoupon.service.coupon_issue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
+import com.flab.offcoupon.service.coupon_issue.sync.PessimisticLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -18,13 +19,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled("using only for concurrent testing")
 @SpringBootTest
-class NamedLockCouponIssueTest {
+class PessimisticLockCouponIssueConcurrencyTest {
 
     @Autowired
-    private NamedLockCouponIssue namedLockCouponIssue;
+    private PessimisticLockCouponIssue pessimisticLockCouponIssue;
     @Autowired
     private CouponRepository couponRepository;
     @Transactional
+    @Rollback
     @Test
     void 동시에_100개_요청() throws Exception {
         final int threadCount = 100;
@@ -36,7 +38,7 @@ class NamedLockCouponIssueTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    namedLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                    pessimisticLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {

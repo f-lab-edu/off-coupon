@@ -18,6 +18,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CouponTest {
 
     @Test
+    @DisplayName("[SUCCESS] 쿠폰 객체 생성")
+    void create_coupon() {
+        Coupon coupon = Coupon.create(1L,
+                DiscountType.PERCENT,
+                20L,
+                null,
+                CouponType.FIRST_COME_FIRST_SERVED,
+                100L,
+                0L,
+                LocalDateTime.of(2024, 03, 01, 00, 0, 0),
+                LocalDateTime.of(2024, 03, 31, 00, 0, 0));
+        assertThat(coupon).isNotNull();
+    }
+
+    @Test
     @DisplayName("[ERROR] 쿠폰 발급 수량 확인 - 잔여 수량이 없으면 FALSE 반환")
     void over_issue_coupon_count() {
         Coupon coupon = new Coupon(1, 1L,
