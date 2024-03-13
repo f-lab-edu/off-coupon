@@ -29,6 +29,10 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 - test : 테스트 코드, 리팩토링 테스트 코드  
 - chore : 빌드 업무 수정, 패키지 매니저 수정  
 
+## 쿠폰 발행 Flow
+
+<img width="844" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/0fb0fc6d-c985-40ab-8819-0e857da24101">
+
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
 [쿠폰 발급에 대한 동시성 처리 (2) - MySQL의 NamedLock, Redis의 분산락(Lettuce, Redisson)](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-2-MySQL%EC%9D%98-NamedLock-Redis%EC%9D%98-%EB%B6%84%EC%82%B0%EB%9D%BDLettuce-Redisson)
