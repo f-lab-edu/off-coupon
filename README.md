@@ -23,7 +23,8 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 - ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.2-6DB33F?logo=spring%20boot&logoColor=6DB33F)
 - ![MyBatis](https://img.shields.io/badge/MyBatis-3.0.2-000000?logo=&logoColor=000000)
 - ![Gradle](https://img.shields.io/badge/Gradle-8.5-02303A?logo=gradle&logoColor=02303A)
-- ![IntelliJ](https://img.shields.io/badge/IntelliJ-2023.1-000000?logo=intellijidea&logoColor=000000)
+- ![IntelliJ](https://img.shields.io/badge/IntelliJ-2023.1-000000?logo=intellijidea&logoColor=000000)  
+- ![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)
 
 # Commit Convention
 
