@@ -1,5 +1,7 @@
 package com.flab.offcoupon.domain.entity;
 
+import com.flab.offcoupon.domain.entity.params.EventPeriodAndTimeParams;
+import com.flab.offcoupon.domain.entity.params.TimeParams;
 import com.flab.offcoupon.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,19 +26,19 @@ public final class Event {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Event(String category, String description, LocalDate startDate, LocalDate endDate, String dailyIssueStartTime, String dailyIssueEndTime, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Event(String category, String description, EventPeriodAndTimeParams eventPeriodAndTimeParams, TimeParams timeParams) {
         this.category = category;
         this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.dailyIssueStartTime = dailyIssueStartTime;
-        this.dailyIssueEndTime = dailyIssueEndTime;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.startDate = eventPeriodAndTimeParams.startDate();
+        this.endDate = eventPeriodAndTimeParams.endDate();
+        this.dailyIssueStartTime = eventPeriodAndTimeParams.dailyIssueStartTime();
+        this.dailyIssueEndTime = eventPeriodAndTimeParams.dailyIssueEndTime();
+        this.createdAt = timeParams.createdAt();
+        this.updatedAt = timeParams.updatedAt();
     }
 
-    public static Event create(String category, String description, LocalDate startDate, LocalDate endDate, String dailyIssueStartTime, String dailyIssueEndTime) {
+    public static Event create(String category, String description,EventPeriodAndTimeParams eventPeriodAndTimeParams) {
         LocalDateTime now = DateTimeUtils.nowFromZone();
-        return new Event(category, description, startDate, endDate, dailyIssueStartTime, dailyIssueEndTime, now, now);
+        return new Event(category, description, eventPeriodAndTimeParams, new TimeParams(now, now));
     }
 }

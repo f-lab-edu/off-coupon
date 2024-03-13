@@ -21,14 +21,14 @@ public class CouponExceptionHandler {
     }
 
     @ExceptionHandler(CouponQuantityException.class)
-    public ResponseEntity couponBadRequestException(CouponQuantityException ex, HttpServletRequest request) {
+    public ResponseEntity<ResponseDTO<String>> couponBadRequestException(CouponQuantityException ex, HttpServletRequest request) {
         log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
     }
 
     @ExceptionHandler(DuplicatedCouponException.class)
-    public ResponseEntity couponBadRequestException(DuplicatedCouponException ex, HttpServletRequest request) {
+    public ResponseEntity<ResponseDTO<String>> couponBadRequestException(DuplicatedCouponException ex, HttpServletRequest request) {
         log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));

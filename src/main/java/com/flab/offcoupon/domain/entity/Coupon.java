@@ -1,5 +1,8 @@
 package com.flab.offcoupon.domain.entity;
 
+import com.flab.offcoupon.domain.entity.params.CouponParams;
+import com.flab.offcoupon.domain.entity.params.DiscountParams;
+import com.flab.offcoupon.domain.entity.params.TimeParams;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,23 +31,23 @@ public final class Coupon {
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
-    private Coupon(Long eventId, DiscountType discountType, Long discountRate, Long discountPrice, CouponType couponType, Long maxQuantity, Long issuedQuantity, LocalDateTime validateStartDate, LocalDateTime validateEndDate, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    private Coupon(Long eventId, DiscountParams discountParams, CouponParams couponParams, TimeParams timeParams) {
         this.eventId = eventId;
-        this.discountType = discountType;
-        this.discountRate = discountRate;
-        this.discountPrice = discountPrice;
-        this.couponType = couponType;
-        this.maxQuantity = maxQuantity;
-        this.issuedQuantity = issuedQuantity;
-        this.validateStartDate = validateStartDate;
-        this.validateEndDate = validateEndDate;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.discountType = discountParams.discountType();
+        this.discountRate = discountParams.discountRate();
+        this.discountPrice = discountParams.discountPrice();
+        this.couponType = couponParams.couponType();
+        this.maxQuantity = couponParams.maxQuantity();
+        this.issuedQuantity = couponParams.issuedQuantity();
+        this.validateStartDate = couponParams.validateStartDate();
+        this.validateEndDate = couponParams.validateEndDate();
+        this.createdAt = timeParams.createdAt();
+        this.updatedAt = timeParams.updatedAt();
     }
 
-    public static Coupon create(Long eventId, DiscountType discountType, Long discountRate, Long discountPrice, CouponType couponType, Long maxQuantity, Long issuedQuantity, LocalDateTime validateStartDate, LocalDateTime validateEndDate) {
+    public static Coupon create(Long eventId, DiscountParams discountParams, CouponParams couponParams) {
         LocalDateTime now = LocalDateTime.now();
-        return new Coupon(eventId, discountType, discountRate, discountPrice, couponType, maxQuantity, issuedQuantity, validateStartDate, validateEndDate, now, now);
+        return new Coupon(eventId, discountParams, couponParams, new TimeParams(now, now));
     }
 
     public boolean availableIssueQuantity() {
