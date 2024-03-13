@@ -1,4 +1,4 @@
-package com.flab.offcoupon.service.couponIssue.sync;
+package com.flab.offcoupon.service.coupon_issue.sync;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
@@ -35,16 +35,13 @@ public class PessimisticLockCouponIssue implements CouponIssueFacade {
         defaultCouponIssueService.saveCouponIssue(memberId, couponId, currentDateTime);
         return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
-
-    @Transactional
-    public void increaseIssuedCouponQuantity(long couponId) {
+    private void increaseIssuedCouponQuantity(long couponId) {
         Coupon existingCoupon = findCouponPessimisticLock(couponId);
         Coupon updatecoupon = existingCoupon.increaseIssuedQuantity(existingCoupon);
         couponRepository.increaseIssuedQuantity(updatecoupon);
     }
 
-    @Transactional(readOnly = true)
-    public Coupon findCouponPessimisticLock(long couponId) {
+    private Coupon findCouponPessimisticLock(long couponId) {
         return couponRepository.findCouponByIdPessimisticLock(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
     }

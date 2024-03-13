@@ -1,4 +1,4 @@
-package com.flab.offcoupon.service.couponIssue.async;
+package com.flab.offcoupon.service.coupon_issue.async;
 
 import com.flab.offcoupon.domain.redis.CouponRedisEntity;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;

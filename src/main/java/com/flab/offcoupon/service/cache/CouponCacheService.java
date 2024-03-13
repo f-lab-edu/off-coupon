@@ -7,7 +7,6 @@ import com.flab.offcoupon.repository.mysql.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 
@@ -28,7 +27,6 @@ public class CouponCacheService {
      * @return 쿠폰 정보를 담은 CouponRedisEntity 객체
      */
     @Cacheable(key = "#couponId",value = "coupon")
-    @Transactional(readOnly = true)
     public CouponRedisEntity getCoupon(long couponId) {
         Coupon coupon = findCoupon(couponId);
         return new CouponRedisEntity(coupon);
@@ -41,7 +39,6 @@ public class CouponCacheService {
      * @return 조회된 쿠폰 객체
      * @throws CouponNotFoundException 쿠폰이 존재하지 않을 경우 발생하는 예외
      */
-    @Transactional(readOnly = true)
     public Coupon findCoupon(long couponId) {
         return couponRepository.findCouponById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));

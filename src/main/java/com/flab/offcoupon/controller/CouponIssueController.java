@@ -1,6 +1,6 @@
 package com.flab.offcoupon.controller;
 
-import com.flab.offcoupon.service.couponIssue.CouponIssueRequestService;
+import com.flab.offcoupon.service.coupon_issue.CouponIssueRequestService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

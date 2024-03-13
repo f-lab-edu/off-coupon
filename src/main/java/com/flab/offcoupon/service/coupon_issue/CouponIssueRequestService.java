@@ -1,7 +1,7 @@
-package com.flab.offcoupon.service.couponIssue;
+package com.flab.offcoupon.service.coupon_issue;
 
-import com.flab.offcoupon.service.couponIssue.async.AsyncCouponIssueService;
-import com.flab.offcoupon.service.couponIssue.sync.*;
+import com.flab.offcoupon.service.coupon_issue.async.AsyncCouponIssueService;
+import com.flab.offcoupon.service.coupon_issue.sync.*;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

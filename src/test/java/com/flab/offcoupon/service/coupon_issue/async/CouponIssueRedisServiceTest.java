@@ -1,4 +1,4 @@
-package com.flab.offcoupon.service.couponIssue.async;
+package com.flab.offcoupon.service.coupon_issue.async;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class CouponIssueRedisServiceTest {

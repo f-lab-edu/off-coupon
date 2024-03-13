@@ -1,8 +1,8 @@
-package com.flab.offcoupon.service.couponIssue.concurrency;
+package com.flab.offcoupon.service.coupon_issue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.service.couponIssue.sync.NamedLockCouponIssue;
+import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

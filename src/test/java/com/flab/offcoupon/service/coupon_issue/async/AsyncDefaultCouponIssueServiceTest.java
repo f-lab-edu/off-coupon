@@ -1,4 +1,4 @@
-package com.flab.offcoupon.service.couponIssue.async;
+package com.flab.offcoupon.service.coupon_issue.async;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,8 +1,8 @@
-package com.flab.offcoupon.service.couponIssue.concurrency;
+package com.flab.offcoupon.service.coupon_issue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.service.couponIssue.sync.LettuceLockCouponIssue;
+import com.flab.offcoupon.service.coupon_issue.sync.PessimisticLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +14,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @Disabled("using only for concurrent testing")
 @SpringBootTest
-class LettuceLockCouponIssueTest {
+class PessimisticLockCouponIssueTest {
+
     @Autowired
-    private LettuceLockCouponIssue lettuceLockCouponIssue;
+    private PessimisticLockCouponIssue pessimisticLockCouponIssue;
     @Autowired
     private CouponRepository couponRepository;
     @Test
@@ -32,7 +34,7 @@ class LettuceLockCouponIssueTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    lettuceLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                    pessimisticLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
