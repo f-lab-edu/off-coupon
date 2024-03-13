@@ -3,6 +3,7 @@
 
 선착순 쿠폰 발행 서비스 입니다. (네고왕 이벤트 참고 - 추후 설명 추가 예정)
 
+
 # Git Flow
 
 ✅ master : 릴리스 버전을 관리하는 메인 브랜치  
@@ -31,7 +32,7 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 ## 쿠폰 발행 Flow
 
-![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/c93e8c36-73e5-407c-81ac-2987e195f518)
+![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/e214f937-f408-4d9b-8068-87f06c15a2c3)
 
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
