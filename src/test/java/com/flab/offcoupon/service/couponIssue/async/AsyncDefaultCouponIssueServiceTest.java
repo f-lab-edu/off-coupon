@@ -2,14 +2,17 @@ package com.flab.offcoupon.service.couponIssue.async;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.flab.offcoupon.domain.entity.*;
+import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.dto.request.CouponIssueRequestForQueue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
+import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
-import com.flab.offcoupon.service.couponIssue.sync.DefaultCouponIssueService;
+import com.flab.offcoupon.repository.mysql.CouponRepository;
+import com.flab.offcoupon.repository.mysql.EventRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +26,7 @@ import java.util.Collection;
 import java.util.stream.LongStream;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
-import static com.flab.offcoupon.exception.event.EventErrorMessage.INVALID_EVENT_PERIOD;
-import static com.flab.offcoupon.exception.event.EventErrorMessage.INVALID_EVENT_TIME;
+import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
 
@@ -35,7 +37,10 @@ class AsyncDefaultCouponIssueServiceTest {
     AsyncCouponIssueService asyncCouponIssueService;
 
     @Autowired
-    DefaultCouponIssueService defaultCouponIssueService;
+    EventRepository eventRepository;
+
+    @Autowired
+    CouponRepository couponRepository;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
@@ -47,7 +52,7 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")
+    @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")
     void test() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
@@ -62,12 +67,14 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 쿠폰 발급 수량이 존재하지 않는다면 예외를 반환한다")
-    void test_2() {
+    @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰 발급 수량이 존재하지 않는다면 예외를 반환한다")
+    void issueCoupon_fail_with_run_out_of_coupon() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
         long memberId = 1000L;
-        Coupon coupon = defaultCouponIssueService.findCoupon(1L);
+        long couponId = 1L;
+        Coupon coupon = couponRepository.findCouponById(couponId)
+                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));;
 
         LongStream.range(0L, coupon.getMaxQuantity()).forEach(idx -> {
             redisTemplate.opsForSet().add(getIssueRequestKey(coupon.getId()), String.valueOf(idx));
@@ -80,12 +87,14 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 이미 발급된 유저라면 예외를 반환한다")
-    void issue_3() {
+    @DisplayName("[ERROR] 쿠폰 발급 - 이미 발급된 유저라면 예외를 반환한다")
+    void issueCoupon_fail_with_duplicated_user() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
         long memberId = 1L;
-        Coupon coupon = defaultCouponIssueService.findCoupon(1L);
+        long couponId = 1L;
+        Coupon coupon = couponRepository.findCouponById(couponId)
+                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
         redisTemplate.opsForSet().add(getIssueRequestKey(coupon.getId()), String.valueOf(memberId));
         // when & then
         DuplicatedCouponException exception = Assertions.assertThrows(DuplicatedCouponException.class, () -> {
@@ -95,14 +104,14 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 발급 기간이 일치하지 않는다면 예외를 반환한다")
-    void issue_4() {
+    @DisplayName("[ERROR] 쿠폰발급 - 발급 기간이 일치하지 않는다면 예외를 반환한다")
+    void issueCoupon_fail_with_invalid_period() {
         // given
-        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0).plusDays(2);
+        LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 20, 13, 0, 0).plusDays(2);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
-        Event event = defaultCouponIssueService.findEvent(eventId);
+        Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
         // when & then
         EventPeriodException exception = Assertions.assertThrows(EventPeriodException.class, () -> {
             asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
@@ -111,14 +120,14 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 발급 시간이 일치하지 않는다면 예외를 반환한다")
-    void issue_5() {
+    @DisplayName("[ERROR] 쿠폰발급 - 발급 시간이 일치하지 않는다면 예외를 반환한다")
+    void issueCoupon_fail_with_invalid_time() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0).plusHours(4);
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
-        Event event = defaultCouponIssueService.findEvent(eventId);
+        Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
         // when & then
         EventTimeException exception = Assertions.assertThrows(EventTimeException.class, () -> {
             asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
@@ -127,8 +136,8 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 쿠폰 발급을 기록한다")
-    void issue_6() {
+    @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급을 기록한다")
+    void issueCoupon_success_and_redis_history() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
         long memberId = 1L;
@@ -142,8 +151,8 @@ class AsyncDefaultCouponIssueServiceTest {
     }
 
     @Test
-    @DisplayName("쿠폰 발급 - 쿠폰 발급 요청이 성공하면 쿠폰 발급 큐에 적재된다")
-    void issue_7() throws JsonProcessingException {
+    @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급 요청이 성공하면 쿠폰 발급 큐에 적재된다")
+    void issueCoupon_success_and_redis_queue() throws JsonProcessingException {
         // given
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
         long memberId = 1L;

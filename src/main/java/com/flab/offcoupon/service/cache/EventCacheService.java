@@ -7,7 +7,6 @@ import com.flab.offcoupon.repository.mysql.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
 
@@ -28,7 +27,6 @@ public class EventCacheService {
      * @return 이벤트 정보를 담은 EventRedisEntity 객체
      */
     @Cacheable(key = "#eventId",value = "event")
-    @Transactional(readOnly = true)
     public EventRedisEntity getEvent(long eventId) {
         Event event = findEvent(eventId);
         return new EventRedisEntity(event);
@@ -41,7 +39,6 @@ public class EventCacheService {
      * @return 조회된 이벤트 객체
      * @throws EventNotFoundException 이벤트가 존재하지 않을 경우 발생하는 예외
      */
-    @Transactional(readOnly = true)
     public Event findEvent(long eventId) {
         return eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
