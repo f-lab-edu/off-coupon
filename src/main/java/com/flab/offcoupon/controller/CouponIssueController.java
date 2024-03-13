@@ -39,7 +39,7 @@ public class CouponIssueController {
     @PostMapping("/{eventId}/issues-async")
     public ResponseEntity<ResponseDTO<String>> asyncIssue(@PathVariable final long eventId,
                                                   @RequestParam final long couponId,
-                                                  @RequestParam final long memberId) throws InterruptedException {
+                                                  @RequestParam final long memberId) {
         LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.asyncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }

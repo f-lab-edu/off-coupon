@@ -17,11 +17,4 @@ public record CouponParams (
        LocalDateTime validateStartDate,
        LocalDateTime validateEndDate
 ) {
-    public CouponParams(CouponType couponType, Long maxQuantity, Long issuedQuantity, LocalDateTime validateStartDate, LocalDateTime validateEndDate) {
-        this.couponType = couponType;
-        this.maxQuantity = maxQuantity;
-        this.issuedQuantity = issuedQuantity;
-        this.validateStartDate = validateStartDate;
-        this.validateEndDate = validateEndDate;
-    }
 }

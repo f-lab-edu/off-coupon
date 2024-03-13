@@ -12,8 +12,4 @@ public record TimeParams (
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ){
-    public TimeParams(LocalDateTime createdAt, LocalDateTime updatedAt) {
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-    }
 }

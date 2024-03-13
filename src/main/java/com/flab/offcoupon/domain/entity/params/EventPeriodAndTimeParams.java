@@ -15,10 +15,4 @@ public record EventPeriodAndTimeParams (
         String dailyIssueStartTime,
         String dailyIssueEndTime
 ) {
-    public EventPeriodAndTimeParams(LocalDate startDate, LocalDate endDate, String dailyIssueStartTime, String dailyIssueEndTime) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.dailyIssueStartTime = dailyIssueStartTime;
-        this.dailyIssueEndTime = dailyIssueEndTime;
-    }
 }

@@ -13,9 +13,4 @@ public record DiscountParams(
         Long discountRate, // NULL 일 경우 AMOUNT
         Long discountPrice // NULL 일 경우 PERCENT
 ) {
-    public DiscountParams(DiscountType discountType, Long discountRate, Long discountPrice) {
-        this.discountType = discountType;
-        this.discountRate = discountRate;
-        this.discountPrice = discountPrice;
-    }
 }
