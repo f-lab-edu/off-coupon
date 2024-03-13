@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -28,6 +29,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
  * @See <a href="https://docs.spring.io/spring-boot/docs/1.4.x/api/org/springframework/boot/test/IntegrationTest.html">Annotation IntegrationTest</a>
  * @See <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.html">Annotation SpringBootTest</a>
  */
+@Transactional
 @SpringBootTest
 class DefaultCouponIssueServiceTest {
 

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
@@ -23,6 +24,7 @@ class NamedLockCouponIssueTest {
     private NamedLockCouponIssue namedLockCouponIssue;
     @Autowired
     private CouponRepository couponRepository;
+    @Transactional
     @Test
     void 동시에_100개_요청() throws Exception {
         final int threadCount = 100;

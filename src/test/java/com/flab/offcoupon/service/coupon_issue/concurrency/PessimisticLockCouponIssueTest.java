@@ -7,13 +7,15 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Disabled("using only for concurrent testing")
 @SpringBootTest
@@ -23,6 +25,8 @@ class PessimisticLockCouponIssueTest {
     private PessimisticLockCouponIssue pessimisticLockCouponIssue;
     @Autowired
     private CouponRepository couponRepository;
+    @Transactional
+    @Rollback
     @Test
     void 동시에_100개_요청() throws Exception {
         final int threadCount = 100;
