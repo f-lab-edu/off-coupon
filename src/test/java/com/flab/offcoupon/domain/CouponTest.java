@@ -105,6 +105,6 @@ class CouponTest {
         // when
         coupon = coupon.increaseIssuedQuantity(coupon);
         // then
-        assertEquals(coupon.remainedCoupon(),0L);
+        assertEquals(0L,coupon.remainedCoupon());
     }
 }

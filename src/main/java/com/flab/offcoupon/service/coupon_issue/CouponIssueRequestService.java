@@ -38,11 +38,11 @@ public class CouponIssueRequestService {
         this.asyncCouponIssueService = asyncCouponIssueService;
     }
 
-    public ResponseDTO syncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> syncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
         return couponIssueFacade.issueCoupon(currentDateTime, eventId, couponId, memberId);
     }
 
-    public ResponseDTO asyncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> asyncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         return asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
     }
 }

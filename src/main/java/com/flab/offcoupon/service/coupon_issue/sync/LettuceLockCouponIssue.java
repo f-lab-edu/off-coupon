@@ -26,7 +26,7 @@ public class LettuceLockCouponIssue implements CouponIssueFacade {
     private final DefaultCouponIssueService defaultCouponIssueService;
 
     @Override
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
 
         AtomicReference<ResponseDTO> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithLettuce를 사용하여 락을 획득합니다.

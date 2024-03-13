@@ -27,7 +27,7 @@ public class RedissonLockCouponIssue implements CouponIssueFacade {
     private final DefaultCouponIssueService defaultCouponIssueService;
 
     @Override
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
         AtomicReference<ResponseDTO> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithRedisson을 사용하여 락을 획득합니다.
         distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () ->

@@ -46,7 +46,7 @@ public class AsyncCouponIssueService {
      * @param memberId         회원 ID
      * @return                 응답 DTO
      */
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         // 이벤트 캐시에서 발급 가능 날짜 및 시간 검증
         checkIssuableEventPeriodAndTime(currentDateTime, eventId);
         // 쿠폰 캐시 가져오기

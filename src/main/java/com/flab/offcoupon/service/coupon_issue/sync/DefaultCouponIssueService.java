@@ -8,7 +8,6 @@ import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.service.cache.EventCacheService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +30,12 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_
 @Service
 public class DefaultCouponIssueService {
 
-    private final EventRepository eventRepository;
     private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
     private final EventCacheService eventCacheService;
 
     @Transactional
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         // 이벤트(Event 테이블) 기간 및 시간 검증
         checkEventPeriodAndTime(eventId, currentDateTime);
         // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
