@@ -30,10 +30,9 @@ public class RedissonLockCouponIssue implements CouponIssueFacade {
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
         AtomicReference<ResponseDTO> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithRedisson을 사용하여 락을 획득합니다.
-        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () -> {
+        distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () ->
             // 락을 획득한 후, 실제 쿠폰 발급 서비스를 호출합니다.
-            responseDTO.set(defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId));
-        });
+            responseDTO.set(defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId)));
         // 쿠폰 발급 결과를 반환합니다.
         return responseDTO.get();
     }
