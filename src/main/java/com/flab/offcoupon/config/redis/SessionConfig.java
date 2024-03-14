@@ -23,7 +23,7 @@ public class SessionConfig {
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private int redisPort;
+    private String redisPort;
 
     @Value("${spring.data.redis.password}")
     private String redisPassword;
@@ -41,7 +41,7 @@ public class SessionConfig {
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(redisHost);
-        redisStandaloneConfiguration.setPort(redisPort);
+        redisStandaloneConfiguration.setPort(Integer.parseInt(redisPort));
         redisStandaloneConfiguration.setPassword(redisPassword);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
