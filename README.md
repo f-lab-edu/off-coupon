@@ -29,12 +29,12 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 # 서비스 아키텍처
 
-![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/27f2df1e-4aaa-4432-a8d2-3c965c0b7edc)
+![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/a578a954-c034-40e4-80d7-1e3ff409f9f2)
 
 
 ## 쿠폰 발행 Flow
 
-![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/e214f937-f408-4d9b-8068-87f06c15a2c3)
+![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/7eaa33fe-6162-458e-bf64-a0313fc7364f)
 
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
