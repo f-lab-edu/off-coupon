@@ -60,7 +60,7 @@ public class SessionConfig {
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer()
-                .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + redisPort)
+                .setAddress(REDISSON_HOST_PREFIX + redisHost + ":" + Integer.parseInt(redisPort))
                 .setPassword(redisPassword)
                 .setSslEnableEndpointIdentification(false);
         return Redisson.create(config);
