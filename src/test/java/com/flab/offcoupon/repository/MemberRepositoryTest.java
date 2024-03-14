@@ -4,6 +4,7 @@ import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.domain.entity.Member;
 import com.flab.offcoupon.repository.mysql.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,11 +22,23 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @MybatisTest
+@Transactional
 @AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
 class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+    @BeforeEach
+    void setUp() {
+        Member member = Member.create(
+                "test@gmail.com",
+        "ababab123123",
+        "이름",
+                LocalDate.now(),
+                "01012345678",
+                Role.ROLE_USER);
+        memberRepository.save(member);
+    }
     @Test
     @Transactional
     @DisplayName("[SUCCESS] 회원 가입 성공")
@@ -42,7 +55,7 @@ class MemberRepositoryTest {
     @DisplayName("[SUCCESS] 중복 유저 찾기")
     void existMemberByEmail() {
         // given
-        String email = "sejin@email.com"; // 웹서버 올라갈때 Insert된 이메일
+        String email = "test@gmail.com";
         //when
         boolean isDuplicated = memberRepository.existMemberByEmail(email);
         assertThat(isDuplicated).isTrue();
