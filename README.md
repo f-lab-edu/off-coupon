@@ -1,7 +1,8 @@
 # off-coupon 프로젝트 개요
-<img width="789" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d2b9c662-3e0c-44d1-965a-0b1a15b54ac4">
 
 off-coupon은 네고왕 선착순 이벤트를 참고하여 개발된 서비스로, 선착순 쿠폰 발행 및 사용 기능을 지원합니다.
+
+<img width="789" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d2b9c662-3e0c-44d1-965a-0b1a15b54ac4">
 
 # 프로젝트 목표
 - 고가용성 선착순 쿠폰 발행 및 사용 서비스를 구현하는 것이 목표입니다.
@@ -26,15 +27,10 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 - ![IntelliJ](https://img.shields.io/badge/IntelliJ-2023.1-000000?logo=intellijidea&logoColor=000000)  
 - ![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)
 
-# Commit Convention
+# 서비스 아키텍처
 
-- feat : 새로운 기능 추가  
-- fix : 버그 수정  
-- docs : 문서 수정  
-- style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우  
-- refactor : 코드 리팩토링  
-- test : 테스트 코드, 리팩토링 테스트 코드  
-- chore : 빌드 업무 수정, 패키지 매니저 수정  
+![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/c374c9e1-1b12-4e6e-982f-885f1a81555a)
+
 
 ## 쿠폰 발행 Flow
 
@@ -54,3 +50,13 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 ## 트러블 슈팅
 [private 메소드를 테스트하려 했지만, 문제는 테스트 코드 로직이었다.](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-private-%EB%A9%94%EC%86%8C%EB%93%9C%EB%A5%BC-%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%98%EB%A0%A4-%ED%96%88%EC%A7%80%EB%A7%8C-%EB%AC%B8%EC%A0%9C%EB%8A%94-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C%EC%98%80%EB%8B%A4)  
 [Junit 테스트 중 Lock wait timeout exceeded 에러 발생](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-Junit-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%ED%95%98%EB%8B%A4%EA%B0%80-Lock-wait-timeout-exceeded%EA%B0%80-%EB%96%B4%EB%8B%A4)
+
+## Commit Convention
+
+- feat : 새로운 기능 추가  
+- fix : 버그 수정  
+- docs : 문서 수정  
+- style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우  
+- refactor : 코드 리팩토링  
+- test : 테스트 코드, 리팩토링 테스트 코드  
+- chore : 빌드 업무 수정, 패키지 매니저 수정  
