@@ -3,6 +3,8 @@ package com.flab.offcoupon.domain;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponType;
 import com.flab.offcoupon.domain.entity.DiscountType;
+import com.flab.offcoupon.domain.entity.params.CouponParams;
+import com.flab.offcoupon.domain.entity.params.DiscountParams;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,15 +22,13 @@ class CouponTest {
     @Test
     @DisplayName("[SUCCESS] 쿠폰 객체 생성")
     void create_coupon() {
-        Coupon coupon = Coupon.create(1L,
-                DiscountType.PERCENT,
-                20L,
-                null,
-                CouponType.FIRST_COME_FIRST_SERVED,
-                100L,
-                0L,
+        DiscountParams discountParams = new DiscountParams(DiscountType.PERCENT, 20L, null);
+        CouponParams couponParams = new CouponParams(CouponType.FIRST_COME_FIRST_SERVED, 100L, 0L,
                 LocalDateTime.of(2024, 03, 01, 00, 0, 0),
                 LocalDateTime.of(2024, 03, 31, 00, 0, 0));
+        Coupon coupon = Coupon.create(1L,
+                discountParams,
+                couponParams);
         assertThat(coupon).isNotNull();
     }
 
