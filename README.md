@@ -29,7 +29,7 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 # 서비스 아키텍처
 
-![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/c374c9e1-1b12-4e6e-982f-885f1a81555a)
+![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/27f2df1e-4aaa-4432-a8d2-3c965c0b7edc)
 
 
 ## 쿠폰 발행 Flow
