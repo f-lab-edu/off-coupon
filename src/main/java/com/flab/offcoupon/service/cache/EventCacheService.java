@@ -39,7 +39,7 @@ public class EventCacheService {
      * @return 조회된 이벤트 객체
      * @throws EventNotFoundException 이벤트가 존재하지 않을 경우 발생하는 예외
      */
-    public Event findEvent(long eventId) {
+    private Event findEvent(long eventId) {
         return eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
     }

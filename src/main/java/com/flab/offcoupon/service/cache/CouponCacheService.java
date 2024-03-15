@@ -39,7 +39,7 @@ public class CouponCacheService {
      * @return 조회된 쿠폰 객체
      * @throws CouponNotFoundException 쿠폰이 존재하지 않을 경우 발생하는 예외
      */
-    public Coupon findCoupon(long couponId) {
+    private Coupon findCoupon(long couponId) {
         return couponRepository.findCouponById(couponId)
                 .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
     }
