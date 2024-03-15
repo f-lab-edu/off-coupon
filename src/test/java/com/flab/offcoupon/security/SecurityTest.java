@@ -1,6 +1,8 @@
 package com.flab.offcoupon.security;
 
-import com.flab.offcoupon.repository.MemberRepository;
+import com.flab.offcoupon.domain.entity.Role;
+import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
+import com.flab.offcoupon.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,11 +18,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.time.LocalDate;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
-
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.*;
-
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.*;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -40,7 +43,7 @@ class SecurityTest {
     PasswordEncoder passwordEncoder;
 
     @Autowired
-    MemberRepository memberRepository;
+    MemberService memberService;
     //mockMvc 객체 생성, Spring Security 환경 setup
     @BeforeEach
     void setup() {
@@ -48,9 +51,19 @@ class SecurityTest {
                 .webAppContextSetup(this.context)
                 .apply(springSecurity())
                 .build();
+
+        SignupMemberRequestDto signupMemberRequestDto = SignupMemberRequestDto.create(
+                "test@gmail.com",
+                "ababab123123",
+                "이름",
+                LocalDate.now(),
+                "01012345678",
+                Role.ROLE_USER
+        );
+        memberService.signUp(signupMemberRequestDto);
     }
     
-    private static final String MEMBER_LOGIN_URL = "/members/login";
+    private static final String MEMBER_LOGIN_URL = "/api/v1/members/login";
 
     @Test
     @DisplayName("[SUCCESS] 비회원 권한으로 홈 접근")
@@ -72,7 +85,7 @@ class SecurityTest {
     @Test
     @DisplayName("[SUCCESS] 로그인 성공")
     void login_success() throws Exception {
-        String email = "sejin@email.com";
+        String email = "test@gmail.com";
         String password = "ababab123123";
         mockMvc.perform(formLogin(MEMBER_LOGIN_URL)
                         .user("email",email)
@@ -94,7 +107,7 @@ class SecurityTest {
     @Test
     @DisplayName("[ERROR] 로그인 실패 : 비밀번호 불일치")
     public void login_fail_with_wrong_pwsd() throws Exception {
-        String email = "sejin@email.com";
+        String email = "test@gmail.com";
         String password = "ab";
         mockMvc.perform(formLogin(MEMBER_LOGIN_URL)
                         .user("email",email)
@@ -120,7 +133,7 @@ class SecurityTest {
     @Test
     @DisplayName("[SUCCESS] 로그아웃")
     void logout() throws Exception{
-        mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/members/logout"))
+        mockMvc.perform(SecurityMockMvcRequestBuilders.logout("/api/v1/members/logout"))
                 .andDo(print())
                 .andExpect(unauthenticated())
                 .andExpect(redirectedUrl(MEMBER_LOGIN_URL));

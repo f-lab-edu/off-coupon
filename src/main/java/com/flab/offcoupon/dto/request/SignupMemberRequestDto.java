@@ -1,6 +1,6 @@
 package com.flab.offcoupon.dto.request;
 
-import com.flab.offcoupon.domain.Role;
+import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.validation.Password;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -11,7 +11,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-import static com.flab.offcoupon.exception.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 
 @Generated
 @Getter

@@ -1,17 +1,17 @@
 package com.flab.offcoupon.service;
 
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
-import com.flab.offcoupon.domain.Member;
+import com.flab.offcoupon.domain.entity.Member;
 import com.flab.offcoupon.dto.response.SignupMemberResponseDto;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
-import com.flab.offcoupon.repository.MemberRepository;
+import com.flab.offcoupon.repository.mysql.MemberRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.flab.offcoupon.exception.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 
 @RequiredArgsConstructor
 @Service

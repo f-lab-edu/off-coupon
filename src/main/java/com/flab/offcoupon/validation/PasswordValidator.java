@@ -5,7 +5,7 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.text.MessageFormat;
 
-import static com.flab.offcoupon.exception.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 
 /**
  * @Password 어노테이션 구현체

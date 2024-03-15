@@ -1,7 +1,7 @@
-package com.flab.offcoupon.config.security;
+package com.flab.offcoupon.config.security.service;
 
-import com.flab.offcoupon.domain.Member;
-import com.flab.offcoupon.repository.MemberRepository;
+import com.flab.offcoupon.domain.entity.Member;
+import com.flab.offcoupon.repository.mysql.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.flab.offcoupon.exception.ErrorMessage.NOT_EXIST_MEMBER;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.NOT_EXIST_MEMBER;
 
 @RequiredArgsConstructor
 @Service("userDetailsService")

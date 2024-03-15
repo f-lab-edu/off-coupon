@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static com.flab.offcoupon.exception.ErrorMessage.CHECK_EMAIL_OR_PSWD;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.CHECK_EMAIL_OR_PSWD;
 
 @Slf4j
 @RequiredArgsConstructor

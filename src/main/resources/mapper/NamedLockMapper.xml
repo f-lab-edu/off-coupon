@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 위 코드가 mapper 설정을 하는 코드 -->
+
+<!-- Mapper를 사용하는 Repository의 전체 경로를 적어줘야함. -->
+<mapper namespace="com.flab.offcoupon.repository.mysql.NamedLockRepository">
+    <select id="getLock" parameterType="String" resultType="int">
+        SELECT GET_LOCK(#{lockName}, 3000);
+    </select>
+
+    <select id="releaseLock" parameterType="String" resultType="int" >
+        SELECT RELEASE_LOCK(#{lockName});
+    </select>
+</mapper>

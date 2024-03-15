@@ -36,7 +36,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/members/signup").permitAll()
+                                .requestMatchers("/", "/api/v1/members/signup","/api/v1/event/**").permitAll()
                                 .requestMatchers("/member").hasAnyRole("USER")
                                 .requestMatchers("/admin").hasAnyRole("ADMIN")
                                 .anyRequest().authenticated()
@@ -44,8 +44,8 @@ public class SecurityConfig {
 
         http
                 .formLogin(form -> form
-                        .loginProcessingUrl("/members/login")
-                        .defaultSuccessUrl("/")
+                        .loginProcessingUrl("/api/v1/members/login")
+                        .defaultSuccessUrl("/api/v1/")
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
@@ -54,8 +54,8 @@ public class SecurityConfig {
                 );
         http
                 .logout(logout -> logout
-                        .logoutUrl("/members/logout")
-                        .logoutSuccessUrl("/members/login")
+                        .logoutUrl("/api/v1/members/logout")
+                        .logoutSuccessUrl("/api/v1/members/login")
                         .invalidateHttpSession(true)
                         .deleteCookies("SESSIONID")
                 );

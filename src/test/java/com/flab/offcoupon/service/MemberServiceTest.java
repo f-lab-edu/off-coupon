@@ -1,9 +1,9 @@
 package com.flab.offcoupon.service;
 
-import com.flab.offcoupon.domain.Role;
+import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.exception.member.MemberBadRequestException;
-import com.flab.offcoupon.repository.MemberRepository;
+import com.flab.offcoupon.repository.mysql.MemberRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 
-import static com.flab.offcoupon.exception.ErrorMessage.*;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;

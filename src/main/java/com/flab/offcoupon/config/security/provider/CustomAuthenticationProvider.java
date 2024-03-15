@@ -1,6 +1,6 @@
 package com.flab.offcoupon.config.security.provider;
 
-import com.flab.offcoupon.config.security.MemberContext;
+import com.flab.offcoupon.config.security.service.MemberContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -10,7 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import static com.flab.offcoupon.exception.ErrorMessage.DO_NOT_MATCHES_PSWD;
+import static com.flab.offcoupon.exception.member.MemberErrorMessage.DO_NOT_MATCHES_PSWD;
 
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
