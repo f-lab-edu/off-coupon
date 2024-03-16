@@ -29,7 +29,6 @@ public class DatabaseConfig {
         sessionFactory.setTypeAliasesPackage(typeAliasesPackage);
         Resource[] res = new PathMatchingResourcePatternResolver().getResources(mapperLocation);
 
-
         sessionFactory.setConfiguration(mybatisConfig());
         sessionFactory.setMapperLocations(res);
 

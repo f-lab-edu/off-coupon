@@ -14,6 +14,15 @@ INSERT INTO event (id, category, description, start_date, end_date, daily_issue_
 VALUES (1, '바디케어' , '바디케어 전품목 이벤트', '2024-02-27','2024-02-29','13:00:00','15:00:00','2024-02-01','2024-02-01');
 
 
+INSERT INTO off_coupon.coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at)
+VALUES (1,1,'ISSUED','2024-02-01','2024-02-01');
 
+SELECT COUNT(*)
+FROM coupon_issue
+where created_at = '2024-02-01';
+
+SELECT issued_quantity
+from coupon
+where id = 1;
 
 
