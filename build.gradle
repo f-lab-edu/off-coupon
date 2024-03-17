@@ -85,7 +85,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.60 // TODO : CICD 테스트용으로 임시적으로 60%로 설정
+                minimum = 0.85
             }
 
             // 라인 최대 갯수 설정
