@@ -27,7 +27,7 @@ public class DistributeLockExecutorWithRedisson {
     public void execute(String lockName, long waitMilliSecond, long leaseMilliSecond, Runnable runnable) {
         RLock lock = redissonClient.getLock(lockName);
         try {
-            // 락을 기다리는 최대 시간(waitMilliSecond)동안 락을 획득 시도
+            // 락을 기다리는 최대 시간(waitMilliSecond)동안 락 획득 시도
             if (!lock.tryLock(waitMilliSecond, leaseMilliSecond, TimeUnit.MILLISECONDS)) {
                 /**
                  * 락을 기다리는 동안 인터럽트가 발생한 경우 중단하기 전에 처리해야 할 정리 작업 수행
@@ -47,10 +47,10 @@ public class DistributeLockExecutorWithRedisson {
              * 예외 회피 : throw e;
              * 예외 전환 : Thread.currentThread().interrupt();
              */
-            Thread.currentThread().interrupt();
+           // Thread.currentThread().interrupt();
         } finally {
             // 락 해제
-            if (lock.isHeldByCurrentThread()) {
+            if (lock.isLocked() || lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }
         }

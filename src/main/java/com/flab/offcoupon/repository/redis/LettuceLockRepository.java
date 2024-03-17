@@ -10,9 +10,8 @@ import java.time.Duration;
  */
 @Component
 public class LettuceLockRepository {
-
     private RedisTemplate<String, String> redisTemplate;
-
+    private static final long HOLD_LOCK_INTERVAL = 3_000L;
     public LettuceLockRepository(RedisTemplate<String, String> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
@@ -27,7 +26,7 @@ public class LettuceLockRepository {
     public Boolean lock(Long key, String prefix) {
         return redisTemplate
                 .opsForValue()
-                .setIfAbsent(generateKey(key, prefix), "lock", Duration.ofSeconds(3_000));
+                .setIfAbsent(generateKey(key, prefix), "lock", Duration.ofMillis(HOLD_LOCK_INTERVAL));
     }
     /**
      * 락을 해제하는 메서드
