@@ -45,7 +45,7 @@ class RedissonLockCouponIssueTest {
     void issueCoupon_fail_with_invalid_eventId() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long invalidEventId = 2L;
+        long invalidEventId = 1000L;
         long couponId = 1L;
         long memberId = 1L;
         // when

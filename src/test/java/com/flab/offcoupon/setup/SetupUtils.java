@@ -84,4 +84,34 @@ public class SetupUtils {
                 LocalDateTime.now());
         couponRepository.save(coupon);
     }
+
+    public void setUpEventAndCouponWithParams(EventRepository eventRepository, CouponRepository couponRepository,
+                                              LocalDate startDate, LocalDate endDate, String startTime, String endTime) {
+        Event event = new Event(
+                2L,
+                "바디케어2",
+                "바디케어 전품목 이벤트2",
+                startDate,
+                endDate,
+                startTime,
+                endTime,
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        eventRepository.save(event);
+
+        Coupon coupon = new Coupon(
+                2L,
+                1L,
+                DiscountType.PERCENT,
+                50L,
+                null,
+                CouponType.FIRST_COME_FIRST_SERVED,
+                500L,
+                0L,
+                LocalDateTime.now().plusMonths(1L),
+                LocalDateTime.now().plusMonths(2L),
+                LocalDateTime.now(),
+                LocalDateTime.now());
+        couponRepository.save(coupon);
+    }
 }
