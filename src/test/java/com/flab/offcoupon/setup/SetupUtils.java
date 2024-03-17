@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
- * 테스트를 위한 유틸리티 클래스입니다.
+ * 테스트를 위한 추상화된 공통 유틸리티 클래스입니다.
  * 회원 가입, 이벤트 및 쿠폰 설정 등의 테스트 시 공통적으로 사용되는 기능을 제공합니다.
  */
 public class SetupUtils {

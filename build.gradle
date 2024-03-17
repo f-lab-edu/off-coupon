@@ -99,9 +99,8 @@ jacocoTestCoverageVerification {
             afterEvaluate {
 
                 classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, // TODO : CICD 테스트용으로 컨트롤러는 제외하고 테스트 진행
+                    fileTree(dir: it,
                             exclude: [
-                                    "com/flab/offcoupon/controller/**",
                                     "com/flab/offcoupon/component/**",
                                     "com/flab/offcoupon/exception/**", "com/flab/offcoupon/config/**",
                                     "com/flab/offcoupon/OffcouponApplication.class",
