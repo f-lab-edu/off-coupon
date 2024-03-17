@@ -1,8 +1,7 @@
 package com.flab.offcoupon.security;
 
-import com.flab.offcoupon.domain.entity.Role;
-import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.service.MemberService;
+import com.flab.offcoupon.setup.SetupUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +17,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.time.LocalDate;
-
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
@@ -33,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class SecurityTest {
+    private static final String MEMBER_LOGIN_URL = "/api/v1/members/login";
+
     @Autowired
     MockMvc mockMvc;
 
@@ -44,6 +43,9 @@ class SecurityTest {
 
     @Autowired
     MemberService memberService;
+
+    private SetupUtils setupUtils = new SetupUtils();
+
     //mockMvc 객체 생성, Spring Security 환경 setup
     @BeforeEach
     void setup() {
@@ -51,19 +53,8 @@ class SecurityTest {
                 .webAppContextSetup(this.context)
                 .apply(springSecurity())
                 .build();
-
-        SignupMemberRequestDto signupMemberRequestDto = SignupMemberRequestDto.create(
-                "test@gmail.com",
-                "ababab123123",
-                "이름",
-                LocalDate.now(),
-                "01012345678",
-                Role.ROLE_USER
-        );
-        memberService.signUp(signupMemberRequestDto);
+        setupUtils.setUpMember(memberService);
     }
-    
-    private static final String MEMBER_LOGIN_URL = "/api/v1/members/login";
 
     @Test
     @DisplayName("[SUCCESS] 비회원 권한으로 홈 접근")
