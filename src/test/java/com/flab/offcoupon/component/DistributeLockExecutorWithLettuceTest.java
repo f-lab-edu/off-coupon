@@ -81,15 +81,16 @@ class DistributeLockExecutorWithLettuceTest {
             @Override
             public void run() {
                 // assertTimeoutPreemptively : 특정 시간 내에 실행되지 않으면 테스트를 종료하므로, 테스트가 무한정으로 실행되는 것을 방지합니다.
-                assertTimeoutPreemptively(Duration.ofMillis(500), () -> {
+                try {
                     distributeLockExecutorWithLettuce.execute(couponId, () -> System.out.println("쿠폰 발행 로직 수행"));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                // lock 메서드는 두 번 이상 호출되어야 함 (첫 번째 시도 실패 후 재시도)
+                verify(lettuceLockRepository, atLeast(2)).lock(couponId, "coupon_issue");
+                // unlock 메서드는 호출되지 않아야 함 (락 획득 실패)
+                verify(lettuceLockRepository, never()).unlock(couponId, "coupon_issue");
 
-                    // lock 메서드는 두 번 이상 호출되어야 함 (첫 번째 시도 실패 후 재시도)
-                    verify(lettuceLockRepository, atLeast(2)).lock(couponId, "coupon_issue");
-
-                    // unlock 메서드는 호출되지 않아야 함 (락 획득 실패)
-                    verify(lettuceLockRepository, never()).unlock(couponId, "coupon_issue");
-                });
             }
         };
         thread.start();

@@ -47,7 +47,7 @@ public class DistributeLockExecutorWithRedisson {
              * 예외 회피 : throw e;
              * 예외 전환 : Thread.currentThread().interrupt();
              */
-           // Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt();
         } finally {
             // 락 해제
             if (lock.isLocked() || lock.isHeldByCurrentThread()) {
