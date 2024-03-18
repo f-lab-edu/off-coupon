@@ -10,7 +10,6 @@ import org.mockito.MockitoAnnotations;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertTimeout;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 import static org.mockito.Mockito.*;
 
 class DistributeLockExecutorWithLettuceTest {
@@ -80,7 +79,6 @@ class DistributeLockExecutorWithLettuceTest {
         Thread thread = new Thread() {
             @Override
             public void run() {
-                // assertTimeoutPreemptively : 특정 시간 내에 실행되지 않으면 테스트를 종료하므로, 테스트가 무한정으로 실행되는 것을 방지합니다.
                 try {
                     distributeLockExecutorWithLettuce.execute(couponId, () -> System.out.println("쿠폰 발행 로직 수행"));
                 } catch (InterruptedException e) {

@@ -32,11 +32,12 @@ class NamedLockCouponIssueTest {
 
     @Autowired
     private CouponRepository couponRepository;
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
 
     @BeforeEach
     void setUp() {
-        setupUtils.setUpEventAndCoupon(eventRepository, couponRepository);
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
 
 

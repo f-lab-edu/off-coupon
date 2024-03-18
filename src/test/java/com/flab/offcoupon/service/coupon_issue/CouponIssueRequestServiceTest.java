@@ -34,7 +34,7 @@ class CouponIssueRequestServiceTest {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
 
     @BeforeEach
     void clear() {
@@ -45,7 +45,8 @@ class CouponIssueRequestServiceTest {
 
     @BeforeEach
     void setUp() {
-        setupUtils.setUpEventAndCoupon(eventRepository, couponRepository);
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
 
 

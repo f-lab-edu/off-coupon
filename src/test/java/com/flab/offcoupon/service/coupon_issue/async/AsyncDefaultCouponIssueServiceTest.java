@@ -48,20 +48,18 @@ class AsyncDefaultCouponIssueServiceTest {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
 
     @BeforeEach
     void clear() {
         Collection<String> redisKeys = redisTemplate.keys("*");
         redisTemplate.delete(redisKeys);
     }
-
     @BeforeEach
     void setUp() {
-        setupUtils.setUpEventAndCoupon(eventRepository, couponRepository);
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
-
-
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")
     void test() {

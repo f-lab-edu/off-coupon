@@ -15,8 +15,12 @@ import java.time.LocalDateTime;
  * 회원 가입, 이벤트 및 쿠폰 설정 등의 테스트 시 공통적으로 사용되는 기능을 제공합니다.
  */
 public class SetupUtils {
-    private final SignupMemberRequestDto testSignupMemberDto;
-
+    private SignupMemberRequestDto testSignupMemberDto;
+    private EventRepository eventRepository;
+    private CouponRepository couponRepository;
+    /**
+     * 기본 생성자 - 테스트용 회원 가입 DTO를 초기화합니다.
+     */
     public SetupUtils() {
         this.testSignupMemberDto = SignupMemberRequestDto.create(
                 "test@gmail.com",
@@ -26,6 +30,16 @@ public class SetupUtils {
                 "01012345678",
                 Role.ROLE_USER
         );
+    }
+    /**
+     * 생성자 - 이벤트 저장소와 쿠폰 저장소를 초기화합니다.
+     *
+     * @param eventRepository 이벤트 저장소
+     * @param couponRepository 쿠폰 저장소
+     */
+    public SetupUtils(EventRepository eventRepository, CouponRepository couponRepository) {
+        this.eventRepository = eventRepository;
+        this.couponRepository = couponRepository;
     }
 
     /**
@@ -51,12 +65,9 @@ public class SetupUtils {
                 testSignupMemberDto.getRole()));
     }
     /**
-     * 주어진 EventRepository와 CouponRepository를 사용하여 테스트용 이벤트와 쿠폰을 설정합니다.
-     *
-     * @param eventRepository  이벤트를 저장할 EventRepository 객체
-     * @param couponRepository 쿠폰을 저장할 CouponRepository 객체
+     * 이벤트와 쿠폰을 설정하여 저장합니다.
      */
-    public void setUpEventAndCoupon(EventRepository eventRepository, CouponRepository couponRepository) {
+    public void setUpEventAndCoupon() {
         Event event = new Event(
                 1L,
                 "바디케어",
@@ -84,9 +95,15 @@ public class SetupUtils {
                 LocalDateTime.now());
         couponRepository.save(coupon);
     }
-
-    public void setUpEventAndCouponWithParams(EventRepository eventRepository, CouponRepository couponRepository,
-                                              LocalDate startDate, LocalDate endDate, String startTime, String endTime) {
+    /**
+     * 주어진 매개변수로 이벤트와 쿠폰을 설정하여 저장합니다.
+     *
+     * @param startDate 이벤트 시작일
+     * @param endDate 이벤트 종료일
+     * @param startTime 이벤트 시작 시간
+     * @param endTime 이벤트 종료 시간
+     */
+    public void setUpEventAndCouponWithParams(LocalDate startDate, LocalDate endDate, String startTime, String endTime) {
         Event event = new Event(
                 2L,
                 "바디케어2",

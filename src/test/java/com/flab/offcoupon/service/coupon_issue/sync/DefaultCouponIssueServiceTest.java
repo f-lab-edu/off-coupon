@@ -57,15 +57,19 @@ class DefaultCouponIssueServiceTest {
 
     @Autowired
     private CouponRepository couponRepository;
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
     @BeforeEach
-    void setUp() {
+    void clear() {
         Collection<String> redisKeys = redisTemplate.keys("*");
-        setupUtils.setUpEventAndCoupon(eventRepository, couponRepository);
         redisTemplate.delete(redisKeys);
+    }
+    @BeforeEach
+    void setUp() {
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
 
     @Test
@@ -85,7 +89,7 @@ class DefaultCouponIssueServiceTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 기간 설정이 되어있지 않으면 Exception 발생")
     void issueCoupon_fail_with_null_event_period() {
-        setupUtils.setUpEventAndCouponWithParams(eventRepository, couponRepository, null, null, "13:00:00", "15:00:00");
+        setupUtils.setUpEventAndCouponWithParams( null, null, "13:00:00", "15:00:00");
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long eventId = 2L;
@@ -100,7 +104,7 @@ class DefaultCouponIssueServiceTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 시간 설정이 되어있지 않으면 Exception 발생")
     void issueCoupon_fail_with_null_event_time() {
-        setupUtils.setUpEventAndCouponWithParams(eventRepository, couponRepository,  LocalDate.now(),  LocalDate.now(), null, null);
+        setupUtils.setUpEventAndCouponWithParams(LocalDate.now(),  LocalDate.now(), null, null);
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long eventId = 2L;

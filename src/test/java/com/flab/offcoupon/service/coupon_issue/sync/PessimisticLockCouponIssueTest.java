@@ -31,13 +31,13 @@ class PessimisticLockCouponIssueTest {
 
     @Autowired
     private CouponRepository couponRepository;
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
 
     @BeforeEach
     void setUp() {
-        setupUtils.setUpEventAndCoupon(eventRepository, couponRepository);
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
-
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 식별자가 존재하지 않으면 Exception 발생")
     void issueCoupon_fail_with_invalid_eventId() {
