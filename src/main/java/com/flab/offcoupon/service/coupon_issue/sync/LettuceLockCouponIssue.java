@@ -21,7 +21,7 @@ public class LettuceLockCouponIssue implements CouponIssueFacade {
     /**
      * DistributeLockExecutorWithLettuce는 Lettuce을 사용하여 락을 처리하는 컴포넌트 클래스입니다.
      * DefaultCouponIssueService는 실제 쿠폰 발급 로직을 담당하는 서비스입니다.
-     */
+     **/
     private final DistributeLockExecutorWithLettuce distributeLockExecutorWithLettuce;
     private final DefaultCouponIssueService defaultCouponIssueService;
 

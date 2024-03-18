@@ -85,7 +85,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.60 // TODO : CICD 테스트용으로 임시적으로 60%로 설정
+                minimum = 0.85
             }
 
             // 라인 최대 갯수 설정
@@ -99,9 +99,8 @@ jacocoTestCoverageVerification {
             afterEvaluate {
 
                 classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, // TODO : CICD 테스트용으로 컨트롤러는 제외하고 테스트 진행
+                    fileTree(dir: it,
                             exclude: [
-                                    "com/flab/offcoupon/controller/**",
                                     "com/flab/offcoupon/component/**",
                                     "com/flab/offcoupon/exception/**", "com/flab/offcoupon/config/**",
                                     "com/flab/offcoupon/OffcouponApplication.class",

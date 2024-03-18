@@ -1,8 +1,5 @@
-package com.flab.offcoupon.domain;
+package com.flab.offcoupon.domain.entity;
 
-import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.domain.entity.CouponType;
-import com.flab.offcoupon.domain.entity.DiscountType;
 import com.flab.offcoupon.domain.entity.params.CouponParams;
 import com.flab.offcoupon.domain.entity.params.DiscountParams;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;

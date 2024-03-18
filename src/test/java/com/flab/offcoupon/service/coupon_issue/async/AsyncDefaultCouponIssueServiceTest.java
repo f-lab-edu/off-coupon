@@ -3,8 +3,6 @@ package com.flab.offcoupon.service.coupon_issue.async;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.domain.entity.CouponType;
-import com.flab.offcoupon.domain.entity.DiscountType;
 import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.dto.request.CouponIssueRequestForQueue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
@@ -15,6 +13,7 @@ import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
+import com.flab.offcoupon.setup.SetupUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +23,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.LongStream;
@@ -34,59 +32,34 @@ import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
 
-@Transactional
 @SpringBootTest
+@Transactional
 class AsyncDefaultCouponIssueServiceTest {
 
     @Autowired
-    AsyncCouponIssueService asyncCouponIssueService;
+    private AsyncCouponIssueService asyncCouponIssueService;
 
     @Autowired
-    EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     @Autowired
-    CouponRepository couponRepository;
+    private CouponRepository couponRepository;
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
+
+    private SetupUtils setupUtils;
 
     @BeforeEach
     void clear() {
         Collection<String> redisKeys = redisTemplate.keys("*");
         redisTemplate.delete(redisKeys);
     }
-
     @BeforeEach
     void setUp() {
-        Event event = new Event(
-                1L,
-                "바디케어",
-                "바디케어 전품목 이벤트",
-                LocalDate.now(),
-                LocalDate.now(),
-                "13:00:00",
-                "15:00:00",
-                LocalDateTime.now(),
-                LocalDateTime.now());
-        eventRepository.save(event);
-
-        Coupon coupon = new Coupon(
-                1L,
-                1L,
-                DiscountType.PERCENT,
-                50L,
-                null,
-                CouponType.FIRST_COME_FIRST_SERVED,
-                500L,
-                0L,
-                LocalDateTime.now().plusMonths(1L),
-                LocalDateTime.now().plusMonths(2L),
-                LocalDateTime.now(),
-                LocalDateTime.now());
-        couponRepository.save(coupon);
+        setupUtils = new SetupUtils(eventRepository, couponRepository);
+        setupUtils.setUpEventAndCoupon();
     }
-
-
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")
     void test() {

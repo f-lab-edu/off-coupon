@@ -58,6 +58,8 @@ class MemberControllerTest {
     void init() {
         this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService))
                 .addFilter(new CharacterEncodingFilter("UTF-8", true))
+                // setControllerAdvice : 컨트롤러에서 발생하는 예외를 처리하기 위해 사용합니다
+                // GlobalExceptionHandler는 Java Bean 어노테이션에서 발생하는 MethodArgumentNotValidException을 처리하기 위해 사용합니다
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
     }
@@ -70,8 +72,10 @@ class MemberControllerTest {
         // Given
         sb.append("email=");
         SignupMemberRequestDto invalidSignupMemberRequestDto = SignupMemberRequestDto.create(null, "abcabc123", "name", LocalDate.parse("2024-12-12"), "010-1234-1234", Role.ROLE_USER);
-        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(EMAIL_MUST_NOT_EMPTY).append("}").toString());
-        given(memberService.signUp(any())).willReturn(failResponse);
+
+//        ResponseDTO failResponse = ResponseDTO.getFailResult(sb.append(EMAIL_MUST_NOT_EMPTY).append("}").toString());
+//        given(memberService.signUp(any())).willReturn(failResponse);
+//        //given(memberService.signUp(any())).willThrow(new IllegalArgumentException(EMAIL_MUST_NOT_EMPTY));
 
         // When & then
         mvc.perform(post(URL)
@@ -79,9 +83,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @ParameterizedTest
@@ -102,9 +106,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                        .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                        .andDo(print());
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @Test
@@ -124,9 +128,10 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
+
     }
 
     @ParameterizedTest
@@ -147,9 +152,10 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
+
     }
 
     @ParameterizedTest
@@ -172,9 +178,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
 
@@ -195,9 +201,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @Test
@@ -217,9 +223,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @ParameterizedTest
@@ -240,9 +246,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @Test
@@ -262,9 +268,9 @@ class MemberControllerTest {
                         .content(objectMapper.writeValueAsString(invalidSignupMemberRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message",startsWith(sb.toString())))
-                .andDo(print());
+                .andExpect(jsonPath("$.message",startsWith(sb.toString())));
     }
 
     @Test
@@ -282,7 +288,7 @@ class MemberControllerTest {
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validSignupMemberRequestDto)))
-                .andExpect(status().isCreated())
-                .andDo(print());
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 }
