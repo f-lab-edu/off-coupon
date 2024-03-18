@@ -1,8 +1,7 @@
 # off-coupon 프로젝트 개요
 
-off-coupon은 네고왕 선착순 이벤트를 참고하여 개발된 서비스로, 선착순 쿠폰 발행 및 사용 기능을 지원합니다.
-
-<img width="789" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d2b9c662-3e0c-44d1-965a-0b1a15b54ac4">
+<img width="789" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/d2b9c662-3e0c-44d1-965a-0b1a15b54ac4">  
+<br> 이 프로젝트는 네고왕 선착순 이벤트를 참고하여 개발된 서비스로, 선착순 쿠폰 발행 및 사용 기능을 중점적으로 다루고 있습니다. 
 
 # 프로젝트 목표
 - 고가용성 선착순 쿠폰 발행 및 사용 서비스를 구현하는 것이 목표입니다.
@@ -20,12 +19,19 @@ off-coupon은 네고왕 선착순 이벤트를 참고하여 개발된 서비스�
 Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woowahan.com/2553/)
 
 # 프로젝트 기술 스택
-
+- ![Java](https://img.shields.io/badge/Java-17-007396?logo=java)
 - ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.2-6DB33F?logo=spring%20boot&logoColor=6DB33F)
-- ![MyBatis](https://img.shields.io/badge/MyBatis-3.0.2-000000?logo=&logoColor=000000)
-- ![Gradle](https://img.shields.io/badge/Gradle-8.5-02303A?logo=gradle&logoColor=02303A)
-- ![IntelliJ](https://img.shields.io/badge/IntelliJ-2023.1-000000?logo=intellijidea&logoColor=000000)  
-- ![Redis](https://img.shields.io/badge/Redis-%23DD0031.svg?logo=redis&logoColor=white)
+- ![MySQL](https://img.shields.io/badge/MySQL-8.0.32-4479A1?logo=mysql&logoColor=4479A1)
+- ![Redis](https://img.shields.io/badge/Redis-7.2.4-DC382D?logo=redis&logoColor=white)  
+- ![MyBatis](https://img.shields.io/badge/MyBatis-3.0.3-000000?logo=&logoColor=000000)  
+- ![Gradle](https://img.shields.io/badge/Gradle-8.5-02303A?logo=gradle&logoColor=02303A)  
+- ![JUnit](https://img.shields.io/badge/JUnit-5.8.2-25A162?logo=junit&logoColor=white)
+- ![JaCoCo](https://img.shields.io/badge/JaCoCo-_-FF4088?logo=jacoco&logoColor=white)
+- ![Docker](https://img.shields.io/badge/Docker-24.0.2-2496ED?logo=docker&logoColor=white)
+- ![IntelliJ](https://img.shields.io/badge/IntelliJ-2023.1-000000?logo=intellijidea&logoColor=000000)
+- ![JMeter](https://img.shields.io/badge/JMeter-5.6.2-D21717?logo=apache%20jmeter&logoColor=white)
+- ![Jenkins](https://img.shields.io/badge/Jenkins-2.449-D24939?logo=jenkins&logoColor=white)
+  
 
 # 서비스 아키텍처
 
