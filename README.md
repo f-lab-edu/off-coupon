@@ -41,6 +41,7 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 ## 쿠폰 발행 Flow
 
 ![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/14c085a4-caf2-4184-a97d-58061b0a9bb7)
+<img width="1014" alt="image" src="https://github.com/f-lab-edu/off-coupon/assets/101460733/1a4fb15f-4c49-4098-85c3-669a331359ef">
 
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
