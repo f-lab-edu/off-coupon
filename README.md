@@ -58,8 +58,8 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 
 ## 트러블 슈팅
 [private 메소드를 테스트하려 했지만, 문제는 테스트 코드 로직이었다.](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-private-%EB%A9%94%EC%86%8C%EB%93%9C%EB%A5%BC-%ED%85%8C%EC%8A%A4%ED%8A%B8%ED%95%98%EB%A0%A4-%ED%96%88%EC%A7%80%EB%A7%8C-%EB%AC%B8%EC%A0%9C%EB%8A%94-%ED%85%8C%EC%8A%A4%ED%8A%B8-%EC%BD%94%EB%93%9C%EC%98%80%EB%8B%A4)  
-[Junit 테스트 중 Lock wait timeout exceeded 에러 발생](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-Junit-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%ED%95%98%EB%8B%A4%EA%B0%80-Lock-wait-timeout-exceeded%EA%B0%80-%EB%96%B4%EB%8B%A4)
-
+[Junit 테스트 중 Lock wait timeout exceeded 에러 발생](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-Junit-%ED%85%8C%EC%8A%A4%ED%8A%B8%EB%A5%BC-%ED%95%98%EB%8B%A4%EA%B0%80-Lock-wait-timeout-exceeded%EA%B0%80-%EB%96%B4%EB%8B%A4)  
+[테스트코드도 코드이므로 합성을 통해 중복을 없애자](https://strong-park.tistory.com/entry/%ED%8A%B8%EB%9F%AC%EB%B8%94-%EC%8A%88%ED%8C%85-%ED%85%8C%EC%8A%A4%ED%8A%B8%EC%BD%94%EB%93%9C%EB%8F%84-%EC%BD%94%EB%93%9C%EC%9D%B4%EB%AF%80%EB%A1%9C-%EC%B6%94%EC%83%81%ED%99%94%EB%A5%BC-%ED%86%B5%ED%95%B4-%EC%A4%91%EB%B3%B5%EC%9D%84-%EC%97%86%EC%95%A0%EC%9E%90)
 ## Commit Convention
 
 - feat : 새로운 기능 추가  
