@@ -44,7 +44,7 @@ class SecurityTest {
     @Autowired
     MemberService memberService;
 
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
 
     //mockMvc 객체 생성, Spring Security 환경 setup
     @BeforeEach
@@ -53,6 +53,7 @@ class SecurityTest {
                 .webAppContextSetup(this.context)
                 .apply(springSecurity())
                 .build();
+        setupUtils = new SetupUtils();
         setupUtils.setUpMember(memberService);
     }
 

@@ -49,7 +49,6 @@ class MemberServiceTest {
 
         // when 이미 해당 이메일이 존재한다고 가정
         when(memberRepository.existMemberByEmail(any())).thenReturn(true);
-
         // then
         assertThatThrownBy(() -> memberService.signUp(duplicateSignupMemberRequestDto))
                 .isInstanceOf(MemberBadRequestException.class)

@@ -21,22 +21,29 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 @MybatisTest
-@AutoConfigureTestDatabase(replace= AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupUtils setupUtils;
+
     @BeforeEach
     void setUp() {
+        setupUtils = new SetupUtils();
         setupUtils.setUpMember(memberRepository);
     }
+
     @Test
     @DisplayName("[SUCCESS] 회원 가입 성공")
     void save() {
         // given
-        SignupMemberRequestDto mapperDTO = SignupMemberRequestDto.create("test",",1234", "name", LocalDate.parse("2002-12-23"), "01075805060", Role.ROLE_USER);
-        Member entity = Member.create(mapperDTO.getEmail(),mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthdate(), mapperDTO.getPhone(), mapperDTO.getRole());
+        SignupMemberRequestDto mapperDTO = SignupMemberRequestDto.create(
+                "test",
+                ",1234",
+                "name",
+                LocalDate.parse("2002-12-23"), "01075805060", Role.ROLE_USER);
+        Member entity = Member.create(mapperDTO.getEmail(), mapperDTO.getPassword(), mapperDTO.getName(), mapperDTO.getBirthdate(), mapperDTO.getPhone(), mapperDTO.getRole());
         //when
         memberRepository.save(entity);
     }
