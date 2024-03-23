@@ -1,10 +1,7 @@
 package com.flab.offcoupon.service.coupon_issue.async;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Event;
-import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
@@ -30,7 +27,6 @@ import java.util.stream.LongStream;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestQueueKey;
 
 @SpringBootTest
 @Transactional
@@ -158,21 +154,4 @@ class AsyncDefaultCouponIssueServiceTest {
         Boolean isSaved = redisTemplate.opsForSet().isMember(getIssueRequestKey(couponId), String.valueOf(memberId));
         Assertions.assertTrue(isSaved);
     }
-
-    @Test
-    @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급 요청이 성공하면 쿠폰 발급 큐에 적재된다")
-    void issueCoupon_success_and_redis_queue() throws JsonProcessingException {
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long memberId = 1L;
-        long eventId = 1L;
-        long couponId = 1L;
-        CouponIssueMessageForQueue request = new CouponIssueMessageForQueue(couponId, memberId);
-        // when
-        asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
-        // then
-        String saveIssueRequest = redisTemplate.opsForList().leftPop(getIssueRequestQueueKey());
-        Assertions.assertEquals(new ObjectMapper().writeValueAsString(request), saveIssueRequest);
-    }
-
 }

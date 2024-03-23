@@ -42,7 +42,7 @@ public class CouponIssueRequestService {
      * @param memberId 회원 ID
      * @return 응답 DTO
      */
-    public ResponseDTO<String> syncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+    public ResponseDTO<String> syncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
         return couponIssueFacade.issueCoupon(currentDateTime, eventId, couponId, memberId);
     }
 

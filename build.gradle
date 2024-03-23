@@ -47,7 +47,6 @@ dependencies {
 
     // thymeleaf (sse 알림 확인용 서버사이드 랜더링)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    //implementation group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-springsecurity5', version: '3.0.4.RELEASE'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'

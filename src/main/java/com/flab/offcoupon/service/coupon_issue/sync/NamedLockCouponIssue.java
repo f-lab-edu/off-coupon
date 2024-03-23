@@ -34,7 +34,7 @@ public class NamedLockCouponIssue implements CouponIssueFacade {
     private final DefaultCouponIssueService defaultCouponIssueService;
 
     @Override
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         AtomicReference<ResponseDTO<String>> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithNamedLock를 사용하여 락을 획득합니다.
         distributeLockExecutorWithNamedLock.execute("namedLock", () ->
