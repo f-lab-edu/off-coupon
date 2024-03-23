@@ -59,7 +59,7 @@ public class CouponIssueConsumer {
             message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
             log.info("'coupon-issue.queue'에 메시지가 있습니다. message: {}", message);
             saveEachCouponIssueHistory(message);
-            sseAlertSender.pushSseMessage(message.memberId(),"쿠폰이 발급 완료되었습니다. memberId : ");
+            sseAlertSender.pushSseMessage(message.memberId(),"쿠폰이 발급 완료되었습니다. memberId : %s");
         } else {
             log.info("'coupon-issue.queue'가 비어있습니다.");
             totalUpdateIssuedCouponAndDeleteRequest();

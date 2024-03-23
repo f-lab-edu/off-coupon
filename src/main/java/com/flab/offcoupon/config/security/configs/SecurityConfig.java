@@ -48,7 +48,8 @@ public class SecurityConfig {
                                         "/",
                                         "/api/v1/members/signup",
                                         "/api/v1/event/**", // TODO : 테스트용
-                                        "/api/v1/sse/**")
+                                        "/api/v1/sse/**",
+                                        "/main")
                                 .permitAll()
                                 .requestMatchers("/member").hasAnyRole("USER")
                                 .requestMatchers("/admin").hasAnyRole("ADMIN")

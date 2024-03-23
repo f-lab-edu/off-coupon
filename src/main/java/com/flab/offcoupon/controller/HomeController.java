@@ -16,7 +16,7 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping("/sse-test")
+    @GetMapping("/main")
     public ModelAndView main() {
         return new ModelAndView("main");
     }
