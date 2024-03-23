@@ -48,8 +48,7 @@ public class MessageQueueCountChecker {
              Channel channel = connection.createChannel()) {
             // queueDeclarePassive : RabbitMQ에게 특정 큐가 존재하는지 확인 요청하는 메서드
             DeclareOk queueDeclareOk = channel.queueDeclarePassive(queueName);
-            int messageCount = queueDeclareOk.getMessageCount();
-            return messageCount;
+            return queueDeclareOk.getMessageCount();
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
         }

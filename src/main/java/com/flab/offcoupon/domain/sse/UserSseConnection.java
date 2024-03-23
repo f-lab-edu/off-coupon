@@ -37,16 +37,10 @@ public final class UserSseConnection {
         this.connectionPoolIfs = connectionPoolIfs;
         // ojbectMapper 초기화
         this.objectMapper = objectMapper;
-        // on Completion
-        this.sseEmitter.onCompletion(() -> {
-            // 클라이언트와 연결이 종료되었을 때 처리 connection pool remove
-            connectionPoolIfs.onCompletionCallback(this);
-        });
+        // on Completion(종료시 connection pool remove)
+        this.sseEmitter.onCompletion(() -> connectionPoolIfs.onCompletionCallback(this));
         // on Timeout
-        this.sseEmitter.onTimeout(() -> {
-            // 클라이언트와 Timeout 발생 시 completete
-            this.sseEmitter.complete();
-        });
+        this.sseEmitter.onTimeout(() -> this.sseEmitter.complete());
 
         // onopen 메세지
         sendMessage("onopen", "connect");

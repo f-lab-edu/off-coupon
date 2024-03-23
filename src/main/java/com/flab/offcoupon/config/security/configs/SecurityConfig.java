@@ -29,6 +29,7 @@ public class SecurityConfig {
     private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final AuthenticationFailureHandler customAuthenticationFailureHandler;
     private final AccessDeniedHandler customAccessDeniedHandler;
+    private static final String LOGIN_URL = "/api/v1/members/login";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -57,7 +58,7 @@ public class SecurityConfig {
 
         http
                 .formLogin(form -> form
-                        .loginProcessingUrl("/api/v1/members/login")
+                        .loginProcessingUrl(LOGIN_URL)
                         .defaultSuccessUrl("/api/v1/")
                         .usernameParameter("email")
                         .passwordParameter("password")
@@ -68,7 +69,7 @@ public class SecurityConfig {
         http
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/members/logout")
-                        .logoutSuccessUrl("/api/v1/members/login")
+                        .logoutSuccessUrl(LOGIN_URL)
                         .invalidateHttpSession(true)
                         .deleteCookies("SESSIONID")
                 );
@@ -87,7 +88,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
-                        .expiredUrl("/api/v1/members/login")
+                        .expiredUrl(LOGIN_URL)
                 );
         return http.build();
     }

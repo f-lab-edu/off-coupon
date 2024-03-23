@@ -24,8 +24,6 @@ public class SseAlertSender {
     public void pushSseMessage(Long memberId, String message) {
         UserSseConnection userSseConnection = sseConnectionPool.getSession(String.valueOf(memberId));
         Optional.ofNullable(userSseConnection)
-                .ifPresent(it -> {
-                    it.sendMessage(message.formatted(memberId));
-                });
+                .ifPresent(it -> it.sendMessage(message.formatted(memberId)));
     }
 }
