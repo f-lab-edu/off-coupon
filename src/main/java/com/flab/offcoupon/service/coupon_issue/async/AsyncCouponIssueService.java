@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+import static com.flab.offcoupon.util.CouponRabbitMQUtils.EXCHANGE_NAME;
+import static com.flab.offcoupon.util.CouponRabbitMQUtils.ROUTING_KEY;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 
 /**
@@ -42,7 +44,7 @@ public class AsyncCouponIssueService {
         CouponRedisEntity coupon = couponCacheService.getCoupon(couponId);
         couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, memberId);
         issueRequest(couponId, memberId);
-        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
 
     /**
@@ -54,16 +56,17 @@ public class AsyncCouponIssueService {
     }
 
     /**
-     * 검증이 완료된 이후, 쿠폰 발급 요청을 처리하는 메서드 입니다.
-     * 1. REDIS의 SET 자료구조에 쿠폰 발급 요청 추가 : 중복 발급 요청을 방지 및 총 요청 개수 카운팅을 하기 위해 사용됩니다
-     * 2. RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.
+     * 검증이 완료된 이후, 쿠폰 발급 요청을 처리하는 메서드 입니다.<br>
+     * <ol>
+     *     <li> Redis의 SET 자료구조에 쿠폰 발급 요청 추가 : 중복 발급 요청을 방지 및 총 요청 개수 카운팅을 하기 위해 사용됩니다</li>
+     *     <li> RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.</li>
+     * </ol>
      *
      * @param couponId 쿠폰 ID
      * @param memberId 회원 ID
      */
     private void issueRequest(long couponId, long memberId) {
-        CouponIssueMessageForQueue issueRequestForQueue = new CouponIssueMessageForQueue(couponId, memberId);
         redisRepository.sAdd(getIssueRequestKey(couponId), String.valueOf(memberId));
-        producer.producer("coupon-issue.exchange", "coupon-issue.key", issueRequestForQueue);
+        producer.producer(EXCHANGE_NAME, ROUTING_KEY, new CouponIssueMessageForQueue(couponId, memberId));
     }
 }

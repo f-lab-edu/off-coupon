@@ -43,9 +43,12 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         PathRequest.toStaticResources().atCommonLocations()
                                 ).permitAll()
-                                 .requestMatchers("/", "/api/v1/members/signup","/api/v1/event/**", "/api/v1/sse/**","/main").permitAll()
-                               // .requestMatchers("/member").hasAnyRole("USER")
-                               // .requestMatchers("/admin").hasAnyRole("ADMIN")
+                                 .requestMatchers(
+                                         "/",
+                                         "/api/v1/members/signup",
+                                         "/api/v1/event/**", // TODO : 테스트용
+                                         "/api/v1/sse/**")
+                                .permitAll()
                                 // 그 외 모든 요청은 인증 완료
                                 .anyRequest().authenticated()
                 );
@@ -82,14 +85,8 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
-                        .expiredUrl("/members/login")
+                        .expiredUrl("/api/v1/members/login")
                 );
-                //https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html
-//        		.securityContext((securityContext) -> securityContext
-//                .securityContextRepository(new DelegatingSecurityContextRepository(
-//                        new HttpSessionSecurityContextRepository()
-//                ))
-//        );
         return http.build();
     }
 
@@ -101,7 +98,6 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider() {
         return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,6 +1,6 @@
 package com.flab.offcoupon.component.rabbitmq;
 
-import com.rabbitmq.client.AMQP;
+import com.rabbitmq.client.AMQP.Queue.DeclareOk;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -10,8 +10,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * RabbitMQ의 특정 큐에 있는 메시지 수를 조회하는 컴포넌트 클래스입니다.
+ */
 @Component
 public class MessageQueueCountChecker {
+
     @Value("${spring.rabbitmq.host}")
     private String rabbitmqHost;
 
@@ -23,33 +27,28 @@ public class MessageQueueCountChecker {
 
     @Value("${spring.rabbitmq.password}")
     private String rabbitmqPassword;
-    private final String URL = "http://"+rabbitmqHost+":"+15672+"/api/queues/%2F/";
 
     /**
      * RabbitMQ의 특정 큐에 있는 메시지 수를 조회합니다.
      *
-     * @See https://www.rabbitmq.com/client-libraries/java-api-guide#exchanges-and-queues
+     * @param queueName 조회할 큐의 이름
+     * @return 큐에 있는 메시지 수
+     * @throws IOException IOException 예외 발생시
+     *
+     * @See <a href="https://www.rabbitmq.com/client-libraries/java-api-guide#client-provided-names">참고한 RabbitMQ 공식문서</a>
      * @See Client-Provided Connection Name, Passive Declaration
-     * @param queueName
-     * @return
-     * @throws IOException
      */
     public int getMessageCount(String queueName) throws IOException {
-        // RabbitMQ 연결을 설정합니다.
+        // RabbitMQ 연결 설정
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost(rabbitmqHost); // RabbitMQ 호스트 설정
-        factory.setUsername(rabbitmqUsername); // RabbitMQ 사용자 이름 설정
-        factory.setPassword(rabbitmqPassword); // RabbitMQ 사용자 비밀번호 설정
-
-        // RabbitMQ에 연결합니다.
+        factory.setHost(rabbitmqHost);
+        factory.setUsername(rabbitmqUsername);
+        factory.setPassword(rabbitmqPassword);
         try (Connection connection = factory.newConnection();
              Channel channel = connection.createChannel()) {
-            // 큐를 passively 선언하여 존재 여부를 확인합니다.
-            AMQP.Queue.DeclareOk queueDeclareOk = channel.queueDeclarePassive(queueName);
-
-            // 큐에 대한 정보를 얻습니다.
-            int messageCount = queueDeclareOk.getMessageCount(); // 메시지 수를 얻습니다.
-            System.out.println("messageCount = " + messageCount);
+            // queueDeclarePassive : RabbitMQ에게 특정 큐가 존재하는지 확인 요청하는 메서드
+            DeclareOk queueDeclareOk = channel.queueDeclarePassive(queueName);
+            int messageCount = queueDeclareOk.getMessageCount();
             return messageCount;
         } catch (TimeoutException e) {
             throw new RuntimeException(e);
