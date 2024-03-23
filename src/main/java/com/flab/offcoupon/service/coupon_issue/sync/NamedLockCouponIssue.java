@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
-import com.flab.offcoupon.component.DistributeLockExecutorWithNamedLock;
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithNamedLock;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

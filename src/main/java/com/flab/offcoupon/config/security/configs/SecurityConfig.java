@@ -3,14 +3,16 @@ package com.flab.offcoupon.config.security.configs;
 import com.flab.offcoupon.config.security.provider.CustomAuthenticationProvider;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -27,18 +29,24 @@ public class SecurityConfig {
     private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private final AuthenticationFailureHandler customAuthenticationFailureHandler;
     private final AccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(CsrfConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
                 .headers(headerConfig ->
                         headerConfig.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/", "/api/v1/members/signup","/api/v1/event/**").permitAll()
-                                .requestMatchers("/member").hasAnyRole("USER")
-                                .requestMatchers("/admin").hasAnyRole("ADMIN")
+                                // resource에 대해서는 모든 요청 허용
+                                .requestMatchers(
+                                        PathRequest.toStaticResources().atCommonLocations()
+                                ).permitAll()
+                                 .requestMatchers("/", "/api/v1/members/signup","/api/v1/event/**", "/api/v1/sse/**","/main").permitAll()
+                               // .requestMatchers("/member").hasAnyRole("USER")
+                               // .requestMatchers("/admin").hasAnyRole("ADMIN")
+                                // 그 외 모든 요청은 인증 완료
                                 .anyRequest().authenticated()
                 );
 
@@ -71,10 +79,17 @@ public class SecurityConfig {
                 );
         http
                 .sessionManagement(sessionManagement -> sessionManagement
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(false)
                         .expiredUrl("/members/login")
                 );
+                //https://docs.spring.io/spring-security/reference/servlet/authentication/persistence.html
+//        		.securityContext((securityContext) -> securityContext
+//                .securityContextRepository(new DelegatingSecurityContextRepository(
+//                        new HttpSessionSecurityContextRepository()
+//                ))
+//        );
         return http.build();
     }
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Event;
-import com.flab.offcoupon.dto.request.CouponIssueRequestForQueue;
+import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
@@ -167,7 +167,7 @@ class AsyncDefaultCouponIssueServiceTest {
         long memberId = 1L;
         long eventId = 1L;
         long couponId = 1L;
-        CouponIssueRequestForQueue request = new CouponIssueRequestForQueue(couponId, memberId);
+        CouponIssueMessageForQueue request = new CouponIssueMessageForQueue(couponId, memberId);
         // when
         asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
         // then

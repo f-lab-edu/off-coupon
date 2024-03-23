@@ -1,5 +1,6 @@
 package com.flab.offcoupon.component;
 
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithRedisson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;

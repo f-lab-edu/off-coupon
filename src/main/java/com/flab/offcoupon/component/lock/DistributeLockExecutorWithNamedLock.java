@@ -1,4 +1,4 @@
-package com.flab.offcoupon.component;
+package com.flab.offcoupon.component.lock;
 
 import com.flab.offcoupon.repository.mysql.NamedLockRepository;
 import lombok.RequiredArgsConstructor;

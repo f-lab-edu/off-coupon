@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="kor" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE TEST</title>
+</head>
+<body>
+    <h1>Server Sent Event</h1>
+<!--    <h1 th:text="${#authenticaion.name}"></h1> </br>-->
+<!--    <h1 th:text="${#authenticaion.principal}"></h1> </br>-->
+</body>
+<script>
+    const url = "http://localhost:8080/api/v1/sse/connect"; // 접속 주소
+    const eventSource = new EventSource(url); // sse 연결
+
+    eventSource.onopen = event => {
+        console.log("sse 연결 성공");
+        console.log(event);
+    }
+
+    eventSource.onmessage = event => {
+        console.log("received message: " + event.data);
+    }
+</script>
+</html>

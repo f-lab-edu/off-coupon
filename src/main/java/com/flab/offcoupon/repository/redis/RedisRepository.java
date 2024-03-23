@@ -52,4 +52,13 @@ public class RedisRepository {
     public Long rPush(String key, String value) {
         return redisTemplate.opsForList().rightPush(key, value);
     }
+
+    /**
+     * Redis DEL 명령어 : 대기 큐에서 특정 키를 제거합니다.
+     * @param key 대기 큐의 키
+     * @return 대기 큐에서 해당 키가 제거됐는지 여부
+     */
+    public Boolean delete(String key) {
+        return redisTemplate.delete(key);
+    }
 }

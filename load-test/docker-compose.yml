@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  master:
+    image: locustio/locust
+    ports:
+      - "8089:8089"
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile-async-issue.py --master -H http://host.docker.internal:8080
+
+  worker:
+    image: locustio/locust
+    volumes:
+      - ./:/mnt/locust
+    command: -f /mnt/locust/locustfile-async-issue.py --worker --master-host master

@@ -14,7 +14,6 @@ import static com.flab.offcoupon.exception.member.MemberErrorMessage.DO_NOT_MATC
 
 @RequiredArgsConstructor
 public class CustomAuthenticationProvider implements AuthenticationProvider {
-
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     @Override
@@ -31,7 +30,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         return new UsernamePasswordAuthenticationToken(memberContext, null, memberContext.getAuthorities());
     }
-
     @Override
     public boolean supports(Class<?> authentication) {
         return UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication);

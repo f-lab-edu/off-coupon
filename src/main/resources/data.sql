@@ -14,6 +14,3 @@ INSERT INTO event (id, category, description, start_date, end_date, daily_issue_
 VALUES (1, '바디케어' , '바디케어 전품목 이벤트', '2024-02-27','2024-02-29','13:00:00','15:00:00','2024-02-01','2024-02-01');
 
 
-SELECT VERSION();
-
-

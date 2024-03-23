@@ -34,7 +34,6 @@ public class CouponIssueController {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }
-
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{eventId}/issues-async")
     public ResponseEntity<ResponseDTO<String>> asyncIssue(@PathVariable final long eventId,

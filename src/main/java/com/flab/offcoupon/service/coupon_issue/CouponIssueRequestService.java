@@ -45,4 +45,8 @@ public class CouponIssueRequestService {
     public ResponseDTO<String> asyncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         return asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
     }
+
+    public ResponseDTO<String> asyncIssueCouponV2(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+        return asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+    }
 }
