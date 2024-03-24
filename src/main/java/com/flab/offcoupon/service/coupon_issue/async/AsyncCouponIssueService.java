@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
-import static com.flab.offcoupon.util.CouponRabbitMQUtils.EXCHANGE_NAME;
-import static com.flab.offcoupon.util.CouponRabbitMQUtils.ROUTING_KEY;
+import static com.flab.offcoupon.util.CouponRabbitMQConstants.EXCHANGE_NAME;
+import static com.flab.offcoupon.util.CouponRabbitMQConstants.ROUTING_KEY;
 import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
 
 /**

@@ -1,12 +1,11 @@
 package com.flab.offcoupon.util;
 
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.experimental.UtilityClass;
 
 /**
  * Redis 에서 사용하는 key 를 생성하는 유틸리티 클래스
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@UtilityClass
 public class CouponRedisUtils {
     private static final String ISSUE_REQUEST_WITH_COUPON_ID_PREFIX = "issue.request.couponId=%s";
     private static final String ISSUE_REQUEST_QUEUE_PREFIX = "issue.request.queue";

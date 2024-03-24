@@ -9,7 +9,7 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static com.flab.offcoupon.util.CouponRabbitMQUtils.*;
+import static com.flab.offcoupon.util.CouponRabbitMQConstants.*;
 
 /**
  * RabbitMQ 구성을 정의하는 설정 클래스입니다.

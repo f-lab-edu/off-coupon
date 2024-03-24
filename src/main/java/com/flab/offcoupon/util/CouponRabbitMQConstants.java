@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
  * RabbitMQ 에서 사용하는 exchange, queue, routing key 를 생성하는 유틸리티 클래스
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CouponRabbitMQUtils {
+public class CouponRabbitMQConstants {
     /**
      * RabbitMQ에서 사용하는 Exchange의 이름입니다.
      * 메시지를 받고 적절한 Queue로 라우팅하는 역할을 담당합니다.

@@ -11,6 +11,6 @@ VALUES (1,1,'PERCENT',50,null,'FIRST_COME_FIRST_SERVED',500,0,'2024-03-1','2024-
 ## EVENT
 INSERT INTO event (id, category, description, start_date, end_date, daily_issue_start_time,
                               daily_issue_end_time, created_at, updated_at)
-VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(now(), INTERVAL 3 DAY),'20:00:00','23:00:00','2024-02-01','2024-02-01');
+VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(now(), INTERVAL 3 DAY),'12:00:00','23:00:00','2024-02-01','2024-02-01');
 
 
