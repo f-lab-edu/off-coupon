@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
@@ -30,7 +31,8 @@ public class SseConnectionPool implements ConnectionPoolInterface<String, UserSs
 
     @Override
     public UserSseConnection getSession(String uniqueKey) {
-        return connectionPool.get(uniqueKey);
+        return Optional.of(connectionPool.get(String.valueOf(uniqueKey)))
+                .orElseThrow(() -> new IllegalArgumentException("해당 세션을 찾을 수 없습니다. session : " + uniqueKey));
     }
 
     @Override

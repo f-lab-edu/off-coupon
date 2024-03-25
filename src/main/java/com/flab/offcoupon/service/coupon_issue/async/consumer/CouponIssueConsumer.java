@@ -10,8 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.QUEUE_NAME;
 
 /**
@@ -38,13 +36,13 @@ public class CouponIssueConsumer {
      * 스케줄링이 매번 호출되기 때문에 Queue가 비어있을 경우 couponId를 찾기 위해 static으로 선언했습니다.
      */
     public static CouponIssueMessageForQueue message;
+
     /**
      * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 처리합니다.
      *
-     * @throws IOException 메시지 큐 조회 중 발생하는 예외
      */
     @Scheduled(fixedDelay = 3000)
-    public void consumeCouponIssueMessage() throws IOException {
+    public void consumeCouponIssueMessage() {
         if (existCouponIssueQueueTarget()) {
             message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
             log.info("'coupon-issue.queue'에 메시지가 있습니다. message: {}", message);
@@ -59,9 +57,9 @@ public class CouponIssueConsumer {
      * 메시지 큐에 메시지가 있는지 확인합니다.
      *
      * @return 메시지 큐에 메시지가 존재하는지 여부
-     * @throws IOException 메시지 큐 조회 중 발생하는 예외
+     * @see MessageQueueCountChecker#getMessageCount(String)
      */
-    private boolean existCouponIssueQueueTarget() throws IOException {
+    private boolean existCouponIssueQueueTarget() {
         return messageQueueCountChecker.getMessageCount(QUEUE_NAME) > 0;
     }
 }

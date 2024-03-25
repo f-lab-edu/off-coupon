@@ -10,7 +10,7 @@ import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ class AsyncDefaultCouponIssueServiceTest {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
 
     @BeforeEach
     void clear() {
@@ -53,8 +53,8 @@ class AsyncDefaultCouponIssueServiceTest {
     }
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils(eventRepository, couponRepository);
-        setupUtils.setUpEventAndCoupon();
+        setupInitializer = new SetupInitializer(eventRepository, couponRepository);
+        setupInitializer.setUpEventAndCoupon();
     }
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰이 존재하지 않는다면 예외를 반환한다")

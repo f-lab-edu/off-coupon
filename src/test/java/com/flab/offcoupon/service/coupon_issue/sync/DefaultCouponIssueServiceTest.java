@@ -9,7 +9,7 @@ import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +57,7 @@ class DefaultCouponIssueServiceTest {
 
     @Autowired
     private CouponRepository couponRepository;
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
@@ -68,8 +68,8 @@ class DefaultCouponIssueServiceTest {
     }
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils(eventRepository, couponRepository);
-        setupUtils.setUpEventAndCoupon();
+        setupInitializer = new SetupInitializer(eventRepository, couponRepository);
+        setupInitializer.setUpEventAndCoupon();
     }
 
     @Test
@@ -89,7 +89,7 @@ class DefaultCouponIssueServiceTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 기간 설정이 되어있지 않으면 Exception 발생")
     void issueCoupon_fail_with_null_event_period() {
-        setupUtils.setUpEventAndCouponWithParams( null, null, "13:00:00", "15:00:00");
+        setupInitializer.setUpEventAndCouponWithParams( null, null, "13:00:00", "15:00:00");
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long eventId = 2L;
@@ -104,7 +104,7 @@ class DefaultCouponIssueServiceTest {
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 시간 설정이 되어있지 않으면 Exception 발생")
     void issueCoupon_fail_with_null_event_time() {
-        setupUtils.setUpEventAndCouponWithParams(LocalDate.now(),  LocalDate.now(), null, null);
+        setupInitializer.setUpEventAndCouponWithParams(LocalDate.now(),  LocalDate.now(), null, null);
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long eventId = 2L;

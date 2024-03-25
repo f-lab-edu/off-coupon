@@ -4,7 +4,7 @@ import com.flab.offcoupon.domain.entity.Member;
 import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
 import com.flab.offcoupon.repository.mysql.MemberRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,12 +26,12 @@ class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
 
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils();
-        setupUtils.setUpMember(memberRepository);
+        setupInitializer = new SetupInitializer();
+        setupInitializer.setUpMember(memberRepository);
     }
 
     @Test

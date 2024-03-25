@@ -2,7 +2,7 @@ package com.flab.offcoupon.service.coupon_issue;
 
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ class CouponIssueRequestServiceTest {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
 
     @BeforeEach
     void clear() {
@@ -45,8 +45,8 @@ class CouponIssueRequestServiceTest {
 
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils(eventRepository, couponRepository);
-        setupUtils.setUpEventAndCoupon();
+        setupInitializer = new SetupInitializer(eventRepository, couponRepository);
+        setupInitializer.setUpEventAndCoupon();
     }
 
 
