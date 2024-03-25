@@ -13,8 +13,4 @@ public class CouponRedisUtils {
     public static String getIssueRequestKey(long couponId) {
         return ISSUE_REQUEST_WITH_COUPON_ID_PREFIX.formatted(couponId);
     }
-    // 쿠폰 발급 대기 큐에 적재할때 사용
-    public static String getIssueRequestQueueKey() {
-        return ISSUE_REQUEST_QUEUE_PREFIX;
-    }
 }
