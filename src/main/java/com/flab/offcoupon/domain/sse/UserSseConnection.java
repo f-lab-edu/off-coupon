@@ -9,7 +9,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 
 /**
- * new 키워드로 사용자마다 생성되는 객체
+ * 'new' 키워드로 각 사용자마다 생성되는 사용자별 서버-보낸 이벤트(SSE) 연결 객체를 나타냅니다.
+ * 이 객체는 SSE Emitter 관련 기능을 캡슐화합니다.
  */
 @EqualsAndHashCode
 @ToString
@@ -24,8 +25,13 @@ public final class UserSseConnection {
 
     private final ObjectMapper objectMapper;
 
-    // 생성자 메소드는 명시적으로 connect가 되었음을 알려주지 못합니다
-    // 따라서 static메소드를 ..사용
+    /**
+     * 새로운 UserSseConnection 객체를 생성합니다.
+     *
+     * @param uniqueKey           사용자 연결과 관련된 고유 식별자입니다.
+     * @param connectionPoolIfs   연결 관리를 위한 커넥션 풀 인터페이스입니다.
+     * @param objectMapper        데이터 객체를 JSON으로 변환하기 위한 ObjectMapper입니다.
+     */
     private UserSseConnection(String uniqueKey,
                               ConnectionPoolInterface<String, UserSseConnection> connectionPoolIfs,
                               ObjectMapper objectMapper) {
@@ -42,10 +48,18 @@ public final class UserSseConnection {
         // on Timeout
         this.sseEmitter.onTimeout(() -> this.sseEmitter.complete());
 
-        // onopen 메세지
+        // 연결 설정을 나타내는 'onopen' 메시지를 보냅니다.
         sendMessage("onopen", "connect");
     }
 
+    /**
+     * 새로운 UserSseConnection 객체를 생성하고 연결을 설정하는 팩토리 메서드입니다.
+     *
+     * @param uniqueKey           사용자 연결과 관련된 고유 식별자입니다.
+     * @param connectionPoolIfs   연결 관리를 위한 커넥션 풀 인터페이스입니다.
+     * @param objectMapper        데이터 객체를 JSON으로 변환하기 위한 ObjectMapper입니다.
+     * @return                    새로운 UserSseConnection 객체입니다.
+     */
     public static UserSseConnection connect(String uniqueKey,
                                             ConnectionPoolInterface<String,
                                                     UserSseConnection> connectionPoolIfs,
@@ -53,6 +67,12 @@ public final class UserSseConnection {
         return new UserSseConnection(uniqueKey, connectionPoolIfs, objectMapper);
     }
 
+    /**
+     * 주어진 이벤트 이름과 데이터 객체를 포함한 SSE 메시지를 전송합니다.
+     *
+     * @param eventName   SSE 이벤트의 이름입니다.
+     * @param data        SSE 메시지의 일부로 전송할 데이터 객체입니다.
+     */
     public void sendMessage(String eventName, Object data) {
 
         try {
@@ -65,6 +85,11 @@ public final class UserSseConnection {
         }
     }
 
+    /**
+     * 데이터 객체를 JSON으로 변환하여 SSE 메시지를 전송합니다.
+     *
+     * @param data   SSE 메시지의 일부로 전송할 데이터 객체입니다.
+     */
     public void sendMessage(Object data) {
         try {
             var event = SseEmitter.event()

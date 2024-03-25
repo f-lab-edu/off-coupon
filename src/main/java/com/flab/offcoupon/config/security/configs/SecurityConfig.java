@@ -47,11 +47,11 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         "/",
                                         "/api/v1/members/signup",
-                                        "/api/v1/event/**", // TODO : 테스트용
-                                        "/api/v1/sse/**",
-                                        "/main")
+                                        "/main",
+                                        "/api/v1/sse/**")
                                 .permitAll()
-                                .requestMatchers("/member").hasAnyRole("USER")
+                                .requestMatchers(
+                                        "/member").hasAnyRole("USER")
                                 .requestMatchers("/admin").hasAnyRole("ADMIN")
                                 // 그 외 모든 요청은 인증 완료
                                 .anyRequest().authenticated()

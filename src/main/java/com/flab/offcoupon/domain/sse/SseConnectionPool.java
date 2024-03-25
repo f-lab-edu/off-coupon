@@ -11,30 +11,46 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class SseConnectionPool implements ConnectionPoolInterface<String, UserSseConnection> {
     /**
-     * 사용자별 SseEmitter를 저장할 Map
+     * 각 사용자별 SseEmitter를 저장하는 맵
      *
-     * SseEmitter는 클라이언트와 서버 간의 연결을 유지하며, 서버에서 클라이언트로 데이터를 전송할 수 있습니다.
-     * SseEmitter는 한 번 사용하면 더 이상 사용할 수 없으므로, 사용자별로 연결을 관리해야 합니다.
+     * SseEmitter는 클라이언트와 서버 간의 연결을 유지하고, 서버에서 클라이언트로 데이터를 전송할 수 있습니다.
+     * 한 번 사용한 SseEmitter는 재사용할 수 없으므로, 사용자별로 연결을 관리해야 합니다.
      *
-     * 사용자별로 연결을 관리하기 위해 요청이 들어올 때마다 해당 사용자의 연결 정보를 저장하고,
-     * 새로운 요청이 들어올 때 저장된 연결 정보를 재사용하여 데이터를 발송합니다.
-     * 각각 다른 스레드에서 연결 정보를 저장, 꺼내기, 발송하기 작업이 수행됩니다.
-     * 이로 인해 스레드 간의 경합이 발생할 수 있으며, 이를 해결하기 위해 ConcurrentHashMap을 활용했습니다.
+     * 각 사용자의 연결 정보를 요청이 있을 때마다 저장하고, 새로운 요청이 들어올 때 저장된 연결 정보를 재사용하여 데이터를 전송합니다.
+     * 연결 정보를 저장, 검색, 전송하는 작업은 각기 다른 스레드에서 수행되므로 스레드 간 경합이 발생할 수 있습니다.
+     * 이를 해결하기 위해 ConcurrentHashMap을 사용합니다.
      */
     private static final Map<String, UserSseConnection> connectionPool = new ConcurrentHashMap<>();
 
-
+    /**
+     * 새로운 사용자 세션을 커넥션 풀에 추가합니다.
+     *
+     * @param uniqueKey             사용자의 고유 식별자입니다.
+     * @param userSseConnection     사용자의 Sse 연결 객체입니다.
+     */
     @Override
     public void addSession(String uniqueKey, UserSseConnection userSseConnection) {
         connectionPool.put(uniqueKey, userSseConnection);
     }
 
+    /**
+     * 주어진 고유 식별자에 해당하는 사용자 세션을 가져옵니다.
+     *
+     * @param uniqueKey             사용자의 고유 식별자입니다.
+     * @return                      주어진 고유 식별자에 해당하는 사용자의 Sse 연결 객체입니다.
+     * @throws IllegalArgumentException 주어진 고유 식별자에 해당하는 세션이 없을 때 발생합니다.
+     */
     @Override
     public UserSseConnection getSession(String uniqueKey) {
         return Optional.of(connectionPool.get(String.valueOf(uniqueKey)))
                 .orElseThrow(() -> new IllegalArgumentException("해당 세션을 찾을 수 없습니다. session : " + uniqueKey));
     }
-
+    /**
+     * 사용자 세션의 완료 콜백을 처리합니다.
+     * 완료된 세션을 커넥션 풀에서 제거합니다.
+     *
+     * @param session   완료된 사용자 세션입니다.
+     */
     @Override
     public void onCompletionCallback(UserSseConnection session) {
         log.info("call back connection pool completion : {}", session);
