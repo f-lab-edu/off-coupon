@@ -6,8 +6,8 @@
 <mapper namespace="com.flab.offcoupon.repository.mysql.CouponIssueRepository">
 
     <insert id="save" parameterType="CouponIssue">
-        INSERT INTO coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at)
-        VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt}, #{updatedAt})
+        INSERT INTO coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at, check_related_issued_quantity)
+        VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt}, #{updatedAt}, #{checkRelatedIssuedQuantity});
     </insert>
 
     <select id="existCouponIssue" parameterType="CouponIssueCheckVo" resultType="boolean">
@@ -18,4 +18,35 @@
                          AND DATE (created_at) = #{currentDateTime}
             LIMIT 1);
     </select>
+
+    <select id="countCouponIdForToday" resultType="CountByCouponIdVo">
+        SELECT coupon_id, count(coupon_id) as count
+        FROM coupon_issue
+        WHERE Date(created_at) = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND check_related_issued_quantity = 0
+        GROUP BY coupon_id;
+    </select>
+
+    <select id="couponIssueIdListForToday" resultType="java.lang.Long">
+        SELECT id
+        FROM coupon_issue
+        WHERE DATE(created_at) = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND check_related_issued_quantity = 0;
+    </select>
+
+    <select id="findCouponIssueById" parameterType="long" resultType="CouponIssue">
+        SELECT id,
+               member_id,
+               coupon_id,
+               coupon_status,
+               created_at,
+               updated_at,
+               check_related_issued_quantity
+        FROM coupon_issue
+        WHERE id = #{id};
+    </select>
+
+    <update id="updateCheckFlag" parameterType="CouponIssue">
+        UPDATE coupon_issue
+        SET check_related_issued_quantity = #{checkRelatedIssuedQuantity}
+        where id = #{id};
+    </update>
 </mapper>

@@ -1,13 +1,12 @@
 package com.flab.offcoupon.config.security.configs;
 
-import com.flab.offcoupon.config.security.provider.CustomAuthenticationProvider;
 import com.flab.offcoupon.util.bcrypt.BCryptPasswordEncryptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -48,7 +47,8 @@ public class SecurityConfig {
                                         "/",
                                         "/api/v1/members/signup",
                                         "/main",
-                                        "/api/v1/sse/**")
+                                        "/api/v1/sse/**",
+                                        "/api/v1/event/**")
                                 .permitAll()
                                 .requestMatchers(
                                         "/member").hasAnyRole("USER")
@@ -91,16 +91,14 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false)
                         .expiredUrl(LOGIN_URL)
                 );
+//                .securityContext((securityContext) -> securityContext
+//                        .securityContextRepository(new RedisSecurityContextRepository(redisOperations))
+//                );
         return http.build();
     }
-
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
-    }
-
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider(userDetailsService, passwordEncoder());
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean

@@ -3,6 +3,7 @@ package com.flab.offcoupon.service.coupon_issue.async.consumer;
 import com.flab.offcoupon.component.rabbitmq.MessageQueueCountChecker;
 import com.flab.offcoupon.component.sse.SseAlertSender;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
+import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -31,28 +32,29 @@ public class CouponIssueConsumer {
     private final MessageQueueCountChecker messageQueueCountChecker;
     private final SseAlertSender sseAlertSender;
     private final CouponIssueMessageHandler couponIssueMessageHandler;
-    /**
-     * 쿠폰 발급 메세지를 저장하기 위한 변수
-     * 스케줄링이 매번 호출되기 때문에 Queue가 비어있을 경우 couponId를 찾기 위해 static으로 선언했습니다.
-     */
-    public static CouponIssueMessageForQueue message;
+    private final RedissonLockHandler redissonLockHandler;
 
     /**
-     * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 처리합니다.
-     *
+     * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 쿠폰 이력을 INSERT합니다.
      */
     @Scheduled(fixedDelay = 3000)
-    public void consumeCouponIssueMessage() {
+    private void consumeCouponIssueMessage() {
         if (existCouponIssueQueueTarget()) {
-            message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
+            CouponIssueMessageForQueue message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
             log.info("'coupon-issue.queue'에 메시지가 있습니다. message: {}", message);
             couponIssueMessageHandler.saveEachCouponIssueHistory(message);
             sseAlertSender.pushSseMessage(message.memberId(),"쿠폰이 발급 완료되었습니다. memberId : %s");
-        } else {
-            log.info("'coupon-issue.queue'가 비어있습니다.");
-            couponIssueMessageHandler.totalUpdateIssuedCouponAndDeleteRequest(message);
         }
     }
+
+    /**
+     * 10초마다 오늘 발급된 쿠폰의 총 발급 수량을 조회해서 반정규화된 칼럼을 업데이트합니다.
+     */
+    @Scheduled(fixedDelay = 10000)
+    private void updateTotalCouponIssueCount() {
+        redissonLockHandler.asyncIssueCoupon();
+    }
+
     /**
      * 메시지 큐에 메시지가 있는지 확인합니다.
      *
@@ -62,4 +64,5 @@ public class CouponIssueConsumer {
     private boolean existCouponIssueQueueTarget() {
         return messageQueueCountChecker.getMessageCount(QUEUE_NAME) > 0;
     }
+
 }
