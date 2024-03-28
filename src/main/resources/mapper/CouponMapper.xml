@@ -52,4 +52,11 @@
         WHERE id = #{id}
         FOR UPDATE;
     </select>
+
+    <update id="updateTotalIssuedCouponQuantity" parameterType="UpdateTotalIssuedQuantityVo">
+        UPDATE coupon
+        SET
+            issued_quantity = #{issuedQuantity}
+        WHERE id = #{couponId}
+    </update>
 </mapper>

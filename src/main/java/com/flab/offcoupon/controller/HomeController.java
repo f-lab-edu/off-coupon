@@ -1,15 +1,21 @@
 package com.flab.offcoupon.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
-@RequestMapping("/")
+@Slf4j
 @RestController
 public class HomeController {
 
-    @GetMapping
+    @GetMapping("/")
     public String home() {
         return "home";
+    }
+
+    @GetMapping("/main")
+    public ModelAndView main() {
+        return new ModelAndView("main");
     }
 }

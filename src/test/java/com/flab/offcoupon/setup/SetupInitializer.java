@@ -14,14 +14,14 @@ import java.time.LocalDateTime;
  * 테스트를 위한 추상화된 공통 유틸리티 클래스입니다.
  * 회원 가입, 이벤트 및 쿠폰 설정 등의 테스트 시 공통적으로 사용되는 기능을 제공합니다.
  */
-public class SetupUtils {
+public class SetupInitializer {
     private SignupMemberRequestDto testSignupMemberDto;
     private EventRepository eventRepository;
     private CouponRepository couponRepository;
     /**
      * 기본 생성자 - 테스트용 회원 가입 DTO를 초기화합니다.
      */
-    public SetupUtils() {
+    public SetupInitializer() {
         this.testSignupMemberDto = SignupMemberRequestDto.create(
                 "test@gmail.com",
                 "ababab123123",
@@ -37,7 +37,7 @@ public class SetupUtils {
      * @param eventRepository 이벤트 저장소
      * @param couponRepository 쿠폰 저장소
      */
-    public SetupUtils(EventRepository eventRepository, CouponRepository couponRepository) {
+    public SetupInitializer(EventRepository eventRepository, CouponRepository couponRepository) {
         this.eventRepository = eventRepository;
         this.couponRepository = couponRepository;
     }

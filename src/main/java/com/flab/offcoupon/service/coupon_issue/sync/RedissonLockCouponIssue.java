@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
-import com.flab.offcoupon.component.DistributeLockExecutorWithRedisson;
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithRedisson;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static com.flab.offcoupon.util.LockMagicNumber.LOCK_LEASE_MILLI_SECOND;
-import static com.flab.offcoupon.util.LockMagicNumber.LOCK_WAIT_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumberConstants.LOCK_LEASE_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumberConstants.LOCK_WAIT_MILLI_SECOND;
 
 /**
  * RedissonLockCouponIssue는 CouponIssueFacade 인터페이스를 구현한 쿠폰 발급 서비스입니다.
@@ -27,7 +27,7 @@ public class RedissonLockCouponIssue implements CouponIssueFacade {
     private final DefaultCouponIssueService defaultCouponIssueService;
 
     @Override
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
         AtomicReference<ResponseDTO<String>> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithRedisson을 사용하여 락을 획득합니다.
         distributeLockExecutorWithRedisson.execute("redisson_lock" + couponId, LOCK_WAIT_MILLI_SECOND, LOCK_LEASE_MILLI_SECOND, () ->

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="kor" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SSE TEST</title>
+    <script>
+        const url = "http://localhost:8080/api/v1/sse/connect?memberId=1"; // 접속 주소
+        const eventSource = new EventSource(url); // sse 연결
+
+        eventSource.onopen = event => {
+            console.log("sse 연결 성공");
+            console.log(event);
+        }
+
+        eventSource.onmessage = event => {
+            console.log("received message: " + event.data);
+            const messageDiv = document.getElementById("message"); // 메시지를 표시할 요소 가져오기
+            messageDiv.innerHTML = event.data; // 받은 메시지를 요소의 텍스트로 설정
+        }
+    </script>
+</head>
+<body>
+    <h1>Server Sent Event</h1>
+    <div id="message"></div> <!-- 메시지를 표시할 요소 -->
+</body>
+</html>

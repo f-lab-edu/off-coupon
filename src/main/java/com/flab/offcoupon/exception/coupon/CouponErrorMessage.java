@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CouponErrorMessage {
     public static final String COUPON_NOT_EXIST = "존재하지 않는 쿠폰입니다. couponId : %s";
+    public static final String COUPON_ISSUE_NOT_EXIST = "존재하지 않는 쿠폰 이력입니다. couponIssueId : %s";
     public static final String INVALID_COUPON_QUANTITY = "발급 가능한 쿠폰이 없습니다. tatal : %s, issued : %s";
     public static final String ASYNC_INVALID_COUPON_QUANTITY = "발급 가능한 수량을 초과합니다. couponId : %s";
     public static final String COUPON_QUANTITY_IS_NULL =  "쿠폰의 발급 가능 수량이 설정 되어있지 않습니다. tatal : %s, issued : %s";

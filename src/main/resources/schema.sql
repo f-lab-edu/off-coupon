@@ -52,6 +52,7 @@ CREATE TABLE coupon_issue
     coupon_id       BIGINT UNSIGNED NOT NULL COMMENT '회원 ID',
     coupon_status              VARCHAR(50)     NOT NULL DEFAULT 'NOT_ACTIVE' COMMENT '유효일 전 : NOT_ACTIVE / 유효기간 : ACTIVE / 사용완료 : USED / 만료 : EXPIRED',
     created_at      DATETIME        NOT NULL COMMENT '데이터 생성일',
-    updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일'
+    updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일',
+    check_related_issued_quantity  BOOLEAN DEFAULT FALSE COMMENT '쿠폰 발행시 발행량 체크 여부'
 );
 
