@@ -59,6 +59,8 @@ public class CouponIssueMessageHandler {
     /**
      * MySQL에 저장된 총 발행된 수량을 업데이트하고, <br>
      * Redis에 저장된 요청 중 메시지로 들어온 쿠폰ID와 관련된 데이터를 삭제합니다.
+     *
+     * @param countByCouponIdVoList 오늘 발급된 쿠폰의 총 발급 수량 및 쿠폰 ID List
      */
     private void totalUpdateIssuedCouponAndDeleteRequest(List<CountByCouponIdVo> countByCouponIdVoList) {
         countByCouponIdVoList.forEach(countByCouponIdVo -> {
@@ -99,8 +101,8 @@ public class CouponIssueMessageHandler {
      * 쿠폰 발급 완료 후 반정규화 칼럼(Coupon테이블의 issued_quantity)를 업데이트 했음을 checkFlag에 반영합니다.
      */
     private void updateCheckFlagAboutCompletedCouponIssue() {
-        List<Long> longs = couponIssueRepository.couponIssueIdListForToday();
-        longs.forEach(ids -> {
+        List<Long> couponIssueIdListForToday = couponIssueRepository.couponIssueIdListForToday();
+        couponIssueIdListForToday.forEach(ids -> {
             CouponIssue couponIssue = couponIssueRepository.findCouponIssueById(ids)
                     .orElseThrow(() -> new CouponIssueException(COUPON_ISSUE_NOT_EXIST));
             couponIssueRepository.updateCheckFlag(couponIssue.updateCheckFlag(couponIssue));
