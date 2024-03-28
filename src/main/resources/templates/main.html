@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>SSE TEST</title>
     <script>
-        const url = "http://localhost:8080/api/v1/sse/connect"; // 접속 주소
+        const url = "http://localhost:8080/api/v1/sse/connect?memberId=1"; // 접속 주소
         const eventSource = new EventSource(url); // sse 연결
 
         eventSource.onopen = event => {

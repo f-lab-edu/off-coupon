@@ -21,8 +21,8 @@ public class SseAlertSender {
      * @param memberId 회원 ID
      * @param message 전송할 메시지
      */
-    public void pushSseMessage(Long memberId, String message) {
-        UserSseConnection userSseConnection = sseConnectionPool.getSession(String.valueOf(memberId));
+    public void pushSseMessage(long memberId, String message) {
+        UserSseConnection userSseConnection = sseConnectionPool.getUniqueKey(String.valueOf(memberId));
         Optional.ofNullable(userSseConnection)
                 .ifPresent(it -> it.sendMessage(message.formatted(memberId)));
     }

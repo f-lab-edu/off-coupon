@@ -8,7 +8,7 @@ package com.flab.offcoupon.domain.sse;
  */
 public interface ConnectionPoolInterface<T, R> {
 
-    void addSession(T key, R session);
-    R getSession(T uniqueKey);
+    void addUniqueKey(T key, R session);
+    R getUniqueKey(T uniqueKey);
     void onCompletionCallback(R session);
 }

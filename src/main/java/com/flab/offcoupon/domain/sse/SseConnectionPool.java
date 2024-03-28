@@ -23,33 +23,32 @@ public class SseConnectionPool implements ConnectionPoolInterface<String, UserSs
     private static final Map<String, UserSseConnection> connectionPool = new ConcurrentHashMap<>();
 
     /**
-     * 새로운 사용자 세션을 커넥션 풀에 추가합니다.
+     * 새로운 사용자 식별자를 커넥션 풀에 추가합니다.
      *
      * @param uniqueKey             사용자의 고유 식별자입니다.
      * @param userSseConnection     사용자의 Sse 연결 객체입니다.
      */
     @Override
-    public void addSession(String uniqueKey, UserSseConnection userSseConnection) {
+    public void addUniqueKey(String uniqueKey, UserSseConnection userSseConnection) {
         connectionPool.put(uniqueKey, userSseConnection);
     }
 
     /**
-     * 주어진 고유 식별자에 해당하는 사용자 세션을 가져옵니다.
+     * 주어진 고유 식별자에 해당하는 사용자 객체를 가져옵니다.
      *
      * @param uniqueKey             사용자의 고유 식별자입니다.
      * @return                      주어진 고유 식별자에 해당하는 사용자의 Sse 연결 객체입니다.
-     * @throws IllegalArgumentException 주어진 고유 식별자에 해당하는 세션이 없을 때 발생합니다.
+     * @throws IllegalArgumentException 주어진 고유 식별자에 해당하는 객체가 없을 때 발생합니다.
      */
     @Override
-    public UserSseConnection getSession(String uniqueKey) {
+    public UserSseConnection getUniqueKey(String uniqueKey) {
         return Optional.of(connectionPool.get(String.valueOf(uniqueKey)))
-                .orElseThrow(() -> new IllegalArgumentException("해당 세션을 찾을 수 없습니다. session : " + uniqueKey));
+                .orElseThrow(() -> new IllegalArgumentException("해당 식별자를 찾을 수 없습니다. memberId : " + uniqueKey));
     }
     /**
-     * 사용자 세션의 완료 콜백을 처리합니다.
-     * 완료된 세션을 커넥션 풀에서 제거합니다.
+     * 사용자 식별자별 완료 콜백을 처리합니다.
      *
-     * @param session   완료된 사용자 세션입니다.
+     * @param session   완료된 사용자 식별자입니다.
      */
     @Override
     public void onCompletionCallback(UserSseConnection session) {

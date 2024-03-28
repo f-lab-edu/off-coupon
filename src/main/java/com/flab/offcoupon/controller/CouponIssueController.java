@@ -37,7 +37,6 @@ public class CouponIssueController {
                                                  @RequestParam final long couponId,
                                                  @RequestParam final long memberId) throws InterruptedException {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        //SecurityContextHolder.getContext().getAuthentication() // anonymous
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }
     @ResponseStatus(HttpStatus.CREATED)
