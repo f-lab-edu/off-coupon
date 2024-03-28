@@ -42,8 +42,13 @@ public class CouponIssueMessageHandler {
         log.info("쿠폰 히스토리 저장 완료");
     }
 
+    /**
+     * MySQL에 저장된 총 발행된 수량을 업데이트하고, <br>
+     * Redis에 저장된 요청 중 메시지로 들어온 쿠폰ID와 관련된 데이터를 삭제합니다.
+     *
+     */
     @Transactional
-    public void ddd() {
+    public void updateTotalIssuedCouponAndCheckFlagForCompletedIssue() {
         List<CountByCouponIdVo> countByCouponIdVo = countTotalCouponIssueForToday();
         if (!countByCouponIdVo.isEmpty()) {
             totalUpdateIssuedCouponAndDeleteRequest(countByCouponIdVo);
