@@ -1,6 +1,8 @@
 package com.flab.offcoupon.domain.sse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.offcoupon.exception.JsonParsingException;
+import com.flab.offcoupon.exception.SseEmitterException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,7 +71,7 @@ public class SseConnectionPool {
             });
         } catch (IOException e) {
             emitter.completeWithError(e);
-            throw new RuntimeException(e);
+            throw new SseEmitterException(e.getMessage());
         }
         return emitter;
     }
@@ -83,8 +85,8 @@ public class SseConnectionPool {
     private SseMessage serialize(Message message) {
         try {
             return this.objectMapper.readValue(message.getBody(), SseMessage.class);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        } catch (IOException e) {
+            throw new JsonParsingException(e.getMessage());
         }
     }
 

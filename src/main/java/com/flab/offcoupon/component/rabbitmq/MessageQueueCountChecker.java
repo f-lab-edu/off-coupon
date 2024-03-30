@@ -1,5 +1,6 @@
 package com.flab.offcoupon.component.rabbitmq;
 
+import com.flab.offcoupon.exception.RabbitMqException;
 import com.rabbitmq.client.AMQP.Queue.DeclareOk;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -49,7 +50,7 @@ public class MessageQueueCountChecker {
             return queueDeclareOk.getMessageCount();
         } catch (Exception e) {
             log.error("RabbitMQ 연결 중 오류가 발생했습니다", e);
-            throw new RuntimeException("RabbitMQ 연결 중 오류가 발생했습니다", e);
+            throw new RabbitMqException(e.getMessage());
         }
     }
 }
