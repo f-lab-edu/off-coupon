@@ -91,9 +91,6 @@ public class SecurityConfig {
                         .maxSessionsPreventsLogin(false)
                         .expiredUrl(LOGIN_URL)
                 );
-//                .securityContext((securityContext) -> securityContext
-//                        .securityContextRepository(new RedisSecurityContextRepository(redisOperations))
-//                );
         return http.build();
     }
     @Bean
