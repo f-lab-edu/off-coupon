@@ -1,9 +1,9 @@
 package com.flab.offcoupon.service.coupon_issue.async.consumer;
 
 import com.flab.offcoupon.component.rabbitmq.MessageQueueCountChecker;
-import com.flab.offcoupon.component.sse.SseAlertSender;
+import com.flab.offcoupon.component.redis.RedisPublisher;
+import com.flab.offcoupon.domain.sse.SseMessage;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
-import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -12,6 +12,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.QUEUE_NAME;
+import static com.flab.offcoupon.util.RedisKeyUtils.getUserSseConnectionKey;
 
 /**
  * RabbitMQ를 이용한 비동기 쿠폰 발행을 처리하는 컨슈머 클래스입니다. <br>
@@ -30,9 +31,9 @@ public class CouponIssueConsumer {
 
     private final RabbitTemplate rabbitTemplate;
     private final MessageQueueCountChecker messageQueueCountChecker;
-    private final SseAlertSender sseAlertSender;
     private final CouponIssueMessageHandler couponIssueMessageHandler;
     private final RedissonLockHandler redissonLockHandler;
+    private final RedisPublisher redisPublisher;
 
     /**
      * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 쿠폰 이력을 INSERT합니다.
@@ -43,7 +44,8 @@ public class CouponIssueConsumer {
             CouponIssueMessageForQueue message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
             log.info("'coupon-issue.queue'에 메시지가 있습니다. message: {}", message);
             couponIssueMessageHandler.saveEachCouponIssueHistory(message);
-            sseAlertSender.pushSseMessage(message.memberId(),"쿠폰이 발급 완료되었습니다. memberId : %s");
+            redisPublisher.publish(getUserSseConnectionKey().formatted(message.memberId()),
+                    SseMessage.generate("쿠폰이 발급 완료되었습니다.", message.memberId()));
         }
     }
 

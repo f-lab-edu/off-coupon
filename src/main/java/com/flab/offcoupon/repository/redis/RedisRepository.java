@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RedisRepository {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * Redis SADD 명령어: 쿠폰 발급 요청의 고유성을 유지하고 발급 수량을 제어하기 위해 사용됩니다.
@@ -50,4 +50,19 @@ public class RedisRepository {
     public Boolean delete(String key) {
         return redisTemplate.delete(key);
     }
+    public void hAdd(String key, String hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    public String hGet(String key, String hashKey) {
+        return (String)redisTemplate.opsForHash().get(key, hashKey);
+    }
+    public void hDelete(String key, String hashKey) {
+        redisTemplate.opsForHash().delete(key, hashKey);
+    }
+
+    public void publish(String topic, Object message){
+        redisTemplate.convertAndSend(topic, message);
+    }
+
 }

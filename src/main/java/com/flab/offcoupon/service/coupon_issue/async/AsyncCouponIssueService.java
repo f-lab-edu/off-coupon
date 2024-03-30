@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.EXCHANGE_NAME;
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.ROUTING_KEY;
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 /**
  * 비동기적으로 쿠폰을 발급하는 서비스 클래스입니다.

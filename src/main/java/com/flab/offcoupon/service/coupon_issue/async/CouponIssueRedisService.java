@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.ASYNC_DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.ASYNC_INVALID_COUPON_QUANTITY;
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 /**
  * 비동기 쿠폰 발급 시 Redis를 사용하여 수량 및 중복 여부를 확인하는 서비스 클래스입니다.

@@ -19,7 +19,7 @@ import java.util.List;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_ISSUE_NOT_EXIST;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 @Slf4j
 @RequiredArgsConstructor

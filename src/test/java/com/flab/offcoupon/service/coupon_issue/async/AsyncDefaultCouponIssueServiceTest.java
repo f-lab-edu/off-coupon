@@ -26,7 +26,7 @@ import java.util.stream.LongStream;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 @SpringBootTest
 @Transactional

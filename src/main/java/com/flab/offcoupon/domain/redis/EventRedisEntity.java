@@ -120,6 +120,7 @@ public record EventRedisEntity(
             throw new EventPeriodException(INVALID_EVENT_PERIOD.formatted(startDate, endDate));
         }
         if(!availableIssueTime(localDateTime)) {
+            System.out.println("localDateTime = " + localDateTime);
             throw new EventTimeException(INVALID_EVENT_TIME.formatted(dailyIssueStartTime, dailyIssueEndTime));
         }
     }

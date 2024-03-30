@@ -10,6 +10,7 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -75,11 +76,24 @@ public class SessionConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(springSessionDefaultRedisSerializer());
+        /* Redis Pub/Sub기능에서 Message 직렬화를 위해 추가 */
+        redisTemplate.setKeySerializer(RedisSerializer.string());
+        redisTemplate.setValueSerializer(springSessionDefaultRedisSerializer());
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
     @Bean
     public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
         return new Jackson2JsonRedisSerializer<>(Object.class);
+    }
+    /**
+     * RedisMessageListenerContainer는 Spring Data Redis에서 제공하는 클래스로 Redis Pub/Sub 메시지를 처리하는 컨테이너입니다.
+     * 컨테이너는 메시지가 도착하면 등록된 MessageListener를 호출하여 메시지를 처리합니다.
+     */
+    @Bean
+    public RedisMessageListenerContainer redisMessageListenerContainer(RedisConnectionFactory redisConnectionFactory) {
+        final RedisMessageListenerContainer redisMessageListenerContainer = new RedisMessageListenerContainer();
+        redisMessageListenerContainer.setConnectionFactory(redisConnectionFactory);
+        return redisMessageListenerContainer;
     }
 }
