@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
-import static com.flab.offcoupon.util.CouponRedisUtils.getIssueRequestKey;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 @SpringBootTest
 class CouponIssueRedisServiceTest {

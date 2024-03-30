@@ -1,4 +1,4 @@
-package com.flab.offcoupon.component;
+package com.flab.offcoupon.component.lock;
 
 import com.flab.offcoupon.repository.redis.LettuceLockRepository;
 import lombok.RequiredArgsConstructor;

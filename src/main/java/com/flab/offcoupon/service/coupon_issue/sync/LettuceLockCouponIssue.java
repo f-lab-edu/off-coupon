@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
-import com.flab.offcoupon.component.DistributeLockExecutorWithLettuce;
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithLettuce;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

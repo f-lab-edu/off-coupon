@@ -2,7 +2,7 @@ package com.flab.offcoupon.service.coupon_issue;
 
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @Transactional
 class CouponIssueRequestServiceTest {
-    private final static String COUPON_ISSUE_SUCCESS_MESSAGE = "쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s";
-
+    private final static String COUPON_ISSUE_SUCCESS_MESSAGE_SYNC = "쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s";
+    private final static String COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC = "쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s";
     @Autowired
     private CouponIssueRequestService couponIssueRequestService;
 
@@ -34,7 +34,7 @@ class CouponIssueRequestServiceTest {
     @Autowired
     RedisTemplate<String, String> redisTemplate;
 
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
 
     @BeforeEach
     void clear() {
@@ -45,8 +45,8 @@ class CouponIssueRequestServiceTest {
 
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils(eventRepository, couponRepository);
-        setupUtils.setUpEventAndCoupon();
+        setupInitializer = new SetupInitializer(eventRepository, couponRepository);
+        setupInitializer.setUpEventAndCoupon();
     }
 
 
@@ -61,7 +61,7 @@ class CouponIssueRequestServiceTest {
         // when
         ResponseDTO<String> response = couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId);
         // then
-        assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE.formatted(memberId, couponId), response.getData());
+        assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_SYNC.formatted(memberId, couponId), response.getData());
     }
 
     @Test
@@ -75,6 +75,6 @@ class CouponIssueRequestServiceTest {
         // when
         ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, eventId, couponId, memberId);
         // then
-        assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE.formatted(memberId, couponId), response.getData());
+        assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC.formatted(memberId, couponId), response.getData());
     }
 }

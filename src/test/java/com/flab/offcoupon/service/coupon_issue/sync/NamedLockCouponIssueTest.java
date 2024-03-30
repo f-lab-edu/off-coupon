@@ -4,7 +4,7 @@ import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,12 +32,12 @@ class NamedLockCouponIssueTest {
 
     @Autowired
     private CouponRepository couponRepository;
-    private SetupUtils setupUtils;
+    private SetupInitializer setupInitializer;
 
     @BeforeEach
     void setUp() {
-        setupUtils = new SetupUtils(eventRepository, couponRepository);
-        setupUtils.setUpEventAndCoupon();
+        setupInitializer = new SetupInitializer(eventRepository, couponRepository);
+        setupInitializer.setUpEventAndCoupon();
     }
 
 

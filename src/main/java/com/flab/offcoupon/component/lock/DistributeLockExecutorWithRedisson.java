@@ -1,4 +1,4 @@
-package com.flab.offcoupon.component;
+package com.flab.offcoupon.component.lock;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

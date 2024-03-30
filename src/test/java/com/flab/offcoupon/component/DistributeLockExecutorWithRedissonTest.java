@@ -1,5 +1,6 @@
 package com.flab.offcoupon.component;
 
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithRedisson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +12,8 @@ import org.redisson.api.RedissonClient;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.flab.offcoupon.util.LockMagicNumber.LOCK_LEASE_MILLI_SECOND;
-import static com.flab.offcoupon.util.LockMagicNumber.LOCK_WAIT_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumberConstants.LOCK_LEASE_MILLI_SECOND;
+import static com.flab.offcoupon.util.LockMagicNumberConstants.LOCK_WAIT_MILLI_SECOND;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

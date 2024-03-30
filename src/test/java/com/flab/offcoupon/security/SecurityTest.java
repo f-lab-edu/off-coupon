@@ -1,7 +1,7 @@
 package com.flab.offcoupon.security;
 
 import com.flab.offcoupon.service.MemberService;
-import com.flab.offcoupon.setup.SetupUtils;
+import com.flab.offcoupon.setup.SetupInitializer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +44,7 @@ class SecurityTest {
     @Autowired
     MemberService memberService;
 
-    private SetupUtils setupUtils = new SetupUtils();
+    private SetupInitializer setupInitializer;
 
     //mockMvc 객체 생성, Spring Security 환경 setup
     @BeforeEach
@@ -53,7 +53,8 @@ class SecurityTest {
                 .webAppContextSetup(this.context)
                 .apply(springSecurity())
                 .build();
-        setupUtils.setUpMember(memberService);
+        setupInitializer = new SetupInitializer();
+        setupInitializer.setUpMember(memberService);
     }
 
     @Test

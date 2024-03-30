@@ -42,10 +42,15 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 
+    // rabbitmq
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+    // thymeleaf (sse 알림 확인용 서버사이드 랜더링)
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-security'

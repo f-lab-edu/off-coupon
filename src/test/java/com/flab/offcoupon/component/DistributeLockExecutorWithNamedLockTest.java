@@ -1,5 +1,6 @@
 package com.flab.offcoupon.component;
 
+import com.flab.offcoupon.component.lock.DistributeLockExecutorWithNamedLock;
 import com.flab.offcoupon.repository.mysql.NamedLockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class RedisRepository {
 
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * Redis SADD 명령어: 쿠폰 발급 요청의 고유성을 유지하고 발급 수량을 제어하기 위해 사용됩니다.
@@ -43,13 +43,26 @@ public class RedisRepository {
     }
 
     /**
-     * Redis RPUSH 명령어: 주어진 리스트의 끝에 하나 이상의 값을 추가함으로써 쿠폰 발급의 대기 큐로서 사용됩니다.
-     *
-     * @param key   대기 큐의 키
-     * @param value 대기 큐에 추가할 값
-     * @return 대기 큐에 추가된 요소의 총 개수
+     * Redis DEL 명령어 : 대기 큐에서 특정 키를 제거합니다.
+     * @param key 대기 큐의 키
+     * @return 대기 큐에서 해당 키가 제거됐는지 여부
      */
-    public Long rPush(String key, String value) {
-        return redisTemplate.opsForList().rightPush(key, value);
+    public Boolean delete(String key) {
+        return redisTemplate.delete(key);
     }
+    public void hAdd(String key, String hashKey, Object value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    public String hGet(String key, String hashKey) {
+        return (String)redisTemplate.opsForHash().get(key, hashKey);
+    }
+    public void hDelete(String key, String hashKey) {
+        redisTemplate.opsForHash().delete(key, hashKey);
+    }
+
+    public void publish(String topic, Object message){
+        redisTemplate.convertAndSend(topic, message);
+    }
+
 }
