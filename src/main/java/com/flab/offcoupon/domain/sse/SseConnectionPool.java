@@ -41,32 +41,36 @@ public class SseConnectionPool {
      * @return SseEmitter 객체입니다.
      * @See <a href="https://github.com/vpavic/samples-spring-sse-redis">Samples: Spring Server-Sent Events with Redis</a>
      */
-    public SseEmitter subscribeAndConnect(long memberId) throws IOException {
+    public SseEmitter subscribeAndConnect(long memberId) {
         log.info("connect - memberId: {}", memberId);
         SseEmitter emitter = new SseEmitter(SSE_CONNECTION_TIMEOUT);
-        // 초기 연결용 메세지
-        emitter.send(SseEmitter.event().comment("connected"));
-        emitters.add(emitter);
-        // Redis 메시지 리스너 등록(Subscribe)
-        MessageListener messageListener = (message, pattern) -> {
-            try {
-                emitter.send(SseEmitter.event().data(serialize(message)));
-            } catch (Exception e) {
-                emitter.completeWithError(e);
-            }
-        };
-        this.redisMessageListenerContainer.addMessageListener(messageListener,
-                ChannelTopic.of(getUserSseConnectionKey().formatted(memberId)));
-
-        // 연결 timeout 시 처리
-        emitter.onTimeout(() -> {
-            log.info("Connection timeout - memberId: {}", memberId);
-            emitter.onCompletion(() -> onCompletionCallback(emitter, messageListener));
-        });
-        // 연결 Error 발생 시 처리
-        emitter.onError(throwable -> {
-            emitter.onCompletion(() -> onCompletionCallback(emitter, messageListener));
-        });
+        try {
+            // 초기 연결용 메세지
+            emitter.send(SseEmitter.event().comment("connected"));
+            emitters.add(emitter);
+            // Redis 메시지 리스너 등록(Subscribe)
+            MessageListener messageListener = (message, pattern) -> {
+                try {
+                    emitter.send(SseEmitter.event().data(serialize(message)));
+                } catch (Exception e) {
+                    emitter.completeWithError(e);
+                }
+            };
+            this.redisMessageListenerContainer.addMessageListener(messageListener,
+                    ChannelTopic.of(getUserSseConnectionKey().formatted(memberId)));
+            // 연결 timeout 시 처리
+            emitter.onTimeout(() -> {
+                log.info("Connection timeout - memberId: {}", memberId);
+                emitter.onCompletion(() -> onCompletionCallback(emitter, messageListener));
+            });
+            // 연결 Error 발생 시 처리
+            emitter.onError(throwable -> {
+                emitter.onCompletion(() -> onCompletionCallback(emitter, messageListener));
+            });
+        } catch (IOException e) {
+            emitter.completeWithError(e);
+            throw new RuntimeException(e);
+        }
         return emitter;
     }
 
