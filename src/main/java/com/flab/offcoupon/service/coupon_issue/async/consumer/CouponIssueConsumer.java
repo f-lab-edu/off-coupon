@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.QUEUE_NAME;
@@ -38,7 +37,7 @@ public class CouponIssueConsumer {
     /**
      * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 쿠폰 이력을 INSERT합니다.
      */
-    @Scheduled(fixedDelay = 3000)
+  //  @Scheduled(fixedDelay = 3000)
     private void consumeCouponIssueMessage() {
         if (existCouponIssueQueueTarget()) {
             CouponIssueMessageForQueue message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
@@ -52,7 +51,7 @@ public class CouponIssueConsumer {
     /**
      * 10초마다 오늘 발급된 쿠폰의 총 발급 수량을 조회해서 반정규화된 칼럼을 업데이트합니다.
      */
-    @Scheduled(fixedDelay = 10000)
+   // @Scheduled(fixedDelay = 10000)
     private void updateTotalCouponIssueCount() {
         redissonLockHandler.asyncIssueCoupon();
     }

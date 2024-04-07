@@ -48,6 +48,8 @@ public class SecurityConfig {
                                         "/api/v1/members/signup",
                                         "/main",
                                         "/api/v1/sse/**",
+                                        "/api/v1/purchase/**",
+                                        "/api/v1/orders/**",
                                         "/api/v1/event/**")
                                 .permitAll()
                                 .requestMatchers(

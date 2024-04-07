@@ -13,4 +13,8 @@ INSERT INTO event (id, category, description, start_date, end_date, daily_issue_
                               daily_issue_end_time, created_at, updated_at)
 VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(now(), INTERVAL 3 DAY),'12:00:00','23:00:00','2024-02-01','2024-02-01');
 
-
+## PRODUCT
+INSERT INTO product (category, title, description, original_price, sale_price, created_at, updated_at)
+VALUES
+    ('의류', '면티셔츠', '편안한 면소재의 티셔츠', 20000, NULL, NOW(), NOW()),
+    ('전자제품', '스마트폰', '고성능 스마트폰', 1000000, 800000, NOW(), NOW());

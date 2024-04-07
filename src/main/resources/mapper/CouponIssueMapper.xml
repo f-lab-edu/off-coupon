@@ -6,7 +6,8 @@
 <mapper namespace="com.flab.offcoupon.repository.mysql.CouponIssueRepository">
 
     <insert id="save" parameterType="CouponIssue">
-        INSERT INTO coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at, check_related_issued_quantity)
+        INSERT INTO coupon_issue (member_id, coupon_id, coupon_status, created_at, updated_at,
+                                  check_related_issued_quantity)
         VALUES (#{memberId}, #{couponId}, #{couponStatus}, #{createdAt}, #{updatedAt}, #{checkRelatedIssuedQuantity});
     </insert>
 
@@ -15,21 +16,23 @@
                        FROM coupon_issue
                        WHERE member_id = #{memberId}
                          AND coupon_id = #{couponId}
-                         AND DATE (created_at) = #{currentDateTime}
-            LIMIT 1);
+                         AND DATE(created_at) = #{currentDateTime}
+                       LIMIT 1);
     </select>
 
     <select id="countCouponIdForToday" resultType="CountByCouponIdVo">
         SELECT coupon_id, count(coupon_id) as count
         FROM coupon_issue
-        WHERE Date(created_at) = CURDATE() AND check_related_issued_quantity = 0
+        WHERE Date(created_at) = CURDATE()
+          AND check_related_issued_quantity = 0
         GROUP BY coupon_id;
     </select>
 
     <select id="couponIssueIdListForToday" resultType="java.lang.Long">
         SELECT id
         FROM coupon_issue
-        WHERE DATE(created_at) = CURDATE() AND check_related_issued_quantity = 0;
+        WHERE DATE(created_at) = CURDATE()
+          AND check_related_issued_quantity = 0;
     </select>
 
     <select id="findCouponIssueById" parameterType="long" resultType="CouponIssue">
@@ -49,4 +52,54 @@
         SET check_related_issued_quantity = #{checkRelatedIssuedQuantity}
         where id = #{id};
     </update>
+
+    <select id="getAllCoupons" parameterType="long" resultType="AllCouponsByMemberIdVo">
+        SELECT c.id,
+               e.category,
+               e.description,
+               c.discount_type,
+               c.discount_rate,
+               c.discount_price,
+               c.validate_start_date,
+               c.validate_end_date,
+               ci.coupon_status
+        FROM coupon_issue ci
+                 JOIN coupon c on ci.coupon_id = c.id
+                 JOIN event e on c.event_id = e.id
+        WHERE ci.member_id = #{memberId};
+    </select>
+
+    <select id="getAvailableCoupons" parameterType="MemberIdProductIdNowVo" resultType="AvailableCouponsByMemberIdVo">
+        <![CDATA[
+        SELECT c.id as coupon_id,
+               c.validate_start_date,
+               c.validate_end_date,
+               c.discount_type,
+               c.discount_rate,
+               c.discount_price,
+               p.category,
+               e.description,
+               ci.coupon_status,
+               ROUND(CASE
+                         WHEN p.sale_price IS NULL THEN
+                                 p.original_price -
+                                 IF(c.discount_type = 'PERCENT', p.original_price * (c.discount_rate / 100),
+                                    c.discount_price)
+                         ELSE
+                                 p.sale_price - IF(c.discount_type = 'PERCENT', p.sale_price * (c.discount_rate / 100),
+                                                   c.discount_price)
+                         END, 0)
+                    AS discounted_price
+        FROM coupon_issue ci
+                 JOIN coupon c ON c.id = ci.coupon_id
+                 JOIN event e ON e.id = c.event_id
+                 JOIN product p ON p.category = e.category
+        WHERE ci.member_id = #{memberId}
+          AND c.validate_start_date <= #{currentDateTime}
+          AND c.validate_end_date >= #{currentDateTime}
+          AND ci.coupon_status = 'ACTIVE'
+          AND p.id = #{productId}
+        ORDER BY discounted_price;
+        ]]>
+    </select>
 </mapper>
