@@ -18,6 +18,7 @@ public record AvailableCouponsByMemberIdVo (
     Long discountPrice,// NULL 일 경우 PERCENT
     String category,
     String description,
+    long couponIssueId,
     CouponStatus couponStatus,
     long discountedPrice // 할인 가격
 )

@@ -71,7 +71,7 @@
 
     <select id="getAvailableCoupons" parameterType="MemberIdProductIdNowVo" resultType="AvailableCouponsByMemberIdVo">
         <![CDATA[
-        SELECT c.id as coupon_id,
+        SELECT c.id as couponId,
                c.validate_start_date,
                c.validate_end_date,
                c.discount_type,
@@ -79,6 +79,7 @@
                c.discount_price,
                p.category,
                e.description,
+               ci.id as couponIssueId,
                ci.coupon_status,
                ROUND(CASE
                          WHEN p.sale_price IS NULL THEN
@@ -113,5 +114,14 @@
         </foreach>
         );
     </select>
-
+    <update id="updateCouponStatus" parameterType="long">
+        UPDATE coupon_issue
+        SET coupon_status = 'USED'
+        WHERE id in
+        (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+            )
+    </update>
 </mapper>

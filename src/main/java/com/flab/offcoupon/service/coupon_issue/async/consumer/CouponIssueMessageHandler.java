@@ -6,7 +6,6 @@ import com.flab.offcoupon.domain.vo.persistence.couponissue.CountByCouponIdVo;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.UpdateTotalIssuedQuantityVo;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.exception.coupon.CouponIssueException;
-import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.redis.RedisRepository;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_ISSUE_NOT_EXIST;
-import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
 @Slf4j
@@ -73,8 +71,7 @@ public class CouponIssueMessageHandler {
      * 총 발행된 쿠폰 수량을 업데이트합니다.
      */
     private void totalUpdateIssuedQuantity(CountByCouponIdVo countByCouponIdVo) {
-        Coupon coupon = couponRepository.findCouponById(countByCouponIdVo.couponId())
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST));
+        Coupon coupon = couponRepository.getCouponById(countByCouponIdVo.couponId());
         couponRepository.updateTotalIssuedCouponQuantity(
                 new UpdateTotalIssuedQuantityVo(countByCouponIdVo.couponId(),
                         coupon.getIssuedQuantity() + countByCouponIdVo.count()));

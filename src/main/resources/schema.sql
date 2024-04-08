@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS event;
 DROP TABLE IF EXISTS coupon_issue;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS order_detail;
 
 CREATE TABLE member
 (
@@ -65,6 +66,7 @@ CREATE TABLE product
     description VARCHAR(255) NOT NULL COMMENT '상품 설명',
     original_price BIGINT UNSIGNED NOT NULL COMMENT '원래 상품 가격',
     sale_price BIGINT UNSIGNED NULL COMMENT '할인 상품 가격(쿠폰과 관계없이 전체적으로 할인할 경우)',
+    min_order_price BIGINT UNSIGNED NULL COMMENT '최소 주문 가격',
     created_at DATETIME NOT NULL COMMENT '데이터 생성일',
     updated_at DATETIME NOT NULL COMMENT '데이터 변경일'
 );
@@ -77,7 +79,7 @@ CREATE TABLE order_detail
     quantity BIGINT UNSIGNED NOT NULL COMMENT '상품 주문 수량',
     price_per_each BIGINT UNSIGNED NOT NULL COMMENT '상품 개당 가격',
     total_order_price BIGINT UNSIGNED NOT NULL COMMENT '총 상품 주문 가격',
-    discount_price   BIGINT UNSIGNED NOT NULL COMMENT '할인 가격',
+    total_discount_price   BIGINT UNSIGNED NOT NULL COMMENT '총 할인 가격',
     total_payment_price BIGINT UNSIGNED NOT NULL COMMENT '총 결제 가격',
     created_at      DATETIME        NOT NULL COMMENT '데이터 생성일',
     updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일'

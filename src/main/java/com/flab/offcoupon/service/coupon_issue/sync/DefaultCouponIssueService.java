@@ -4,7 +4,6 @@ import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.CouponIssueCheckVo;
-import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
 
 /**
@@ -70,7 +68,6 @@ public class DefaultCouponIssueService {
         }
     }
     private Coupon findCoupon(long couponId) {
-        return couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
+        return couponRepository.getCouponById(couponId);
     }
 }

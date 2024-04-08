@@ -18,6 +18,7 @@ public final class AvailableCouponsByMemberIdResponse {
     private final long discountPrice;
     private final LocalDateTime validateStartDate;
     private final LocalDateTime validateEndDate;
+    private final long couponIssueId;
     private final CouponStatus couponStatus;
 
     public AvailableCouponsByMemberIdResponse(AvailableCouponsByMemberIdVo vo) {
@@ -28,6 +29,7 @@ public final class AvailableCouponsByMemberIdResponse {
         this.discountPrice = vo.discountedPrice();
         this.validateStartDate = vo.validateStartDate();
         this.validateEndDate = vo.validateEndDate();
+        this.couponIssueId = vo.couponIssueId();
         this.couponStatus = vo.couponStatus();
     }
 }

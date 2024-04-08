@@ -29,6 +29,28 @@
         WHERE id = #{id};
     </select>
 
+    <select id="findCouponsByIds" resultType="Coupon">
+        SELECT id,
+               event_id,
+               discount_type,
+               discount_rate,
+               discount_price,
+               coupon_type,
+               max_quantity,
+               issued_quantity,
+               validate_start_date,
+               validate_end_date,
+               created_at,
+               updated_at
+        FROM coupon
+        WHERE id in
+              (
+                    <foreach collection="couponIds" item="couponId" separator=",">
+                        #{couponId}
+                    </foreach>
+                  );
+    </select>
+
     <update id="increaseIssuedQuantity">
         UPDATE coupon
         SET issued_quantity = #{issuedQuantity}

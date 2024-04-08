@@ -26,4 +26,11 @@ public interface ProductRepository {
         return findProductById(productId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id: " + productId));
     }
+
+    /**
+     * 상품의 최소 주문 가격을 조회합니다.
+     * @param productId 상품 ID
+     * @return 최소 주문 가격
+     */
+    long getProductMinOrderPriceById(long productId);
 }

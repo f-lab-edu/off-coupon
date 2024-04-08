@@ -9,4 +9,10 @@
         FROM product
         WHERE id = #{productId};
     </select>
+
+    <select id="getProductMinOrderPriceById" parameterType="long" resultType="long">
+        SELECT min_order_price
+        FROM product
+        WHERE id = #{productId};
+    </select>
 </mapper>
