@@ -47,7 +47,6 @@ public class OrderController {
     public ResponseEntity<ResponseDTO<String>> orderProduct(@PathVariable final long productId,
                                           @RequestBody final OrderProductRequest orderProductRequest) {
         LocalDateTime now = LocalDateTime.now();
-        orderService.orderProduct(productId,orderProductRequest, now);
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.getSuccessResult("주문이 완료되었습니다."));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.getSuccessResult(orderService.orderProduct(productId,orderProductRequest, now)));
     }
 }

@@ -9,6 +9,8 @@ import com.flab.offcoupon.domain.vo.persistence.order.MemberIdProductIdNowVo;
 import com.flab.offcoupon.domain.vo.persistence.order.ValidateNowIsBetweenPeriodVo;
 import com.flab.offcoupon.dto.request.OrderProductRequest;
 import com.flab.offcoupon.dto.response.AvailableCouponsByMemberIdResponse;
+import com.flab.offcoupon.exception.coupon.CouponStatusException;
+import com.flab.offcoupon.exception.coupon.CouponUsageInvalidPeriodException;
 import com.flab.offcoupon.repository.mysql.*;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ import java.util.List;
 import static com.flab.offcoupon.domain.entity.OrderCoupon.createOrderCoupon;
 import static com.flab.offcoupon.domain.entity.OrderDetail.createOrderDetail;
 import static com.flab.offcoupon.domain.entity.params.OrderInfo.createOrderInfo;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_IS_NOT_ACTIVE;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_USAGE_INVALID_PERIOD;
 
 @RequiredArgsConstructor
 @Service
@@ -54,8 +58,15 @@ public class OrderService {
         return ResponseDTO.getSuccessResult(responseList);
     }
 
+    /**
+     * 상품 주문 및 쿠폰 사용 처리
+     *
+     * @param productId 상품 ID
+     * @param request  주문 요청 정보
+     * @param now     현재 시간
+     */
     @Transactional
-    public void orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
+    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
         validateCouponIsAvailable(request, now);
         // 3. 주문 정보 저장, 주문에 사용된 쿠폰 저장
         OrderInfo orderInfo = createOrderInfo(
@@ -73,6 +84,7 @@ public class OrderService {
 
         // 5. 쿠폰 사용 처리
         couponIssueRepository.updateCouponStatus(request.getCouponIssueId());
+        return ResponseDTO.getSuccessResult("쿠폰 처리 및 주문이 완료되었습니다.");
     }
 
     /**
@@ -84,10 +96,9 @@ public class OrderService {
     private void validateCouponIsAvailable(OrderProductRequest request, LocalDateTime now) {
         // 1. 쿠폰들의 상태가 ACTIVE인지 확인
         List<CouponIssuesAreActiveVo> couponIssueStatus = couponIssueRepository.validateStatusIsActive(request.getCouponIssueId());
-        System.out.println("couponIssueStatus : " + couponIssueStatus);
         for (CouponIssuesAreActiveVo couponIssue : couponIssueStatus) {
             if (!couponIssue.isActive()) {
-                throw new IllegalArgumentException("쿠폰의 상태가 ACTIVE가 아닙니다. couponIssueId: " + couponIssue.couponIssueId());
+                throw new CouponStatusException(COUPON_IS_NOT_ACTIVE.formatted(couponIssue.couponIssueId()));
             }
         }
 
@@ -95,7 +106,7 @@ public class OrderService {
         List<ValidateNowIsBetweenPeriodVo> isBetweenValidatePeriodVo = couponRepository.validateNowIsBetweenPeriod(request.getCouponId(), now);
         for (ValidateNowIsBetweenPeriodVo isBetweenValidatePeriod : isBetweenValidatePeriodVo) {
             if (!isBetweenValidatePeriod.isBetweenValidatePeriod()) {
-                throw new IllegalArgumentException("쿠폰의 유효기간이 아닙니다. couponId: %s, validateStartDate: %s, validateEndDate : %s "
+                throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD
                         .formatted(isBetweenValidatePeriod.couponId(), isBetweenValidatePeriod.validateStartDate(), isBetweenValidatePeriod.validateEndDate()));
             }
         }
