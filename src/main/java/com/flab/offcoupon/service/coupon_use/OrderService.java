@@ -37,13 +37,32 @@ public class OrderService {
     private final OrderDetailRepository orderDetailRepository;
     private final OrderCouponRepository orderCouponRepository;
 
+    /**
+     * 사용 가능한 쿠폰 목록 조회
+     * @param memberId 회원 ID
+     * @param productId 상품 ID
+     * @param now 현재 날짜
+     * @return 사용 가능한 쿠폰 목록
+     */
     @Transactional(readOnly = true)
     public ResponseDTO<List<AvailableCouponsByMemberIdResponse>> getAvailableCoupons(final long memberId, final long productId, final LocalDateTime now) {
         List<AvailableCouponsByMemberIdVo> availableCoupons =
                 couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now));
         List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
+        filterAvailableCouponsWithMinPrice(productId, availableCoupons, responseList);
+        return ResponseDTO.getSuccessResult(responseList);
+    }
+
+    /**
+     * 최소 주문 금액과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다.
+     *
+     * @param productId        상품 ID
+     * @param availableCoupons 사용 가능한 쿠폰 목록
+     * @param responseList     결과 리스트
+     */
+    private void filterAvailableCouponsWithMinPrice(long productId, List<AvailableCouponsByMemberIdVo> availableCoupons, List<AvailableCouponsByMemberIdResponse> responseList) {
         // min_price(상품의 최소 주문 금액)과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다.
-        if(!availableCoupons.isEmpty()) {
+        if (!availableCoupons.isEmpty()) {
             long totalOrderPrice = 0;
             for (AvailableCouponsByMemberIdVo availableCoupon : availableCoupons) {
                 // 최소 주문 금액까지 할인 가능한 금액 누적
@@ -55,15 +74,14 @@ public class OrderService {
                 }
             }
         }
-        return ResponseDTO.getSuccessResult(responseList);
     }
 
     /**
      * 상품 주문 및 쿠폰 사용 처리
      *
      * @param productId 상품 ID
-     * @param request  주문 요청 정보
-     * @param now     현재 시간
+     * @param request   주문 요청 정보
+     * @param now       현재 시간
      */
     @Transactional
     public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
