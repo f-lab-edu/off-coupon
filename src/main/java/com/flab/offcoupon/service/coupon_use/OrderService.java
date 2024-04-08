@@ -38,15 +38,17 @@ public class OrderService {
         List<AvailableCouponsByMemberIdVo> availableCoupons =
                 couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now));
         List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
-        long totalOrderPrice = 0;
-        // min_price(상품의 최소 주문 금액)과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다. // TODO : NULL이 아니라
-        for (AvailableCouponsByMemberIdVo availableCoupon : availableCoupons) {
-            // 최소 주문 금액까지 할인 가능한 금액 누적
-             totalOrderPrice += availableCoupon.discountedPrice();
-            // 할인 금액이 min_price보다 작거나 같으면 결과 리스트에 추가
-            if (totalOrderPrice <= productRepository.getProductMinOrderPriceById(productId)) {
-                AvailableCouponsByMemberIdResponse response = new AvailableCouponsByMemberIdResponse(availableCoupon);
-                responseList.add(response);
+        // min_price(상품의 최소 주문 금액)과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다.
+        if(!availableCoupons.isEmpty()) {
+            long totalOrderPrice = 0;
+            for (AvailableCouponsByMemberIdVo availableCoupon : availableCoupons) {
+                // 최소 주문 금액까지 할인 가능한 금액 누적
+                totalOrderPrice += availableCoupon.discountedPrice();
+                // 할인 금액이 min_price보다 작거나 같으면 결과 리스트에 추가
+                if (totalOrderPrice <= productRepository.getProductMinOrderPriceById(productId)) {
+                    AvailableCouponsByMemberIdResponse response = new AvailableCouponsByMemberIdResponse(availableCoupon);
+                    responseList.add(response);
+                }
             }
         }
         return ResponseDTO.getSuccessResult(responseList);
