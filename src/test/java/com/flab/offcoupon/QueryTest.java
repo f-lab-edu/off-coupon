@@ -1,31 +1,33 @@
 package com.flab.offcoupon;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Disabled("QueryTest는 쿼리 최적화 성능테스트용이므로 비활성화")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class QueryTest {
-
-    private static final String url = "jdbc:mysql://localhost/off_coupon";
-    private static final String user = "root";
-    private static final String password = "1234";
+    @Value("${spring.datasource.url.query_test}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
+    private String url;
+    @Value("${spring.datasource.username}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
+    private  String user;
+    @Value("${spring.datasource.password}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
+    private String password;
     private static final int queryCount = 10;
     private static long totalExecutionTimeWithIndex = 0;
     private static long totalExecutionTimeWithoutIndex = 0;
     private static Connection connection;
 
     @BeforeAll
-    static void setUpBeforeClass() throws Exception {
+    void setUpBeforeClass() throws Exception {
         connection = DriverManager.getConnection(url, user, password);
     }
 
     @AfterAll
-    static void tearDownAfterClass() throws Exception {
+    void tearDownAfterClass() throws Exception {
         if (connection != null) {
             connection.close();
         }
@@ -33,7 +35,7 @@ public class QueryTest {
 
     @Test
     @DisplayName("[쿼리 실행 시간 측정] 인덱스 있는 쿼리 실행 시간 비교")
-    public void testQueryWithIndex() throws SQLException {
+    void testQueryWithIndex() throws SQLException {
         for (int i = 0; i < queryCount; i++) {
             long startTime = System.currentTimeMillis(); // 시작 시간 기록
             try (Statement statement = connection.createStatement()) {
@@ -50,7 +52,7 @@ public class QueryTest {
 
     @Test
     @DisplayName("[쿼리 실행 시간 측정] 인덱스 없는 쿼리 실행 시간 비교")
-    public void testQueryWithoutIndex() throws SQLException {
+    void testQueryWithoutIndex() throws SQLException {
         for (int i = 0; i < queryCount; i++) {
             long startTime = System.currentTimeMillis(); // 시작 시간 기록
             try (Statement statement = connection.createStatement()) {
@@ -67,7 +69,7 @@ public class QueryTest {
 
     @Test
     @DisplayName("[평균 실행 시간 계산] 인덱스 생성 전후 쿼리 실행 시간 비교")
-    public void testAverageExecutionTime() {
+    void testAverageExecutionTime() {
         // 평균 실행 시간 계산
         double averageExecutionTimeWithIndex = (double) totalExecutionTimeWithIndex / queryCount;
         double averageExecutionTimeWithoutIndex = (double) totalExecutionTimeWithoutIndex / queryCount;
