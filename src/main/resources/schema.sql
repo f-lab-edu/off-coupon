@@ -83,8 +83,9 @@ CREATE TABLE order_detail
     updated_at      DATETIME        NOT NULL COMMENT '데이터 변경일'
 );
 
+## 주문 한 개에 여러 쿠폰을 사용할 수 있으므로 별도의 테이블로 분리
 CREATE TABLE order_coupon (
-  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '주문 쿠폰 식별자',
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '쿠폰을 사용한 주문 식별자',
   order_id BIGINT UNSIGNED NOT NULL COMMENT '주문 ID',
   coupon_id VARCHAR(50) NOT NULL COMMENT '쿠폰 ID',
   discount_amount BIGINT UNSIGNED NOT NULL COMMENT '쿠폰 할인액',

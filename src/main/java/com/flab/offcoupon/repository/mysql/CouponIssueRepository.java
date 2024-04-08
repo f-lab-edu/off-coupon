@@ -5,6 +5,7 @@ import com.flab.offcoupon.domain.vo.persistence.couponissue.CountByCouponIdVo;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.CouponIssueCheckVo;
 import com.flab.offcoupon.domain.vo.persistence.mypage.AllCouponsByMemberIdVo;
 import com.flab.offcoupon.domain.vo.persistence.order.AvailableCouponsByMemberIdVo;
+import com.flab.offcoupon.domain.vo.persistence.order.CouponIssuesAreActiveVo;
 import com.flab.offcoupon.domain.vo.persistence.order.MemberIdProductIdNowVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -50,4 +51,13 @@ public interface CouponIssueRepository {
      * @return 사용 가능한 쿠폰 목록
      */
     List<AvailableCouponsByMemberIdVo> getAvailableCoupons(final MemberIdProductIdNowVo memberIdProductIdNowVo);
+
+    /**
+     * 발급된 쿠폰들의 상태가 활성화인지 확인
+     *
+     * @param couponIssueIds 쿠폰 발급 ID 목록
+     * @return 쿠폰의 상태가 활성화인지 여부
+     */
+
+    List<CouponIssuesAreActiveVo> validateStatusIsActive(List<Long> couponIssueIds);
 }

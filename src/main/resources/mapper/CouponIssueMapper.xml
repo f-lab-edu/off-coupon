@@ -102,4 +102,16 @@
         ORDER BY discounted_price;
         ]]>
     </select>
+
+    <select id="validateStatusIsActive" parameterType="Long" resultType="CouponIssuesAreActiveVo">
+        select id as couponIssueId, if (coupon_status = 'ACTIVE', true, false) as isActive
+        from coupon_issue
+        where id in
+        (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        );
+    </select>
+
 </mapper>
