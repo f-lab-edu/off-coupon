@@ -40,7 +40,7 @@ public class OrderController {
      *
      * @param productId 상품 ID
      * @param orderProductRequest 주문 요청 정보
-     * @return
+     * @return 주문 성공 여부
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/products/{productId}")
