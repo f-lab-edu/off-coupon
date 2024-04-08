@@ -33,4 +33,18 @@ public class CouponExceptionHandler {
                 ex.getMessage(), HttpStatus.BAD_REQUEST);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
     }
+
+    @ExceptionHandler(CouponStatusException.class)
+    public ResponseEntity<ResponseDTO<String>> couponBadRequestException(CouponStatusException ex, HttpServletRequest request) {
+        log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
+                ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
+    }
+
+    @ExceptionHandler(CouponUsageInvalidPeriodException.class)
+    public ResponseEntity<ResponseDTO<String>> couponBadRequestException(CouponUsageInvalidPeriodException ex, HttpServletRequest request) {
+        log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
+                ex.getMessage(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseDTO.getFailResult(ex.getMessage()));
+    }
 }

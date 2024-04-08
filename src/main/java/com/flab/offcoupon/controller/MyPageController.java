@@ -21,9 +21,4 @@ public class MyPageController {
     public ResponseEntity<ResponseDTO<List<AllCouponsByMemberIdResponse>>> getAllCoupons(@RequestParam final long memberId) {
         return ResponseEntity.status(HttpStatus.OK).body(myPageService.getAllCoupons(memberId));
     }
-
-//    @GetMapping("/coupon-use")
-//    public void getAvailableCoupons(@RequestParam final long memberId) {
-//        couponUseService.getAvailableCoupons(memberId);
-//    }
 }

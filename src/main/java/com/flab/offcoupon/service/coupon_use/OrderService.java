@@ -86,7 +86,7 @@ public class OrderService {
     @Transactional
     public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
         validateCouponIsAvailable(request, now);
-        // 3. 주문 정보 저장, 주문에 사용된 쿠폰 저장
+        // 3. 주문 정보 저장
         OrderInfo orderInfo = createOrderInfo(
                 productRepository.getProductById(productId),
                 request.getQuantity(),
