@@ -32,39 +32,40 @@ public class DiscountUtils {
     }
 
     /**
-     * 상품의 가격을 반환하는 메소드입니다.<br>
+     * 상품의 개별 가격을 반환하는 메소드입니다.<br>
      * 만약 세일 가격이 없다면 원래 가격을 반환합니다.
      *
      * @param product 상품 정보
-     * @return 상품의 가격
+     * @return 상품의 개별 가격
      */
-    public long pricePerEach(Product product) {
-        return product.getSalePrice() == null ? product.getOriginalPrice().longValue() : product.getSalePrice().longValue();
+    public long getProductPricePerUnit(Product product) {
+        return product.getSalePrice() == null ? product.getOriginalPrice() : product.getSalePrice();
     }
 
     /**
-     * 상품의 총 가격을 반환하는 메소드입니다.
-     * @param product 상품 정보
+     * 상품의 총 가격을 계산하여 반환하는 메소드입니다.
+     *
+     * @param product  상품 정보
      * @param quantity 상품 수량
-     * @return
+     * @return 상품의 총 가격
      */
-    public long totalOrderPrice(Product product, long quantity) {
-        return pricePerEach(product) * quantity;
+    public long calculateTotalPrice(Product product, long quantity) {
+        return getProductPricePerUnit(product) * quantity;
     }
 
     /**
-     * 상품의 총 할인 가격을 반환하는 메소드입니다.
-     * @param product 상품 정보
-     * @param couponList 쿠폰 목록
-     * @param quantity 상품 수량
+     * 상품에 대한 총 할인 가격을 계산하여 반환하는 메소드입니다.
+     *
+     * @param product     상품 정보
+     * @param couponList  쿠폰 목록
+     * @param quantity    상품 수량
      * @return 총 할인 가격
      */
-    public long totalDiscountPrice(Product product, List<Coupon> couponList, long quantity) {
+    public long calculateTotalDiscountPrice(Product product, List<Coupon> couponList, long quantity) {
         long totalDiscountPrice = 0;
         for (Coupon coupon : couponList) {
             if (coupon.getDiscountType() == DiscountType.PERCENT) {
-                double test = pricePerEach(product) * ((double) coupon.getDiscountRate() / 100);
-                totalDiscountPrice += test;
+                totalDiscountPrice += getProductPricePerUnit(product) * ((double) coupon.getDiscountRate() / 100);
             } else {
                 totalDiscountPrice += coupon.getDiscountPrice();
             }
@@ -73,31 +74,34 @@ public class DiscountUtils {
     }
 
     /**
-     * 상품의 개당 할인 가격을 반환하는 메소드입니다.
+     * 상품의 개당 할인 가격을 계산하여 반환하는 메소드입니다.
+     *
      * @param product 상품 정보
-     * @param coupon 쿠폰 정보
+     * @param coupon  쿠폰 정보
      * @return 개당 할인 가격
      */
-    public long calculateEachDiscountPrice(Product product, Coupon coupon) {
-        long totalDiscountPrice = 0;
+    public long calculateDiscountPricePerUnit(Product product, Coupon coupon) {
+        long discountPricePerUnit = 0;
 
         if (coupon.getDiscountType() == DiscountType.PERCENT) {
-            totalDiscountPrice += pricePerEach(product) * coupon.getDiscountRate() / 100;
+            discountPricePerUnit += getProductPricePerUnit(product) * coupon.getDiscountRate() / 100;
         } else {
-            totalDiscountPrice += coupon.getDiscountPrice();
+            discountPricePerUnit += coupon.getDiscountPrice();
         }
 
-        return totalDiscountPrice;
+        return discountPricePerUnit;
     }
 
+
     /**
-     * 상품의 총 결제 가격을 반환하는 메소드입니다.
-     * @param product 상품 정보
-     * @param quantity 상품 수량
-     * @param couponList 쿠폰 목록
+     * 상품에 대한 총 결제 가격을 계산하여 반환하는 메소드입니다.
+     *
+     * @param product     상품 정보
+     * @param quantity    상품 수량
+     * @param couponList  쿠폰 목록
      * @return 총 결제 가격
      */
-    public long totalPaymentPrice(Product product, long quantity, List<Coupon> couponList) {
-        return totalOrderPrice(product, quantity) - totalDiscountPrice(product, couponList, quantity);
+    public long calculateTotalPaymentPrice(Product product, long quantity, List<Coupon> couponList) {
+        return calculateTotalPrice(product, quantity) - calculateTotalDiscountPrice(product, couponList, quantity);
     }
 }

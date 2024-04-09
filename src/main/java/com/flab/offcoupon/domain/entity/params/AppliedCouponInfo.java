@@ -15,7 +15,7 @@ public final class AppliedCouponInfo {
 
     private AppliedCouponInfo(Product product, Coupon coupon) {
         this.couponId = coupon.getId();
-        this.discountAmount = DiscountUtils.calculateEachDiscountPrice(product, coupon);
+        this.discountAmount = DiscountUtils.calculateDiscountPricePerUnit(product, coupon);
     }
 
     public static AppliedCouponInfo createAppliedCouponInfo(Product product, Coupon coupon) {

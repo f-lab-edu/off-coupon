@@ -4,6 +4,7 @@ DROP TABLE IF EXISTS event;
 DROP TABLE IF EXISTS coupon_issue;
 DROP TABLE IF EXISTS product;
 DROP TABLE IF EXISTS order_detail;
+DROP TABLE IF EXISTS order_coupon;
 
 CREATE TABLE member
 (

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -18,9 +17,9 @@ public final class Product {
     private final String category;
     private final String title;
     private final String description;
-    private final BigDecimal originalPrice; // 원래 가격
-    private final BigDecimal salePrice; // null일 경우 전체 할인이 적용되지 않은 것으로 간주
-    private final BigDecimal minOrderPrice; // 최소 주문 가격
+    private final long originalPrice; // 원래 가격
+    private final Long salePrice; // null일 경우 전체 할인이 적용되지 않은 것으로 간주
+    private final long minOrderPrice; // 최소 주문 가격
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 }

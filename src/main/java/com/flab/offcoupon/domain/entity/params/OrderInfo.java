@@ -22,11 +22,11 @@ public final class OrderInfo {
     private OrderInfo(Product product, long quantity, List<Coupon> couponList) {
         this.productId = product.getId();
         this.quantity = quantity;
-        this.pricePerEach = DiscountUtils.pricePerEach(product);
-        this.totalOrderPrice = DiscountUtils.totalOrderPrice(product, quantity);
+        this.pricePerEach = DiscountUtils.getProductPricePerUnit(product);
+        this.totalOrderPrice = DiscountUtils.calculateTotalPrice(product, quantity);
         this.appliedCouponInfos = createAppliedCouponInfos(product, couponList);
-        this.totalDiscountPrice = DiscountUtils.totalDiscountPrice(product, couponList, quantity);
-        this.totalPaymentPrice = DiscountUtils.totalPaymentPrice(product, quantity, couponList);
+        this.totalDiscountPrice = DiscountUtils.calculateTotalDiscountPrice(product, couponList, quantity);
+        this.totalPaymentPrice = DiscountUtils.calculateTotalPaymentPrice(product, quantity, couponList);
     }
 
     public static OrderInfo createOrderInfo(Product product, long quantity, List<Coupon> couponList) {
