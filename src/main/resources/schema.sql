@@ -46,7 +46,7 @@ CREATE TABLE coupon
     created_at          DATETIME        NOT NULL COMMENT '데이터 생성일',
     updated_at          DATETIME        NOT NULL COMMENT '데이터 변경일'
 );
-# 쿼리 최적화 성능 비교 테스트용
+
 CREATE TABLE coupon_issue
 (
     id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY COMMENT '쿠폰 발행 기록',
