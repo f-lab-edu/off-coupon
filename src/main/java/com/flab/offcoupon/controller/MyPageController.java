@@ -16,7 +16,6 @@ import java.util.List;
 public class MyPageController {
 
     private final MyPageService myPageService;
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/coupons")
     public ResponseEntity<ResponseDTO<List<AllCouponsByMemberIdResponse>>> getAllCoupons(@RequestParam final long memberId) {
         return ResponseEntity.status(HttpStatus.OK).body(myPageService.getAllCoupons(memberId));

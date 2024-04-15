@@ -26,7 +26,6 @@ public class OrderController {
      * @param productId 상품 ID
      * @return 사용 가능한 쿠폰 목록
      */
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/available-coupons")
     public ResponseEntity<ResponseDTO<List<AvailableCouponsByMemberIdResponse>>> getAvailableCoupons(@RequestParam final long memberId,
                                                                                                      @RequestParam final long productId) {
@@ -42,7 +41,6 @@ public class OrderController {
      * @param orderProductRequest 주문 요청 정보
      * @return 주문 성공 여부
      */
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/products/{productId}")
     public ResponseEntity<ResponseDTO<String>> orderProduct(@PathVariable final long productId,
                                           @RequestBody final OrderProductRequest orderProductRequest) {

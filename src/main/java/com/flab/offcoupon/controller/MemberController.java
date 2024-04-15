@@ -16,7 +16,6 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/signup")
     public ResponseEntity<ResponseDTO> signup(@RequestBody @Valid final SignupMemberRequestDto signupMemberRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(memberService.signUp(signupMemberRequestDto));
