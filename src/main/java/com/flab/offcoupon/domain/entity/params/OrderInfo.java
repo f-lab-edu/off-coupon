@@ -2,10 +2,10 @@ package com.flab.offcoupon.domain.entity.params;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Product;
-import com.flab.offcoupon.util.DiscountUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -13,20 +13,20 @@ import java.util.List;
 public final class OrderInfo {
     private final long productId;
     private final long quantity;
-    private final long pricePerEach;
-    private final long totalOrderPrice;
+    private final BigDecimal pricePerEach;
+    private final BigDecimal totalOrderPrice;
     private final List<AppliedCouponInfo> appliedCouponInfos;
-    private final long totalDiscountPrice;
-    private final long totalPaymentPrice;
+    private final BigDecimal totalDiscountPrice;
+    private final BigDecimal totalPaymentPrice;
 
     private OrderInfo(Product product, long quantity, List<Coupon> couponList) {
         this.productId = product.getId();
         this.quantity = quantity;
-        this.pricePerEach = DiscountUtils.getProductPricePerUnit(product);
-        this.totalOrderPrice = DiscountUtils.calculateTotalPrice(product, quantity);
+        this.pricePerEach = product.getPricePerUnit();
+        this.totalOrderPrice = product.calculateTotalPrice(quantity);
         this.appliedCouponInfos = createAppliedCouponInfos(product, couponList);
-        this.totalDiscountPrice = DiscountUtils.calculateTotalDiscountPrice(product, couponList, quantity);
-        this.totalPaymentPrice = DiscountUtils.calculateTotalPaymentPrice(product, quantity, couponList);
+        this.totalDiscountPrice = product.calculateTotalDiscountPrice(couponList, quantity);
+        this.totalPaymentPrice = product.calculateTotalPaymentPrice(quantity, couponList);
     }
 
     public static OrderInfo createOrderInfo(Product product, long quantity, List<Coupon> couponList) {

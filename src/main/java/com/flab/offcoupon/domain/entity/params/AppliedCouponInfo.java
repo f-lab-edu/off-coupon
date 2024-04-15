@@ -2,20 +2,21 @@ package com.flab.offcoupon.domain.entity.params;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Product;
-import com.flab.offcoupon.util.DiscountUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
 public final class AppliedCouponInfo {
 
     private final long couponId;
-    private final long discountAmount;
+    private final BigDecimal discountAmount;
 
     private AppliedCouponInfo(Product product, Coupon coupon) {
         this.couponId = coupon.getId();
-        this.discountAmount = DiscountUtils.calculateDiscountPricePerUnit(product, coupon);
+        this.discountAmount = product.calculateDiscountPricePerUnit(coupon);
     }
 
     public static AppliedCouponInfo createAppliedCouponInfo(Product product, Coupon coupon) {

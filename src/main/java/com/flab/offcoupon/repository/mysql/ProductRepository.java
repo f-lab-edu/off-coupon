@@ -1,9 +1,12 @@
 package com.flab.offcoupon.repository.mysql;
 
 import com.flab.offcoupon.domain.entity.Product;
+import com.flab.offcoupon.exception.product.ProductNotFoundException;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.Optional;
+
+import static com.flab.offcoupon.exception.product.ProductErrorMessage.PRODUCT_NOT_EXIST;
 
 @Mapper
 public interface ProductRepository {
@@ -24,7 +27,7 @@ public interface ProductRepository {
 
     default Product getProductById(long productId) {
         return findProductById(productId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품이 존재하지 않습니다. id: " + productId));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_EXIST.formatted(productId)));
     }
 
     /**

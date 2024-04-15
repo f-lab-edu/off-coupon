@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -19,10 +20,10 @@ public final class OrderDetail {
     private long id;
     private final long productId;
     private final long quantity;
-    private final long pricePerEach; // 상품 1개당 가격
-    private final long totalOrderPrice; // 총 상품 주문 가격
-    private final long totalDiscountPrice; // 할인 가격
-    private final long totalPaymentPrice; // 총 상품 주문 가격 - 할인 가격
+    private final BigDecimal pricePerEach; // 상품 1개당 가격
+    private final BigDecimal totalOrderPrice; // 총 상품 주문 가격
+    private final BigDecimal totalDiscountPrice; // 할인 가격
+    private final BigDecimal totalPaymentPrice; // 총 상품 주문 가격 - 할인 가격
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 

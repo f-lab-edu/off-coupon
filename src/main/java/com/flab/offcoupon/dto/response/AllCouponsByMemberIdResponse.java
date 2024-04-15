@@ -23,7 +23,7 @@ public final class AllCouponsByMemberIdResponse {
         this.couponId = vo.couponId();
         this.category = vo.category();
         this.description = vo.description();
-        this.discount = DiscountUtils.getDiscount(vo.discountType(), vo.discountRate(), vo.discountPrice());
+        this.discount = DiscountUtils.getDiscountInfo(vo.discountType(), vo.discountRate(), vo.discountPrice());
         this.validateStartDate = vo.validateStartDate();
         this.validateEndDate = vo.validateEndDate();
         this.couponStatus = vo.couponStatus();

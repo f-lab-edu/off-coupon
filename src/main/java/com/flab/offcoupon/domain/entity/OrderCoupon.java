@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
@@ -19,7 +20,7 @@ public final class OrderCoupon {
     private long id;
     private final long orderDetailId;
     private final long couponId;
-    private final long discountAmount;
+    private final BigDecimal discountAmount;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
 
