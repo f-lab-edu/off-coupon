@@ -78,29 +78,20 @@
                c.discount_rate,
                c.discount_price,
                p.category,
-               e.description,
+               p.description,
+               p.min_order_price,
                ci.id as couponIssueId,
                ci.coupon_status,
-               ROUND(CASE
-                         WHEN p.sale_price IS NULL THEN
-                                 p.original_price -
-                                 IF(c.discount_type = 'PERCENT', p.original_price * (c.discount_rate / 100),
-                                    c.discount_price)
-                         ELSE
-                                 p.sale_price - IF(c.discount_type = 'PERCENT', p.sale_price * (c.discount_rate / 100),
-                                                   c.discount_price)
-                         END, 0)
-                    AS discounted_price
+               p.original_price,
+               p.sale_price
         FROM coupon_issue ci
                  JOIN coupon c ON c.id = ci.coupon_id
                  JOIN event e ON e.id = c.event_id
                  JOIN product p ON p.category = e.category
         WHERE ci.member_id = #{memberId}
-          AND c.validate_start_date <= #{currentDateTime}
-          AND c.validate_end_date >= #{currentDateTime}
+          AND #{currentDateTime} BETWEEN  c.validate_start_date and c.validate_end_date
           AND ci.coupon_status = 'ACTIVE'
-          AND p.id = #{productId}
-        ORDER BY discounted_price;
+          AND p.id = #{productId};
         ]]>
     </select>
 

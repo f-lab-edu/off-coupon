@@ -1,8 +1,9 @@
 package com.flab.offcoupon.service.coupon_use;
 
 import com.flab.offcoupon.domain.entity.OrderDetail;
-import com.flab.offcoupon.domain.entity.params.AppliedCouponInfo;
-import com.flab.offcoupon.domain.entity.params.OrderInfo;
+import com.flab.offcoupon.domain.entity.helper.AppliedCouponInfo;
+import com.flab.offcoupon.domain.entity.helper.AvailableCouponInfo;
+import com.flab.offcoupon.domain.entity.helper.OrderInfo;
 import com.flab.offcoupon.domain.vo.persistence.order.AvailableCouponsByMemberIdVo;
 import com.flab.offcoupon.domain.vo.persistence.order.CouponIssuesAreActiveVo;
 import com.flab.offcoupon.domain.vo.persistence.order.MemberIdProductIdNowVo;
@@ -17,13 +18,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.flab.offcoupon.domain.entity.OrderCoupon.createOrderCoupon;
 import static com.flab.offcoupon.domain.entity.OrderDetail.createOrderDetail;
-import static com.flab.offcoupon.domain.entity.params.OrderInfo.createOrderInfo;
+import static com.flab.offcoupon.domain.entity.helper.OrderInfo.createOrderInfo;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_IS_NOT_ACTIVE;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_USAGE_INVALID_PERIOD;
 
@@ -39,41 +42,78 @@ public class OrderService {
 
     /**
      * 사용 가능한 쿠폰 목록 조회
-     * @param memberId 회원 ID
+     * <p>
+     * Query에서 로직 사용을 최소화하는것이 목표입니다.<br>
+     * Query는 디버깅이 어려우며 수정이 필요할때 유연하게 대응하기 어렵고, 테스트 코드를 작성하기도 어렵습니다.<br>
+     * 따라서 데이터 조회 쿼리를 심플하게 만들고 모든 가공은 애플리케이션 내에서 하도록 진행했습니다.<br>
+     * </p>
+     * <p>
+     * 아래는 쿼리에서 로직 사용을 피하기 위한 경우입니다.
+     * <ol>
+     *     <li>query에서 분기를 태우는 case-when-then</li>
+     *     <li>query에서 값을 계산하는 경우</li>
+     *     <li>query에서 비즈니스 로직이 있는 경우</li>
+     * </ol>
+     * </p>
+     *
+     * @param memberId  회원 ID
      * @param productId 상품 ID
-     * @param now 현재 날짜
+     * @param now       현재 날짜
      * @return 사용 가능한 쿠폰 목록
      */
     @Transactional(readOnly = true)
     public ResponseDTO<List<AvailableCouponsByMemberIdResponse>> getAvailableCoupons(final long memberId, final long productId, final LocalDateTime now) {
-        List<AvailableCouponsByMemberIdVo> availableCoupons =
+        List<AvailableCouponsByMemberIdVo> availableCouponData =
                 couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now));
-        List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
-        filterAvailableCouponsWithMinPrice(productId, availableCoupons, responseList);
-        return ResponseDTO.getSuccessResult(responseList);
+
+        // 할인가격 기준으로 내림차순
+        List<AvailableCouponInfo> availableCouponInfos = availableCouponData.stream()
+                .map(AvailableCouponInfo::new)
+                .sorted(Comparator.comparing(AvailableCouponInfo::getDiscountPrice).reversed())
+                .toList();
+
+        return ResponseDTO.getSuccessResult(filterAvailableCoupons(availableCouponInfos));
     }
 
     /**
-     * 최소 주문 금액과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다.
-     *
-     * @param productId        상품 ID
-     * @param availableCoupons 사용 가능한 쿠폰 목록
-     * @param responseList     결과 리스트
+     * 사용 가능한 쿠폰 목록을 필터링합니다.
+     * 필터링 조건은 아래와 같습니다.
+     * <ol>
+     *     <li>내림차순으로 정렬된 할인 가격을 하나씩 꺼내어 누적합니다.</li>
+     *     <li>누적된 할인가격을 반영한 가격이 최소 주문 금액 이상이라면 리스트에 추가합니다.</li>
+     *     <li>현재 할인 가격이 2번 조건에서 일치하지 않을 경우 누적 할인 가격에서 제외합니다.</li>
+     * </ol>
+     * @param availableCouponInfos
+     * @return
      */
-    private void filterAvailableCouponsWithMinPrice(long productId, List<AvailableCouponsByMemberIdVo> availableCoupons, List<AvailableCouponsByMemberIdResponse> responseList) {
-        // min_price(상품의 최소 주문 금액)과 비교하여 조건에 맞는 쿠폰만 결과 리스트에 추가합니다.
-        if (!availableCoupons.isEmpty()) {
-            long accumulatedDiscountPrice = 0;
-            for (AvailableCouponsByMemberIdVo availableCoupon : availableCoupons) {
-                // 최소 주문 금액까지 할인 가능한 금액 누적
-                accumulatedDiscountPrice += availableCoupon.discountedPrice();
-                // 할인 금액이 min_price보다 작거나 같으면 결과 리스트에 추가
-                if (accumulatedDiscountPrice <= productRepository.getProductMinOrderPriceById(productId)) {
-                    AvailableCouponsByMemberIdResponse response = new AvailableCouponsByMemberIdResponse(availableCoupon);
-                    responseList.add(response);
-                }
+    private List<AvailableCouponsByMemberIdResponse> filterAvailableCoupons(List<AvailableCouponInfo> availableCouponInfos) {
+        // 할인 가격을 누적하되 minOrderPrice를 초과하지 않는 누적 금액에 포함되는 경우만 결과 리스트에 추가 (중복 쿠폰 할인 가능용)
+        BigDecimal accumulatedDiscountPrice = BigDecimal.ZERO;
+        List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
+        for (AvailableCouponInfo info : availableCouponInfos) {
+            BigDecimal discountPrice = info.getDiscountPrice();
+            accumulatedDiscountPrice = accumulatedDiscountPrice.add(discountPrice);
+            if (isOverThanMinOrderPrice(info.getProductPrice(), info.getMinProductPrice(), accumulatedDiscountPrice)) {
+                responseList.add(new AvailableCouponsByMemberIdResponse(info));
+            } else {
+                accumulatedDiscountPrice = accumulatedDiscountPrice.subtract(discountPrice);
             }
         }
+        return responseList;
+    }
+
+    /**
+     * 최소 주문 금액과 비교하여 조건에 맞는 쿠폰인지 확인합니다.
+     *
+     * @param price                    상품 가격
+     * @param minOrderPrice            최소 주문 금액
+     * @param accumulatedDiscountPrice 누적된 할인 가격
+     * @return 할인이 적용된 금액이 최소 주문 금액보다 크거나 같으면 true, 아니면 false
+     */
+    private boolean isOverThanMinOrderPrice(BigDecimal price, BigDecimal minOrderPrice, BigDecimal accumulatedDiscountPrice) {
+        // 쿠폰 할인을 적용한 가격을 구함
+        BigDecimal appliedDiscount = price.subtract(accumulatedDiscountPrice);
+        return appliedDiscount.compareTo(minOrderPrice) >= 0;
     }
 
     /**
@@ -84,7 +124,8 @@ public class OrderService {
      * @param now       현재 시간
      */
     @Transactional
-    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
+    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime
+            now) {
         validateCouponIsAvailable(request, now);
         // 3. 주문 정보 저장
         OrderInfo orderInfo = createOrderInfo(

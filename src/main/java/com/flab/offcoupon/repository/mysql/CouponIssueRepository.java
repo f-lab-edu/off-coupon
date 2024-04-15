@@ -37,13 +37,12 @@ public interface CouponIssueRepository {
     List<AllCouponsByMemberIdVo> getAllCoupons(long memberId);
 
     /**
-     * 물건 구매 시 사용 가능한 쿠폰 조회<br>
+     * 상품 주문 시 사용 가능한 쿠폰 조회<br>
      * <ul>
      *     <li>사용 가능한 쿠폰 목록 조회 조건</li>
      *     <ol>
-     *         <li>할인율이 적용된 가격(discounted_price) 기준으로 내림차순 정렬</li>
-     *         <li>discounted_price는 쿠폰의 할인율 또는 할인액에 따라 원래 상품 가격 혹은 할인 상품 가격에 계산</li>
-     *         <li>쿠폰의 상태가 활성화인 상태이고, 현재 날짜 기준으로 유효 기간 범위 내에 있는 쿠폰 조회</li>
+     *         <li>product_id와 member_id가 가 매개변수로 받은 ID식별자인 경우</li>
+     *         <li>쿠폰의 상태가 활성화인 상태이고, 현재 날짜 기준으로 유효 기간 범위 내에 있는 경우/li>
      *     </ol>
      * </ul>
      *

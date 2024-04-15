@@ -1,4 +1,4 @@
-package com.flab.offcoupon.domain.entity.params;
+package com.flab.offcoupon.domain.entity.helper;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Product;
@@ -8,6 +8,10 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.util.List;
 
+/**
+ * 주문 정보를 담는 클래스입니다.
+ * 비즈니스 로직에서 데이터 가공을 위해 사용됩니다.
+ */
 @Getter
 @AllArgsConstructor
 public final class OrderInfo {

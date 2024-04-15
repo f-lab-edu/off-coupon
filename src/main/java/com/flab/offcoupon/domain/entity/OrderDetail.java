@@ -1,6 +1,6 @@
 package com.flab.offcoupon.domain.entity;
 
-import com.flab.offcoupon.domain.entity.params.OrderInfo;
+import com.flab.offcoupon.domain.entity.helper.OrderInfo;
 import com.flab.offcoupon.domain.entity.params.TimeParams;
 import com.flab.offcoupon.util.DateTimeUtils;
 import lombok.AllArgsConstructor;

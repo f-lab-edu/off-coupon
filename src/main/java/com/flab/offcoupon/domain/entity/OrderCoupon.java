@@ -1,6 +1,6 @@
 package com.flab.offcoupon.domain.entity;
 
-import com.flab.offcoupon.domain.entity.params.AppliedCouponInfo;
+import com.flab.offcoupon.domain.entity.helper.AppliedCouponInfo;
 import com.flab.offcoupon.domain.entity.params.TimeParams;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

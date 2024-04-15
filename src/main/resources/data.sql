@@ -16,5 +16,5 @@ VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(n
 ## PRODUCT
 INSERT INTO product (category, title, description, original_price, sale_price, created_at, updated_at)
 VALUES
-    ('의류', '면티셔츠', '편안한 면소재의 티셔츠', 20000, NULL, NOW(), NOW()),
+    ('의류', '면티셔츠', '편안한 면소재의 티셔츠', 20000, 0, NOW(), NOW()),
     ('전자제품', '스마트폰', '고성능 스마트폰', 1000000, 800000, NOW(), NOW());
