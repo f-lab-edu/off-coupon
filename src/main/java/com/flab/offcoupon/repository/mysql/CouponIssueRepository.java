@@ -65,5 +65,5 @@ public interface CouponIssueRepository {
      * 쿠폰 상태를 사용 완료로 변경
      * @param couponIssueIds 쿠폰 발급 ID 목록
      */
-    void updateCouponStatus(List<Long> couponIssueIds);
+    void useCoupon(List<Long> couponIssueIds);
 }

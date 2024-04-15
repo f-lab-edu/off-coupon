@@ -114,7 +114,7 @@
         </foreach>
         );
     </select>
-    <update id="updateCouponStatus" parameterType="long">
+    <update id="useCoupon" parameterType="long">
         UPDATE coupon_issue
         SET coupon_status = 'USED'
         WHERE id in

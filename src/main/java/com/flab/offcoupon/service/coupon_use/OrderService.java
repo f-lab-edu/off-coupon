@@ -101,7 +101,7 @@ public class OrderService {
         }
 
         // 5. 쿠폰 사용 처리
-        couponIssueRepository.updateCouponStatus(request.getCouponIssueId());
+        couponIssueRepository.useCoupon(request.getCouponIssueId());
         return ResponseDTO.getSuccessResult("쿠폰 처리 및 주문이 완료되었습니다.");
     }
 
