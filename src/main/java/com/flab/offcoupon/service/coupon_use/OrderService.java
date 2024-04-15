@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.flab.offcoupon.domain.entity.OrderCoupon.createOrderCoupon;
 import static com.flab.offcoupon.domain.entity.OrderDetail.createOrderDetail;
@@ -88,20 +89,22 @@ public class OrderService {
      * @return
      */
     private List<AvailableCouponsByMemberIdResponse> filterAvailableCoupons(List<AvailableCouponInfo> availableCouponInfos) {
-        // 할인 가격을 누적하되 minOrderPrice를 초과하지 않는 누적 금액에 포함되는 경우만 결과 리스트에 추가 (중복 쿠폰 할인 가능용)
-        BigDecimal accumulatedDiscountPrice = BigDecimal.ZERO;
+        AtomicReference<BigDecimal> accumulatedDiscountPrice = new AtomicReference<>(BigDecimal.ZERO);
         List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
-        for (AvailableCouponInfo info : availableCouponInfos) {
+
+        availableCouponInfos.forEach(info -> {
             BigDecimal discountPrice = info.getDiscountPrice();
-            accumulatedDiscountPrice = accumulatedDiscountPrice.add(discountPrice);
-            if (isOverThanMinOrderPrice(info.getProductPrice(), info.getMinProductPrice(), accumulatedDiscountPrice)) {
+            accumulatedDiscountPrice.updateAndGet(price -> price.add(discountPrice));
+            if (isOverThanMinOrderPrice(info.getProductPrice(), info.getMinProductPrice(), accumulatedDiscountPrice.get())) {
                 responseList.add(new AvailableCouponsByMemberIdResponse(info));
             } else {
-                accumulatedDiscountPrice = accumulatedDiscountPrice.subtract(discountPrice);
+                accumulatedDiscountPrice.updateAndGet(price -> price.subtract(discountPrice));
             }
-        }
+        });
+
         return responseList;
     }
+
 
     /**
      * 최소 주문 금액과 비교하여 조건에 맞는 쿠폰인지 확인합니다.
