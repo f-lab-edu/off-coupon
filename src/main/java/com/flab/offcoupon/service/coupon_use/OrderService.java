@@ -6,8 +6,8 @@ import com.flab.offcoupon.domain.entity.helper.AvailableCouponInfo;
 import com.flab.offcoupon.domain.entity.helper.OrderInfo;
 import com.flab.offcoupon.domain.vo.persistence.order.AvailableCouponsByMemberIdVo;
 import com.flab.offcoupon.domain.vo.persistence.order.CouponIssuesAreActiveVo;
+import com.flab.offcoupon.domain.vo.persistence.order.CouponValidationPeriodVo;
 import com.flab.offcoupon.domain.vo.persistence.order.MemberIdProductIdNowVo;
-import com.flab.offcoupon.domain.vo.persistence.order.ValidateNowIsBetweenPeriodVo;
 import com.flab.offcoupon.dto.request.OrderProductRequest;
 import com.flab.offcoupon.dto.response.AvailableCouponsByMemberIdResponse;
 import com.flab.offcoupon.exception.coupon.CouponStatusException;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -155,19 +156,31 @@ public class OrderService {
     private void validateCouponIsAvailable(OrderProductRequest request, LocalDateTime now) {
         // 1. 쿠폰들의 상태가 ACTIVE인지 확인
         List<CouponIssuesAreActiveVo> couponIssueStatus = couponIssueRepository.validateStatusIsActive(request.getCouponIssueId());
-        for (CouponIssuesAreActiveVo couponIssue : couponIssueStatus) {
-            if (!couponIssue.isActive()) {
-                throw new CouponStatusException(COUPON_IS_NOT_ACTIVE.formatted(couponIssue.couponIssueId()));
-            }
+        if (couponIssueStatus.stream().anyMatch(couponIssue -> !couponIssue.isActive())) {
+            throw new CouponStatusException(COUPON_IS_NOT_ACTIVE.formatted(couponIssueStatus.get(0).couponIssueId()));
         }
 
         // 2. 현재 시간이 쿠폰의 유효기간 범위내에 있는지 확인
-        List<ValidateNowIsBetweenPeriodVo> isBetweenValidatePeriodVo = couponRepository.validateNowIsBetweenPeriod(request.getCouponId(), now);
-        for (ValidateNowIsBetweenPeriodVo isBetweenValidatePeriod : isBetweenValidatePeriodVo) {
-            if (!isBetweenValidatePeriod.isBetweenValidatePeriod()) {
+        List<CouponValidationPeriodVo> isBetweenValidatePeriodVo = couponRepository.getCouponValidationPeriod(request.getCouponId());
+        for (CouponValidationPeriodVo validationPeriod : isBetweenValidatePeriodVo) {
+            if (!isNowBetweenValidatePeriod(now, validationPeriod)) {
                 throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD
-                        .formatted(isBetweenValidatePeriod.couponId(), isBetweenValidatePeriod.validateStartDate(), isBetweenValidatePeriod.validateEndDate()));
+                        .formatted(validationPeriod.couponId(), validationPeriod.validateStartDate(), validationPeriod.validateEndDate()));
             }
         }
+    }
+    private boolean isNowBetweenValidatePeriod(LocalDateTime now, CouponValidationPeriodVo validationPeriod) {
+        if(validationPeriod.validateStartDate() == null || validationPeriod.validateEndDate() == null) {
+            return false;
+        }
+        /**
+         * 현재 날짜가 유효 기간 범위 내에 있는지 확인
+         * Duration.between(a,b) : a와 b 사이의 시간을 반환, a가 b보다 시간상으로 이전이면 양수, 이후면 음수
+         */
+        Duration startDuration = Duration.between(validationPeriod.validateStartDate(), now);
+        Duration endDuration = Duration.between(now, validationPeriod.validateEndDate());
+
+        return (startDuration.isZero() || !startDuration.isNegative()) &&
+                (endDuration.isZero() || !endDuration.isNegative());
     }
 }

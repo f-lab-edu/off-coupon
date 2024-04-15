@@ -2,12 +2,11 @@ package com.flab.offcoupon.repository.mysql;
 
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.UpdateTotalIssuedQuantityVo;
-import com.flab.offcoupon.domain.vo.persistence.order.ValidateNowIsBetweenPeriodVo;
+import com.flab.offcoupon.domain.vo.persistence.order.CouponValidationPeriodVo;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,12 +59,10 @@ public interface CouponRepository {
     void updateTotalIssuedCouponQuantity(UpdateTotalIssuedQuantityVo updateTotalIssuedQuantityVo);
 
     /**
-     * 현재 시간이 쿠폰의 유효기간 범위내에 있는지 확인
+     * 쿠폰의 유효시간 범위 조회
      *
      * @param couponIds       쿠폰 ID 리스트
-     * @param currentDateTime 현재 시간
      * @return 현재 시간이 쿠폰의 유효기간 범위내에 있는지 여부
      */
-    List<ValidateNowIsBetweenPeriodVo> validateNowIsBetweenPeriod(@Param("couponIds") List<Long> couponIds,
-                                                                  @Param("currentDateTime") LocalDateTime currentDateTime);
+    List<CouponValidationPeriodVo> getCouponValidationPeriod(@Param("couponIds") List<Long> couponIds);
 }

@@ -81,20 +81,18 @@
         WHERE id = #{couponId}
     </update>
 
-    <select id="validateNowIsBetweenPeriod" parameterType="java.util.HashMap" resultType="ValidateNowIsBetweenPeriodVo">
+    <select id="getCouponValidationPeriod" parameterType="java.util.HashMap" resultType="CouponValidationPeriodVo">
     <![CDATA[
         select id        as couponId,
-               if(validate_start_date <= #{currentDateTime} and validate_end_date >= #{currentDateTime}, true,
-                  false) as isBetweenValidatePeriod,
                validate_start_date,
                validate_end_date
         ]]>
         from coupon
         where id in
-              (
-                  <foreach collection="couponIds" item="couponIds" separator=",">
-                    #{couponIds}
-                  </foreach>
-                  )
+        (
+        <foreach collection="couponIds" item="couponIds" separator=",">
+            #{couponIds}
+        </foreach>
+        )
     </select>
 </mapper>
