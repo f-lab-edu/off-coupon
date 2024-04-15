@@ -71,7 +71,7 @@ public class OrderService {
         // 할인가격 기준으로 내림차순
         List<AvailableCouponInfo> availableCouponInfos = availableCouponData.stream()
                 .map(AvailableCouponInfo::new)
-                .sorted(Comparator.comparing(AvailableCouponInfo::getDiscountPrice).reversed())
+                .sorted(Comparator.comparing(AvailableCouponInfo::getAppliedDiscountPrice).reversed())
                 .toList();
 
         return ResponseDTO.getSuccessResult(filterAvailableCoupons(availableCouponInfos));
@@ -93,7 +93,7 @@ public class OrderService {
         List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
 
         availableCouponInfos.forEach(info -> {
-            BigDecimal discountPrice = info.getDiscountPrice();
+            BigDecimal discountPrice = info.getAppliedDiscountPrice();
             accumulatedDiscountPrice.updateAndGet(price -> price.add(discountPrice));
             if (isOverThanMinOrderPrice(info.getProductPrice(), info.getMinProductPrice(), accumulatedDiscountPrice.get())) {
                 responseList.add(new AvailableCouponsByMemberIdResponse(info));
@@ -116,8 +116,8 @@ public class OrderService {
      */
     private boolean isOverThanMinOrderPrice(BigDecimal price, BigDecimal minOrderPrice, BigDecimal accumulatedDiscountPrice) {
         // 쿠폰 할인을 적용한 가격을 구함
-        BigDecimal appliedDiscount = price.subtract(accumulatedDiscountPrice);
-        return appliedDiscount.compareTo(minOrderPrice) >= 0;
+        BigDecimal appliedDiscountPriceToProduct = price.subtract(accumulatedDiscountPrice);
+        return appliedDiscountPriceToProduct.compareTo(minOrderPrice) >= 0;
     }
 
     /**

@@ -15,7 +15,7 @@ public final class AvailableCouponsByMemberIdResponse {
     private final String category;
     private final String description;
     private final String discount; // 할인 쿠폰 내용
-    private final BigDecimal discountPrice; // 상품 가격에 할인 쿠폰 적용한 할인가
+    private final BigDecimal appliedDiscountPrice; // 상품 가격에 할인 쿠폰 적용한 할인가
     private final LocalDateTime validateStartDate;
     private final LocalDateTime validateEndDate;
     private final long couponIssueId;
@@ -27,7 +27,7 @@ public final class AvailableCouponsByMemberIdResponse {
         this.category = info.getCategory();
         this.description = info.getDescription();
         this.discount = info.getDiscount();
-        this.discountPrice = info.getDiscountPrice();
+        this.appliedDiscountPrice = info.getAppliedDiscountPrice();
         this.validateStartDate = info.getValidateStartDate();
         this.validateEndDate = info.getValidateEndDate();
         this.couponIssueId = info.getCouponIssueId();

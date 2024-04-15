@@ -26,7 +26,7 @@ public final class AvailableCouponInfo {
     private final BigDecimal minProductPrice; // 최소 주문 금액
     private final BigDecimal productPrice; // 상품 가격
     private final String discount; // 할인 쿠폰 내용
-    private final BigDecimal discountPrice; // 상품 가격에 할인 쿠폰 적용한 할인가
+    private final BigDecimal appliedDiscountPrice; // 상품 가격에 할인 쿠폰 적용한 할인가
     private final LocalDateTime validateStartDate;
     private final LocalDateTime validateEndDate;
     private final long couponIssueId;
@@ -39,7 +39,7 @@ public final class AvailableCouponInfo {
         this.minProductPrice = vo.minOrderPrice();
         this.productPrice = productPrice(vo);
         this.discount = DiscountUtils.getDiscountInfo(vo.discountType(), vo.discountRate(), vo.discountPrice());
-        this.discountPrice = calculateDiscountPrice(vo);
+        this.appliedDiscountPrice = calculateDiscountPrice(vo);
         this.validateStartDate = vo.validateStartDate();
         this.validateEndDate = vo.validateEndDate();
         this.couponIssueId = vo.couponIssueId();

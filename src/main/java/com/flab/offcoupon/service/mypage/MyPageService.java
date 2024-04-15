@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,6 +18,6 @@ public class MyPageService {
         return ResponseDTO.getSuccessResult(couponIssueRepository.getAllCoupons(memberId)
                 .stream()
                 .map(AllCouponsByMemberIdResponse::new)
-                .collect(Collectors.toList()));
+                .toList());
     }
 }

@@ -32,9 +32,6 @@ public final class Product {
      *
      * @return 상품의 개별 가격
      */
-//    public BigDecimal getPricePerUnit(Product product) {
-//        return product.getSalePrice().compareTo(BigDecimal.ZERO) > 0 ? product.getSalePrice() : product.getOriginalPrice();
-//    }
         public BigDecimal getPricePerUnit() {
         return this.salePrice.compareTo(BigDecimal.ZERO) > 0 ? salePrice : originalPrice;
     }
@@ -79,8 +76,7 @@ public final class Product {
      * @return 개당 할인 가격
      */
     public BigDecimal calculateDiscountPricePerUnit(Coupon coupon) {
-        BigDecimal discountPricePerUnit = BigDecimal.ZERO;
-
+        BigDecimal discountPricePerUnit;
         if (coupon.getDiscountType() == DiscountType.PERCENT) {
             BigDecimal discountRate = BigDecimal.valueOf(coupon.getDiscountRate()).divide(BigDecimal.valueOf(100));
             discountPricePerUnit = getPricePerUnit().multiply(discountRate);
