@@ -50,7 +50,7 @@ class LettuceLockCouponIssueConcurrencyTest {
         }
         latch.await();
 
-        Coupon coupon = couponRepository.findCouponById(1).orElseThrow();
+        Coupon coupon = couponRepository.getCouponById(1);
         boolean actualTransactionActive3 = TransactionSynchronizationManager.isActualTransactionActive();
         System.out.println("끝 actualTransactionActive = " + actualTransactionActive3);
 

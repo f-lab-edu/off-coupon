@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.flab.offcoupon.repository.mysql.OrderDetailRepository">
+
+    <insert id="save" parameterType="OrderDetail" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_detail (product_id, quantity, price_per_each, total_order_price, total_discount_price,
+                                  total_payment_price, created_at, updated_at)
+        VALUES (#{productId}, #{quantity}, #{pricePerEach}, #{totalOrderPrice},
+                #{totalDiscountPrice}, #{totalPaymentPrice}, #{createdAt}, #{updatedAt});
+    </insert>
+</mapper>

@@ -78,8 +78,7 @@ class AsyncDefaultCouponIssueServiceTest {
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1000L;
         long couponId = 1L;
-        Coupon coupon = couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));;
+        Coupon coupon = couponRepository.getCouponById(couponId);
 
         LongStream.range(0L, coupon.getMaxQuantity()).forEach(idx -> {
             redisTemplate.opsForSet().add(getIssueRequestKey(coupon.getId()), String.valueOf(idx));
@@ -98,8 +97,7 @@ class AsyncDefaultCouponIssueServiceTest {
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
         long memberId = 1L;
         long couponId = 1L;
-        Coupon coupon = couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
+        Coupon coupon = couponRepository.getCouponById(couponId);
         redisTemplate.opsForSet().add(getIssueRequestKey(coupon.getId()), String.valueOf(memberId));
         // when & then
         DuplicatedCouponException exception = Assertions.assertThrows(DuplicatedCouponException.class, () -> {

@@ -46,7 +46,7 @@ class NamedLockCouponIssueConcurrencyTest {
         }
         latch.await();
 
-        Coupon coupon = couponRepository.findCouponById(1).orElseThrow();
+        Coupon coupon = couponRepository.getCouponById(1);
         // 500 - 100 == 400
         assertEquals(400,coupon.remainedCoupon());
     }

@@ -29,7 +29,6 @@ public class SecurityConfig {
     private final AuthenticationFailureHandler customAuthenticationFailureHandler;
     private final AccessDeniedHandler customAccessDeniedHandler;
     private static final String LOGIN_URL = "/api/v1/members/login";
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -48,6 +47,8 @@ public class SecurityConfig {
                                         "/api/v1/members/signup",
                                         "/main",
                                         "/api/v1/sse/**",
+                                        "/api/v1/my-page/**",
+                                        "/api/v1/orders/**",
                                         "/api/v1/event/**")
                                 .permitAll()
                                 .requestMatchers(
@@ -78,19 +79,13 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(customAccessDeniedHandler)
                 );
-        http.
-                rememberMe(rememberMe -> rememberMe
-                        .rememberMeCookieName("remember")
-                        .tokenValiditySeconds(3600)
-                        .userDetailsService(userDetailsService)
-                );
         http
                 .sessionManagement(sessionManagement -> sessionManagement
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                         .maximumSessions(1)
-                        .maxSessionsPreventsLogin(false)
                         .expiredUrl(LOGIN_URL)
                 );
+
         return http.build();
     }
     @Bean

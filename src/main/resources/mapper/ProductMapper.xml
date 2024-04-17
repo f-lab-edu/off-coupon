@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flab.offcoupon.repository.mysql.ProductRepository">
+    <select id="findProductById" parameterType="long" resultType="Product">
+        SELECT *
+        FROM product
+        WHERE id = #{productId};
+    </select>
+
+    <select id="getProductMinOrderPriceById" parameterType="long" resultType="long">
+        SELECT min_order_price
+        FROM product
+        WHERE id = #{productId};
+    </select>
+</mapper>

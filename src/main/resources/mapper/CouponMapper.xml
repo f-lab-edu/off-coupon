@@ -5,10 +5,11 @@
 <mapper namespace="com.flab.offcoupon.repository.mysql.CouponRepository">
 
     <insert id="save" parameterType="com.flab.offcoupon.domain.entity.Coupon">
-        INSERT INTO  coupon (id, event_id, discount_type, discount_rate, discount_price, coupon_type, max_quantity, issued_quantity,
+        INSERT INTO coupon (id, event_id, discount_type, discount_rate, discount_price, coupon_type, max_quantity,
+                            issued_quantity,
                             validate_start_date, validate_end_date, created_at, updated_at)
-        VALUES (#{id}, #{eventId}, #{discountType}, #{discountRate}, #{discountPrice},#{couponType},#{maxQuantity},
-                #{issuedQuantity}, #{validateStartDate}, #{validateEndDate}, #{createdAt},#{updatedAt} );
+        VALUES (#{id}, #{eventId}, #{discountType}, #{discountRate}, #{discountPrice}, #{couponType}, #{maxQuantity},
+                #{issuedQuantity}, #{validateStartDate}, #{validateEndDate}, #{createdAt}, #{updatedAt});
     </insert>
 
     <select id="findCouponById" resultType="Coupon">
@@ -28,10 +29,31 @@
         WHERE id = #{id};
     </select>
 
+    <select id="findCouponsByIds" resultType="Coupon">
+        SELECT id,
+               event_id,
+               discount_type,
+               discount_rate,
+               discount_price,
+               coupon_type,
+               max_quantity,
+               issued_quantity,
+               validate_start_date,
+               validate_end_date,
+               created_at,
+               updated_at
+        FROM coupon
+        WHERE id in
+              (
+                    <foreach collection="couponIds" item="couponId" separator=",">
+                        #{couponId}
+                    </foreach>
+                  );
+    </select>
+
     <update id="increaseIssuedQuantity">
         UPDATE coupon
-        SET
-            issued_quantity = #{issuedQuantity}
+        SET issued_quantity = #{issuedQuantity}
         WHERE id = #{id}
     </update>
 
@@ -50,13 +72,27 @@
                updated_at
         FROM coupon
         WHERE id = #{id}
-        FOR UPDATE;
+            FOR UPDATE;
     </select>
 
     <update id="updateTotalIssuedCouponQuantity" parameterType="UpdateTotalIssuedQuantityVo">
         UPDATE coupon
-        SET
-            issued_quantity = #{issuedQuantity}
+        SET issued_quantity = #{issuedQuantity}
         WHERE id = #{couponId}
     </update>
+
+    <select id="getCouponValidationPeriod" parameterType="java.util.HashMap" resultType="CouponValidationPeriodVo">
+    <![CDATA[
+        select id        as couponId,
+               validate_start_date,
+               validate_end_date
+        ]]>
+        from coupon
+        where id in
+        (
+        <foreach collection="couponIds" item="couponIds" separator=",">
+            #{couponIds}
+        </foreach>
+        )
+    </select>
 </mapper>

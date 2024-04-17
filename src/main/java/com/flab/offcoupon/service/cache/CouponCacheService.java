@@ -8,8 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
-
 /**
  * 쿠폰 캐시 서비스를 제공하는 클래스입니다.
  */
@@ -40,7 +38,6 @@ public class CouponCacheService {
      * @throws CouponNotFoundException 쿠폰이 존재하지 않을 경우 발생하는 예외
      */
     private Coupon findCoupon(long couponId) {
-        return couponRepository.findCouponById(couponId)
-                .orElseThrow(() -> new CouponNotFoundException(COUPON_NOT_EXIST.formatted(couponId)));
+        return couponRepository.getCouponById(couponId);
     }
 }
