@@ -78,9 +78,8 @@ public final class AvailableCouponInfo {
         long discountPrice = vo.discountPrice() == null ? 0 : vo.discountPrice();
         if (isSalePriceOverThanZero(vo.salePrice())) {
             return calculateDiscountPrice(vo.discountType(), vo.salePrice(), discountRate, discountPrice);
-        } else {
-            return calculateDiscountPrice(vo.discountType(), vo.originalPrice(), discountRate, discountPrice);
         }
+        return calculateDiscountPrice(vo.discountType(), vo.originalPrice(), discountRate, discountPrice);
     }
 
     /**

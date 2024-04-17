@@ -26,7 +26,6 @@ public class OrderController {
      * @param productId 상품 ID
      * @return 사용 가능한 쿠폰 목록
      */
-    @GetMapping("/available-coupons")
     public ResponseEntity<ResponseDTO<List<AvailableCouponsByMemberIdResponse>>> getAvailableCoupons(@RequestParam final long memberId,
                                                                                                      @RequestParam final long productId) {
         LocalDateTime now = LocalDateTime.now();
@@ -37,14 +36,14 @@ public class OrderController {
      * 상품 주문<br>
      * 결제 SDK 연동은 현재 진행 중인 프로젝트에서 메인으로 다루지 않기 때문에 제외했습니다.
      *
-     * @param productId 상품 ID
+     * @param productId           상품 ID
      * @param orderProductRequest 주문 요청 정보
      * @return 주문 성공 여부
      */
     @PostMapping("/products/{productId}")
     public ResponseEntity<ResponseDTO<String>> orderProduct(@PathVariable final long productId,
-                                          @RequestBody final OrderProductRequest orderProductRequest) {
+                                                            @RequestBody final OrderProductRequest orderProductRequest) {
         LocalDateTime now = LocalDateTime.now();
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.getSuccessResult(orderService.orderProduct(productId,orderProductRequest, now)));
+        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.getSuccessResult(orderService.orderProduct(productId, orderProductRequest, now)));
     }
 }

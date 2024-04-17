@@ -1,5 +1,7 @@
 package com.flab.offcoupon.config.redis;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -11,12 +13,13 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableRedisHttpSession
 public class SessionConfig {
 
@@ -30,6 +33,7 @@ public class SessionConfig {
     private String redisPassword;
 
     private static final String REDISSON_HOST_PREFIX = "redis://";
+    private final ObjectMapper objectMapper;
     /**
      * <p>Lettuce: Lettuce는 Redis와의 비동기 및 논 블로킹 I/O를 지원하는 자바 라이브러리입니다.</p>
      * 해당 빈은 세션 저장소로 사용하기 위해 LettuceConnectionFactory를 생성합니다.<br>
@@ -75,16 +79,16 @@ public class SessionConfig {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        redisTemplate.setHashValueSerializer(springSessionDefaultRedisSerializer());
+        redisTemplate.setHashValueSerializer(springSessionDefaultRedisSerializer(objectMapper));
         /* Redis Pub/Sub기능에서 Message 직렬화를 위해 추가 */
         redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(springSessionDefaultRedisSerializer());
+        redisTemplate.setValueSerializer(springSessionDefaultRedisSerializer(objectMapper));
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
     @Bean
-    public RedisSerializer<Object> springSessionDefaultRedisSerializer(){
-        return new Jackson2JsonRedisSerializer<>(Object.class);
+    public RedisSerializer<Object> springSessionDefaultRedisSerializer(ObjectMapper objectMapper) {
+        return new GenericJackson2JsonRedisSerializer(objectMapper);
     }
     /**
      * RedisMessageListenerContainer는 Spring Data Redis에서 제공하는 클래스로 Redis Pub/Sub 메시지를 처리하는 컨테이너입니다.

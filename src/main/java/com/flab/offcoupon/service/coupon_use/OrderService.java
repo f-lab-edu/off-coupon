@@ -165,11 +165,9 @@ public class OrderService {
 
         // 2. 현재 시간이 쿠폰의 유효기간 범위내에 있는지 확인
         List<CouponValidationPeriodVo> isBetweenValidatePeriodVo = couponRepository.getCouponValidationPeriod(request.getCouponId());
-        for (CouponValidationPeriodVo validationPeriod : isBetweenValidatePeriodVo) {
-            if (!isNowBetweenValidatePeriod(now, validationPeriod)) {
-                throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD
-                        .formatted(validationPeriod.couponId(), validationPeriod.validateStartDate(), validationPeriod.validateEndDate()));
-            }
+        if (isBetweenValidatePeriodVo.stream().noneMatch(validationPeriod -> isNowBetweenValidatePeriod(now, validationPeriod))) {
+            throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD
+                    .formatted(isBetweenValidatePeriodVo.get(0).couponId(), isBetweenValidatePeriodVo.get(0).validateStartDate(), isBetweenValidatePeriodVo.get(0).validateEndDate()));
         }
     }
     private boolean isNowBetweenValidatePeriod(LocalDateTime now, CouponValidationPeriodVo validationPeriod) {

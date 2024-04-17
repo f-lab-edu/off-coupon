@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
  *      <p>c. 검증이 완료된 요청은 RabbitMQ를 활용해 대기큐에 적재한다</p>
  *      <p>d. 스케줄링을 통해 Queue에 저장된 메세지를 하나씩 꺼내어 쿠폰 발급 히스토리 INSERT, 총 쿠폰 발급 수량 UPDATE</p>
  *      <p>e. 메세지를 하나씩 꺼내고 이력을 저장할때마다 해당 유저에게 SSE 알람 전송</p>
- *     <p> 정리 : 유저 트래픽과 쿠폰 발급 트랜잭션 분리 -> 목표 : Redis를 통한 트래픽 대응 및 MySQL 트래픽 제어</p>
+ *     <p> 정리 : 유저 트래픽과 쿠폰 발급 트랜잭션 분리 -> 목표 : Redis를 통한 트래픽 대응 및 MySQL 부하 제어</p>
  * </ol>
  */
 @RequiredArgsConstructor
