@@ -1,33 +1,31 @@
 package com.flab.offcoupon;
 
-import org.junit.jupiter.api.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@Disabled("QueryTest는 쿼리 최적화 성능테스트용이므로 비활성화")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class QueryTest {
-    @Value("${spring.datasource.url.query_test}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
-    private String url;
-    @Value("${spring.datasource.username}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
-    private  String user;
-    @Value("${spring.datasource.password}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
-    private String password;
+
+    private static final String url = "jdbc:mysql://localhost/off_coupon";
+    private static final String user = "root";
+    private static final String password = "1234";
     private static final int queryCount = 10;
     private static long totalExecutionTimeWithIndex = 0;
     private static long totalExecutionTimeWithoutIndex = 0;
     private static Connection connection;
 
     @BeforeAll
-    void setUpBeforeClass() throws Exception {
+    static void setUpBeforeClass() throws Exception {
         connection = DriverManager.getConnection(url, user, password);
     }
 
     @AfterAll
-    void tearDownAfterClass() throws Exception {
+    static void tearDownAfterClass() throws Exception {
         if (connection != null) {
             connection.close();
         }
@@ -39,7 +37,17 @@ public class QueryTest {
         for (int i = 0; i < queryCount; i++) {
             long startTime = System.currentTimeMillis(); // 시작 시간 기록
             try (Statement statement = connection.createStatement()) {
-                String sql = "SELECT e.category, e.description, c.discount_type, c.discount_rate, c.discount_price, c.validate_start_date, c.validate_end_date, ci.coupon_status FROM coupon_issue ci JOIN coupon c on ci.coupon_id = c.id JOIN event e on c.event_id = e.id WHERE ci.member_id = 1;";
+              //  String sql = "SELECT e.category, e.description, c.discount_type, c.discount_rate, c.discount_price, c.validate_start_date, c.validate_end_date, ci.coupon_status FROM coupon_issue ci JOIN coupon c on ci.coupon_id = c.id JOIN event e on c.event_id = e.id WHERE ci.member_id = 1;";
+                String sql = "select Month(od.created_at) as MONTH,\n" +
+                        "\t\tcount(od.id) as totalOrderCnt,\n" +
+                        "\t\tSUM(od.total_payment_price) as totalPaymentPrice,\n" +
+                        "        count(oc.id) as totalCouponUseCnt,\n" +
+                        "        SUM(od.total_discount_price) as total_discount_price\n" +
+                        "from order_detail od\n" +
+                        "left join order_coupon oc on od.id = oc.order_id\n" +
+                        "where od.created_at BETWEEN '2024-01-01' and '2024-05-01'\n" +
+                        "group by MONTH\n" +
+                        "order by MONTH;";
                 ResultSet resultSet = statement.executeQuery(sql);
                 // 쿼리 실행 결과 사용하지 않음 (예제에서는 단순 실행 시간 측정 목적)
             }
@@ -50,22 +58,22 @@ public class QueryTest {
         }
     }
 
-    @Test
-    @DisplayName("[쿼리 실행 시간 측정] 인덱스 없는 쿼리 실행 시간 비교")
-    void testQueryWithoutIndex() throws SQLException {
-        for (int i = 0; i < queryCount; i++) {
-            long startTime = System.currentTimeMillis(); // 시작 시간 기록
-            try (Statement statement = connection.createStatement()) {
-                String sql = "SELECT e.category, e.description, c.discount_type, c.discount_rate, c.discount_price, c.validate_start_date, c.validate_end_date, ci.coupon_status FROM coupon_issue_no_idx ci JOIN coupon c on ci.coupon_id = c.id JOIN event e on c.event_id = e.id WHERE ci.member_id = 1;";
-                ResultSet resultSet = statement.executeQuery(sql);
-                // 쿼리 실행 결과 사용하지 않음 (예제에서는 단순 실행 시간 측정 목적)
-            }
-            long endTime = System.currentTimeMillis(); // 종료 시간 기록
-            long executionTime = endTime - startTime; // 실행 시간 계산
-            totalExecutionTimeWithoutIndex += executionTime; // 총 실행 시간 누적
-            System.out.println("Query without index " + (i + 1) + ": Execution time " + executionTime + " milliseconds");
-        }
-    }
+//    @Test
+//    @DisplayName("[쿼리 실행 시간 측정] 인덱스 없는 쿼리 실행 시간 비교")
+//    void testQueryWithoutIndex() throws SQLException {
+//        for (int i = 0; i < queryCount; i++) {
+//            long startTime = System.currentTimeMillis(); // 시작 시간 기록
+//            try (Statement statement = connection.createStatement()) {
+//                String sql = "SELECT e.category, e.description, c.discount_type, c.discount_rate, c.discount_price, c.validate_start_date, c.validate_end_date, ci.coupon_status FROM coupon_issue_no_idx ci JOIN coupon c on ci.coupon_id = c.id JOIN event e on c.event_id = e.id WHERE ci.member_id = 1;";
+//                ResultSet resultSet = statement.executeQuery(sql);
+//                // 쿼리 실행 결과 사용하지 않음 (예제에서는 단순 실행 시간 측정 목적)
+//            }
+//            long endTime = System.currentTimeMillis(); // 종료 시간 기록
+//            long executionTime = endTime - startTime; // 실행 시간 계산
+//            totalExecutionTimeWithoutIndex += executionTime; // 총 실행 시간 누적
+//            System.out.println("Query without index " + (i + 1) + ": Execution time " + executionTime + " milliseconds");
+//        }
+//    }
 
     @Test
     @DisplayName("[평균 실행 시간 계산] 인덱스 생성 전후 쿼리 실행 시간 비교")

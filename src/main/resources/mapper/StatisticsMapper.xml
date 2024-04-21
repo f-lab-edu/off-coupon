@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.flab.offcoupon.repository.mysql.StatisticsRepository">
+    <select id="getMonthlyOrderStatistics" parameterType="MonthlyStatisticsParameterVo" resultType="MonthlyOrderStatisticsVo">
+        select Month(od.created_at) as MONTH,
+            count(od.id) as totalOrderCnt,
+            SUM(od.total_payment_price) as totalPaymentPrice,
+            count(oc.id) as totalCouponUseCnt,
+            SUM(od.total_discount_price) as total_discount_price
+        from order_detail od
+            left join order_coupon oc on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt} and #{endedAt}
+        group by MONTH
+        order by MONTH;
+    </select>
+
+    <select id="getMonth" parameterType="MonthlyStatisticsParameterVo" resultType="Integer">
+        select Month(od.created_at) as MONTH
+        from order_detail od
+            left join order_coupon oc on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt} and #{endedAt}
+        group by MONTH
+        order by MONTH;
+    </select>
+
+    <select id="getMonthlyTotalOrderCount" parameterType="MonthlyStatisticsParameterVo" resultType="Long">
+        select count(od.id) as totalOrderCnt
+        from order_detail od
+                 left join order_coupon oc on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt} and #{endedAt}
+        group by Month (od.created_at)
+        order by Month (od.created_at);
+    </select>
+
+    <select id="getMonthlyTotalOrderPrice" parameterType="MonthlyStatisticsParameterVo" resultType="BigDecimal">
+        select SUM(od.total_payment_price) as totalPaymentPrice
+        from order_detail od
+                 left join order_coupon oc
+                           on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt}
+                  and #{endedAt}
+        group by Month (od.created_at)
+        order by Month (od.created_at);
+    </select>
+
+    <select id="getMonthlyTotalCouponCount" parameterType="MonthlyStatisticsParameterVo" resultType="Long">
+        select count(oc.id) as totalCouponUseCnt
+        from order_detail od
+                 left join order_coupon oc
+                           on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt}
+                  and #{endedAt}
+        group by Month (od.created_at)
+        order by Month (od.created_at);
+    </select>
+
+    <select id="getMonthlyTotalCouponPrice" parameterType="MonthlyStatisticsParameterVo" resultType="BigDecimal">
+        select SUM(od.total_discount_price) as totalCouponPrice
+        from order_detail od
+                 left join order_coupon oc
+                           on od.id = oc.order_id
+        where od.created_at BETWEEN #{startedAt}
+                  and #{endedAt}
+        group by Month (od.created_at)
+        order by Month (od.created_at);
+    </select>
+</mapper>
