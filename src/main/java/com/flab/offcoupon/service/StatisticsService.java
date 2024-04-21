@@ -12,22 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAdjusters;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static com.flab.offcoupon.exception.statistics.StatisticsErrorMessage.*;
+import static com.flab.offcoupon.exception.statistics.StatisticsErrorMessage.START_MUST_BE_BEFORE_THANT_END;
 
 @RequiredArgsConstructor
 @Service
 public class StatisticsService {
-    private static final int MIN_MONTHS = 1;
-    private static final int MAX_DAYS = 365;
-    private static final int INTERVAL = 30;
 
     private final StatisticsRepository statisticsRepository;
 
@@ -38,98 +33,64 @@ public class StatisticsService {
      * @param request 월별 주문 통계 조회 요청
      * @return 월별 주문 통계 조회 결과
      */
+
     @Transactional(readOnly = true)
     public ResponseDTO<List<MonthlyOrderStatistics>> getMonthlyOrderStatistics(StatisticsRequest request) {
         LocalDate startedAt = request.getStartedAt();
         LocalDate endedAt = request.getEndedAt();
         validateStartDateIsBeforeEndDate(startedAt, endedAt);
-        validateDaysBetween(startedAt, endedAt);
-
         List<MonthlyOrderStatistics> monthlyStatisticsList = new ArrayList<>();
         getMonthlyStatistics(startedAt, endedAt, monthlyStatisticsList);
+
         // 월별로 정렬
         monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getMonth));
 
         return ResponseDTO.getSuccessResult(monthlyStatisticsList);
     }
-
-    /**
-     * 시작일과 종료일 사이의 월별 주문 통계를 병렬로 조회하는 메서드입니다.
-     * @param startedAt 시작일
-     * @param endedAt 종료일
-     * @param monthlyStatisticsList 월별 주문 통계 목록
-     */
-    private void getMonthlyStatistics(LocalDate startedAt, LocalDate endedAt, List<MonthlyOrderStatistics> monthlyStatisticsList) {
-        IntStream.range(0, calculateMonthDiff(startedAt, endedAt) + 1)
-                .parallel()
-                .forEach(i -> {
-                    LocalDate monthStart = startedAt.plusMonths(i);
-                    LocalDate monthEnd = monthStart.with(TemporalAdjusters.lastDayOfMonth());
-                    MonthlyStatisticsParameterVo parameterVo = new MonthlyStatisticsParameterVo(monthStart, monthEnd);
-
-                    List<MonthlyOrderStatisticsVo> monthlyStatisticsVoList = statisticsRepository.getMonthlyOrderStatistics(parameterVo);
-                    List<MonthlyOrderStatistics> monthlyStatistics = convertToDTO(monthlyStatisticsVoList);
-
-                    synchronized (monthlyStatisticsList) {
-                        monthlyStatisticsList.addAll(monthlyStatistics);
-                    }
-                });
-    }
-
-    /**
-     * 두 날짜 사이의 월 차이를 계산하는 메서드입니다.
-     *
-     * @param startDate 시작 날짜
-     * @param endDate   종료 날짜
-     * @return 두 날짜 사이의 월 차이
-     */
-    private int calculateMonthDiff(LocalDate startDate, LocalDate endDate) {
-        // 시작 날짜의 월 첫째 날과 종료 날짜의 월 첫째 날을 기준으로 월 차이를 계산합니다.
-        return Period.between(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1)).getYears() * 12
-                + Period.between(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1)).getMonths();
-    }
-
     /**
      * 시작일과 종료일 간의 유효성을 검사하여 시작일이 종료일보다 이전인지 확인합니다.
      *
      * @param startedAt 시작일
      * @param endedAt   종료일
-     * @throws IllegalArgumentException 시작일이 종료일보다 이후인 경우 발생하는 예외
+     * @throws LocalDateBadRequestException 시작일이 종료일보다 이후인 경우 발생하는 예외
      */
     private void validateStartDateIsBeforeEndDate(LocalDate startedAt, LocalDate endedAt) {
-         if(startedAt.isAfter(endedAt)) {
-             throw new LocalDateBadRequestException(START_MUST_BE_BEFORE_THANT_END.formatted(startedAt, endedAt));
-         }
+        if(startedAt.isAfter(endedAt)) {
+            throw new LocalDateBadRequestException(START_MUST_BE_BEFORE_THANT_END.formatted(startedAt, endedAt));
+        }
     }
     /**
-     * 시작일과 종료일 간의 기간을 검사하여 한 달 이상의 기간인지, 1년 이내의 기간인지,
-     * 그리고 한 달 단위로 나누어 떨어지는지 확인합니다.
+     * 시작일부터 종료일까지 월 별 주문 통계를 조회하는 메서드입니다.
      *
-     * @param startedAt 시작일
-     * @param endedAt   종료일
-     * @throws IllegalArgumentException 시작일과 종료일이 한 달 이상의 기간이 아니거나, 1년 이상의 기간일 때 발생하는 예외
-     * @throws IllegalArgumentException 시작일과 종료일이 한 달 단위로 나누어 떨어지지 않을 때 발생하는 예외
+     * @param startedAt             조회 시작일
+     * @param endedAt               조회 종료일
+     * @param monthlyStatisticsList 월 별 주문 통계 목록
      */
-    private void validateDaysBetween(LocalDate startedAt, LocalDate endedAt) {
+    private void getMonthlyStatistics(LocalDate startedAt, LocalDate endedAt, List<MonthlyOrderStatistics> monthlyStatisticsList) {
+        IntStream.range(startedAt.getMonthValue(), endedAt.getMonthValue() + 1)
+                .parallel()
+                .forEach(i -> {
+                    /**
+                     * 시작일부터 종료일까지 월 별로 날짜 설정
+                     * ex. 2024년 1월 28일 부터 2024년 3월 10일 까지 조회할 경우
+                     * <li>2024년 1월 28일부터 1월 31일</li>
+                     * <li>2024년 2월 1일부터 2월 29일</li>
+                     * <li>2024년 3월 1일부터 3월 10일</li>
+                     */
+                    LocalDate starDate = (i == startedAt.getMonthValue()) ? startedAt : LocalDate.of(startedAt.getYear(), i, 1);
+                    LocalDate monthEnd = (i == endedAt.getMonthValue()) ? endedAt : getLastDayOfMonth(endedAt.getYear(), i);
+                    MonthlyStatisticsParameterVo parameterVo = new MonthlyStatisticsParameterVo(starDate, monthEnd);
+                    List<MonthlyOrderStatisticsVo> monthlyStatisticsVoList = statisticsRepository.getMonthlyOrderStatistics(parameterVo);
+                    List<MonthlyOrderStatistics> monthlyStatistics = convertToDTO(monthlyStatisticsVoList);
+                    monthlyStatisticsList.addAll(monthlyStatistics);
+                });
+    }
 
-        // 시작일과 종료일 간의 기간을 계산
-        Period period = Period.between(startedAt, endedAt);
-        long daysBetween = ChronoUnit.DAYS.between(startedAt, endedAt);
-
-        // 최소 한 달(30일) 이내인지 확인
-        if (period.getMonths() + 1 < MIN_MONTHS) {
-            throw new LocalDateBadRequestException(AT_LEAST_ONE_MONTH_BETWEEN.formatted(startedAt, endedAt));
-        }
-
-        // 최대 1년(365일) 이내인지 확인
-        if (period.getDays() > MAX_DAYS) {
-            throw new LocalDateBadRequestException(DAYS_BETWEEN_MUST_BE_LESS_THAN_365.formatted(startedAt, endedAt));
-        }
-
-        // 월 단위로 나누어 떨어지지 않는 경우 예외 처리
-        if (daysBetween % INTERVAL != 0) {
-            throw new LocalDateBadRequestException(DAYS_BETWEEN_MUST_BE_ONE_MONTH_BASED.formatted(startedAt, endedAt));
-        }
+    private LocalDate getLastDayOfMonth(int year, int month) {
+        // 연도와 월 정보를 가지고 YearMonth 객체 생성
+        YearMonth yearMonth = YearMonth.of(year, month);
+        // 해당 월의 마지막 날짜를 반환
+        return yearMonth.atEndOfMonth();
     }
 
     /**
