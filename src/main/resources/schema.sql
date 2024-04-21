@@ -96,3 +96,10 @@ CREATE TABLE order_coupon
     created_at      DATETIME                NOT NULL COMMENT '데이터 생성일',
     updated_at      DATETIME                NOT NULL COMMENT '데이터 변경일'
 );
+
+## 인덱스 설정
+ALTER TABLE coupon_issue ADD INDEX idx_member_id (member_id);
+
+ALTER TABLE order_detail ADD INDEX idx_all (created_at, total_payment_price,total_discount_price);
+
+ALTER TABLE order_coupon ADD INDEX idx_order_id (order_id);
