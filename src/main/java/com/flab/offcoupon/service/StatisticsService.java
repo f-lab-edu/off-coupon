@@ -26,7 +26,7 @@ public class StatisticsService {
     private final StatisticsRepository statisticsRepository;
 
     /**
-     * 인덱스를 사용해서 쿼리 최적화를 했지만, 레코드가 많은 경우 filter 조건이 많아져 성능이 떨어질 수 있습니다.<br>
+     * 인덱스를 사용해서 쿼리 최적화를 했지만, where절에 해당하는 레코드가 많을 경우 성능이 떨어질 수 있습니다.<br>
      * 따라서 병렬 스트림을 사용하여 월별로 쿼리를 실행하고 결과를 합치는 방식을 사용했습니다.
      *
      * @param request 월별 주문 통계 조회 요청

@@ -1,9 +1,9 @@
 package com.flab.offcoupon.repository.mysql;
 
-import com.flab.offcoupon.domain.vo.persistence.statistics.*;
+import com.flab.offcoupon.domain.vo.persistence.statistics.MonthlyOrderStatisticsVo;
+import com.flab.offcoupon.domain.vo.persistence.statistics.MonthlyStatisticsParameterVo;
 import org.apache.ibatis.annotations.Mapper;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper
@@ -25,11 +25,5 @@ public interface StatisticsRepository {
      * @return 월별 주문 통계
      */
     List<MonthlyOrderStatisticsVo> getMonthlyOrderStatistics(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
-
-    List<Integer> getMonth(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
-    List<Long> getMonthlyTotalOrderCount(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
-    List<BigDecimal> getMonthlyTotalOrderPrice(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
-    List<Long> getMonthlyTotalCouponCount(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
-    List<BigDecimal> getMonthlyTotalCouponPrice(final MonthlyStatisticsParameterVo monthlyStatisticsParameterVo);
 
 }
