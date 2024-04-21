@@ -19,10 +19,7 @@ public class UpdateTotalCouponIssueCntScheduler {
         this.couponIssueConsumer = couponIssueConsumer;
     }
 
-    private final Runnable runnable = () -> {
-        // 스케줄러가 실행할 작업
-        couponIssueConsumer.updateTotalCouponIssueCount();
-    };
+    private final Runnable runnable = () -> couponIssueConsumer.updateTotalCouponIssueCount();
 
     private final Trigger trigger = new PeriodicTrigger(10, TimeUnit.SECONDS);
 

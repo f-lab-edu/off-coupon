@@ -14,14 +14,13 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class ConsumeMqScheduler {
     private CouponIssueConsumer couponIssueConsumer;
+
     public ConsumeMqScheduler(CouponIssueConsumer couponIssueConsumer) {
         this.couponIssueConsumer = couponIssueConsumer;
     }
+
     // 실행 로직
-    private final Runnable runnable = () -> {
-        // 스케줄러가 실행할 작업
-        couponIssueConsumer.consumeCouponIssueMessage();
-    };
+    private final Runnable runnable = () -> couponIssueConsumer.consumeCouponIssueMessage();
 
     // 실행 주기
     private final Trigger trigger = new PeriodicTrigger(3, TimeUnit.SECONDS);
