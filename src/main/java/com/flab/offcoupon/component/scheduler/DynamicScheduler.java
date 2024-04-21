@@ -17,14 +17,14 @@ public class DynamicScheduler {
     private final Runnable runnable;
     private final Trigger trigger;
 
-    public void stopScheduler() {
-        scheduler.shutdown();
-    }
-
     public void startScheduler() {
         scheduler = new ThreadPoolTaskScheduler();
         scheduler.initialize();
         // 스케줄러가 시작되는 부분
         scheduler.schedule(runnable, trigger);
+    }
+
+    public void stopScheduler() {
+        scheduler.shutdown();
     }
 }
