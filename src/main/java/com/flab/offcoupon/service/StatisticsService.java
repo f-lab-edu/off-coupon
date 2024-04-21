@@ -4,6 +4,7 @@ import com.flab.offcoupon.domain.vo.persistence.statistics.MonthlyOrderStatistic
 import com.flab.offcoupon.domain.vo.persistence.statistics.MonthlyStatisticsParameterVo;
 import com.flab.offcoupon.dto.request.StatisticsRequest;
 import com.flab.offcoupon.dto.response.MonthlyOrderStatistics;
+import com.flab.offcoupon.exception.statistics.LocalDateBadRequestException;
 import com.flab.offcoupon.repository.mysql.StatisticsRepository;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
+
+import static com.flab.offcoupon.exception.statistics.StatisticsErrorMessage.*;
 
 @RequiredArgsConstructor
 @Service
@@ -43,6 +46,20 @@ public class StatisticsService {
         validateDaysBetween(startedAt, endedAt);
 
         List<MonthlyOrderStatistics> monthlyStatisticsList = new ArrayList<>();
+        getMonthlyStatistics(startedAt, endedAt, monthlyStatisticsList);
+        // 월별로 정렬
+        monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getMonth));
+
+        return ResponseDTO.getSuccessResult(monthlyStatisticsList);
+    }
+
+    /**
+     * 시작일과 종료일 사이의 월별 주문 통계를 병렬로 조회하는 메서드입니다.
+     * @param startedAt 시작일
+     * @param endedAt 종료일
+     * @param monthlyStatisticsList 월별 주문 통계 목록
+     */
+    private void getMonthlyStatistics(LocalDate startedAt, LocalDate endedAt, List<MonthlyOrderStatistics> monthlyStatisticsList) {
         IntStream.range(0, calculateMonthDiff(startedAt, endedAt) + 1)
                 .parallel()
                 .forEach(i -> {
@@ -57,10 +74,6 @@ public class StatisticsService {
                         monthlyStatisticsList.addAll(monthlyStatistics);
                     }
                 });
-        // 월별로 정렬
-        monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getMonth));
-
-        return ResponseDTO.getSuccessResult(monthlyStatisticsList);
     }
 
     /**
@@ -85,7 +98,7 @@ public class StatisticsService {
      */
     private void validateStartDateIsBeforeEndDate(LocalDate startedAt, LocalDate endedAt) {
          if(startedAt.isAfter(endedAt)) {
-             throw new IllegalArgumentException("시작일은 종료일보다 이전이어야 합니다.");
+             throw new LocalDateBadRequestException(START_MUST_BE_BEFORE_THANT_END.formatted(startedAt, endedAt));
          }
     }
     /**
@@ -105,17 +118,17 @@ public class StatisticsService {
 
         // 최소 한 달(30일) 이내인지 확인
         if (period.getMonths() + 1 < MIN_MONTHS) {
-            throw new IllegalArgumentException("최소 한 달 이상의 기간을 조회해야 합니다.");
+            throw new LocalDateBadRequestException(AT_LEAST_ONE_MONTH_BETWEEN.formatted(startedAt, endedAt));
         }
 
         // 최대 1년(365일) 이내인지 확인
         if (period.getDays() > MAX_DAYS) {
-            throw new IllegalArgumentException("최대 1년(365일) 이내의 기간을 조회해야 합니다.");
+            throw new LocalDateBadRequestException(DAYS_BETWEEN_MUST_BE_LESS_THAN_365.formatted(startedAt, endedAt));
         }
 
         // 월 단위로 나누어 떨어지지 않는 경우 예외 처리
         if (daysBetween % INTERVAL != 0) {
-            throw new IllegalArgumentException("시작일과 종료일을 한 달 단위로 조회해야 합니다.");
+            throw new LocalDateBadRequestException(DAYS_BETWEEN_MUST_BE_ONE_MONTH_BASED.formatted(startedAt, endedAt));
         }
     }
 
