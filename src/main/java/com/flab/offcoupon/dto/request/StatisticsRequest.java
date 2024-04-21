@@ -1,9 +1,6 @@
 package com.flab.offcoupon.dto.request;
 
-import lombok.EqualsAndHashCode;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +9,8 @@ import java.time.LocalDate;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public final class StatisticsRequest {
+    @NonNull
     private final LocalDate startedAt;
+    @NonNull
     private final LocalDate endedAt;
 }
