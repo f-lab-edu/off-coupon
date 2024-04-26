@@ -14,7 +14,7 @@ public interface StatisticsRepository {
      * <p>
      * 다음과 같은 통계를 월별로 조회합니다:
      * <ol>
-     *     <li>조회하는 월</li>
+     *     <li>조회하는 연도와 월</li>
      *     <li>주문 수량 총합</li>
      *     <li>주문 총 금액</li>
      *     <li>주문에 사용된 쿠폰 수량 총합</li>

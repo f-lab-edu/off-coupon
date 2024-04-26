@@ -13,10 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.LongStream;
 
 import static com.flab.offcoupon.exception.statistics.StatisticsErrorMessage.START_MUST_BE_BEFORE_THANT_END;
 
@@ -39,14 +40,14 @@ public class StatisticsService {
         LocalDate startedAt = request.getStartedAt();
         LocalDate endedAt = request.getEndedAt();
         validateStartDateIsBeforeEndDate(startedAt, endedAt);
-        List<MonthlyOrderStatistics> monthlyStatisticsList = new ArrayList<>();
-        getMonthlyStatistics(startedAt, endedAt, monthlyStatisticsList);
+        List<MonthlyOrderStatistics> monthlyStatisticsList = getMonthlyStatistics(startedAt, endedAt);
 
         // 월별로 정렬
-        monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getMonth));
+        monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getYearMonth));
 
         return ResponseDTO.getSuccessResult(monthlyStatisticsList);
     }
+
     /**
      * 시작일과 종료일 간의 유효성을 검사하여 시작일이 종료일보다 이전인지 확인합니다.
      *
@@ -55,19 +56,21 @@ public class StatisticsService {
      * @throws LocalDateBadRequestException 시작일이 종료일보다 이후인 경우 발생하는 예외
      */
     private void validateStartDateIsBeforeEndDate(LocalDate startedAt, LocalDate endedAt) {
-        if(startedAt.isAfter(endedAt)) {
+        if (startedAt.isAfter(endedAt)) {
             throw new LocalDateBadRequestException(START_MUST_BE_BEFORE_THANT_END.formatted(startedAt, endedAt));
         }
     }
+
     /**
      * 시작일부터 종료일까지 월 별 주문 통계를 조회하는 메서드입니다.
      *
-     * @param startedAt             조회 시작일
-     * @param endedAt               조회 종료일
-     * @param monthlyStatisticsList 월 별 주문 통계 목록
+     * @param startedAt 조회 시작일
+     * @param endedAt   조회 종료일
      */
-    private void getMonthlyStatistics(LocalDate startedAt, LocalDate endedAt, List<MonthlyOrderStatistics> monthlyStatisticsList) {
-        IntStream.range(startedAt.getMonthValue(), endedAt.getMonthValue() + 1)
+    private List<MonthlyOrderStatistics> getMonthlyStatistics(LocalDate startedAt, LocalDate endedAt) {
+        List<MonthlyOrderStatistics> monthlyStatisticsList = new CopyOnWriteArrayList<>();
+        YearMonth basedYearMonth = YearMonth.of(startedAt.getYear(), startedAt.getMonth());
+        LongStream.range(0L, countMonthDifference(startedAt, endedAt) + 1L)
                 .parallel()
                 .forEach(i -> {
                     /**
@@ -76,21 +79,44 @@ public class StatisticsService {
                      * <li>2024년 1월 28일부터 1월 31일</li>
                      * <li>2024년 2월 1일부터 2월 29일</li>
                      * <li>2024년 3월 1일부터 3월 10일</li>
+                     *
+                     * ex. 2024년 12월 12일 부터 2025년 1월 16일까지 조회할 경우
+                     * <li>2024년 12월 12일부터 12월 31일</li>
+                     * <li>2024년 1월 1일부터 1월 16일</li>
                      */
-                    LocalDate starDate = (i == startedAt.getMonthValue()) ? startedAt : LocalDate.of(startedAt.getYear(), i, 1);
-                    LocalDate monthEnd = (i == endedAt.getMonthValue()) ? endedAt : getLastDayOfMonth(endedAt.getYear(), i);
-                    MonthlyStatisticsParameterVo parameterVo = new MonthlyStatisticsParameterVo(starDate, monthEnd);
-                    List<MonthlyOrderStatisticsVo> monthlyStatisticsVoList = statisticsRepository.getMonthlyOrderStatistics(parameterVo);
-                    List<MonthlyOrderStatistics> monthlyStatistics = convertToDTO(monthlyStatisticsVoList);
-                    monthlyStatisticsList.addAll(monthlyStatistics);
+                    YearMonth currentYearMonth = basedYearMonth.plusMonths(i);
+                    LocalDate startDate = (isSameYearMonth(currentYearMonth, startedAt)) ?
+                            startedAt : LocalDate.of(currentYearMonth.getYear(), currentYearMonth.getMonth(), 1);
+                    LocalDate endDate = (isSameYearMonth(currentYearMonth, endedAt) ?
+                            endedAt : currentYearMonth.atEndOfMonth());
+                    MonthlyStatisticsParameterVo parameterVo = new MonthlyStatisticsParameterVo(startDate, endDate);
+                    List<MonthlyOrderStatistics> monthlyOrderStatisticsList = convertToDTO(statisticsRepository.getMonthlyOrderStatistics(parameterVo));
+                    monthlyStatisticsList.addAll(monthlyOrderStatisticsList);
                 });
+        return monthlyStatisticsList;
     }
 
-    private LocalDate getLastDayOfMonth(int year, int month) {
-        // 연도와 월 정보를 가지고 YearMonth 객체 생성
-        YearMonth yearMonth = YearMonth.of(year, month);
-        // 해당 월의 마지막 날짜를 반환
-        return yearMonth.atEndOfMonth();
+    /**
+     * 현재 월과 대상 날짜가 같은지 확인하는 메서드입니다.
+     * @param currentYearMonth 현재 월
+     * @param target 대상 날짜
+     * @return 현재 월과 대상 날짜가 같은지 여부
+     */
+    private boolean isSameYearMonth(YearMonth currentYearMonth, LocalDate target) {
+        return currentYearMonth.equals(YearMonth.of(target.getYear(), target.getMonthValue()));
+    }
+
+    /**
+     * 시작일부터 종료일까지의 월 차이를 계산하는 메서드입니다.
+     * 병렬 스트림에서 사용하기 위해 long 타입으로 반환합니다.
+     * @param startedAt 시작일
+     * @param endedAt 종료일
+     * @return 시작일부터 종료일까지의 월 차이
+     */
+    private long countMonthDifference(LocalDate startedAt, LocalDate endedAt) {
+        YearMonth start = YearMonth.of(startedAt.getYear(), startedAt.getMonth());
+        YearMonth end = YearMonth.of(endedAt.getYear(), endedAt.getMonth());
+        return ChronoUnit.MONTHS.between(start, end);
     }
 
     /**
