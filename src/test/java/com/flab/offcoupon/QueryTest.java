@@ -2,19 +2,22 @@ package com.flab.offcoupon;
 
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.sql.*;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-@Disabled("QueryTest는 쿼리 최적화 성능테스트용이므로 비활성화")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@SpringBootTest
+@Disabled("쿼리 속도 측정을 위한 테스트 코드")
 public class QueryTest {
-    @Value("${spring.datasource.url.query_test}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
+
+    @Value("${spring.datasource.url.query-test}")
     private String url;
-    @Value("${spring.datasource.username}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
-    private  String user;
-    @Value("${spring.datasource.password}") // TODO : Junit5에서 @Value사용할 수 있는 방법 알아보기
+
+    @Value("${spring.datasource.username}")
+    private String user;
+
+    @Value("${spring.datasource.password}")
     private String password;
     private static final int queryCount = 10;
     private static long totalExecutionTimeWithIndex = 0;
@@ -22,12 +25,16 @@ public class QueryTest {
     private static Connection connection;
 
     @BeforeAll
-    void setUpBeforeClass() throws Exception {
+    static void setUpBeforeClass() throws Exception {
+        String url = System.getProperty("spring.datasource.url.query-test");
+        System.out.println("url : " + url);
+        String user = System.getProperty("spring.datasource.username");
+        String password = System.getProperty("spring.datasource.password");
         connection = DriverManager.getConnection(url, user, password);
     }
 
     @AfterAll
-    void tearDownAfterClass() throws Exception {
+    static void tearDownAfterClass() throws Exception {
         if (connection != null) {
             connection.close();
         }

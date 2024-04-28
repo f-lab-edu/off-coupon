@@ -7,8 +7,6 @@ import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.QUEUE_NAME;
@@ -16,7 +14,7 @@ import static com.flab.offcoupon.util.RedisKeyUtils.getUserSseConnectionKey;
 
 /**
  * RabbitMQ를 이용한 비동기 쿠폰 발행을 처리하는 컨슈머 클래스입니다. <br>
- * Scheduled 어노테이션을 사용하여 주기적으로 메시지 큐에 메시지가 있는지 확인하고, 메시지가 존재할 경우 이를 처리합니다.
+ * 동적 스케줄링을 사용하여 주기적으로 메시지 큐에 메시지가 있는지 확인하고, 메시지가 존재할 경우 이를 처리합니다.
  * <ol>
  *     <li>메시지 큐에 메시지가 있는 경우, 메시지를 받아와서 쿠폰 발행 이력을 저장후 SSE 알림을 보냅니다.</li>
  *     <li>메시지 큐에 메시지가 없는 경우, MySQL에 저장된 총 발행된 수량을 업데이트합니다.</li>
@@ -24,7 +22,6 @@ import static com.flab.offcoupon.util.RedisKeyUtils.getUserSseConnectionKey;
  * </ol>
  */
 @Component
-@EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
 public class CouponIssueConsumer {
@@ -36,10 +33,10 @@ public class CouponIssueConsumer {
     private final RedisPublisher redisPublisher;
 
     /**
-     * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 쿠폰 이력을 INSERT합니다.
+     * 3초마다 메시지 큐를 확인하여 메시지가 있는지 여부를 판단하고 쿠폰 이력을 INSERT합니다.<br>
+     * {@link com.flab.offcoupon.component.scheduler.coupon_issue.ConsumeMqScheduler}
      */
-    @Scheduled(fixedDelay = 3000)
-    private void consumeCouponIssueMessage() {
+    public void consumeCouponIssueMessage() {
         if (existCouponIssueQueueTarget()) {
             CouponIssueMessageForQueue message = (CouponIssueMessageForQueue) rabbitTemplate.receiveAndConvert(QUEUE_NAME);
             log.info("'coupon-issue.queue'에 메시지가 있습니다. message: {}", message);
@@ -50,10 +47,10 @@ public class CouponIssueConsumer {
     }
 
     /**
-     * 10초마다 오늘 발급된 쿠폰의 총 발급 수량을 조회해서 반정규화된 칼럼을 업데이트합니다.
+     * 10초마다 오늘 발급된 쿠폰의 총 발급 수량을 조회해서 반정규화된 칼럼을 업데이트합니다.<br>
+     * {@link com.flab.offcoupon.component.scheduler.coupon_issue.UpdateTotalCouponIssueCntScheduler}
      */
-    @Scheduled(fixedDelay = 10000)
-    private void updateTotalCouponIssueCount() {
+    public void updateTotalCouponIssueCount() {
         redissonLockHandler.asyncIssueCoupon();
     }
 
@@ -66,5 +63,4 @@ public class CouponIssueConsumer {
     private boolean existCouponIssueQueueTarget() {
         return messageQueueCountChecker.getMessageCount(QUEUE_NAME) > 0;
     }
-
 }

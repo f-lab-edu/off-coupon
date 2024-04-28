@@ -49,7 +49,8 @@ public class SecurityConfig {
                                         "/api/v1/sse/**",
                                         "/api/v1/my-page/**",
                                         "/api/v1/orders/**",
-                                        "/api/v1/event/**")
+                                        "/api/v1/event/**",
+                                        "/api/v1/statistics/**")
                                 .permitAll()
                                 .requestMatchers(
                                         "/member").hasAnyRole("USER")

@@ -33,15 +33,16 @@ public class CouponIssueController {
 
     @PostMapping("/{eventId}/issues-sync")
     public ResponseEntity<ResponseDTO<String>> syncIssue(@PathVariable final long eventId,
-                                                 @RequestParam final long couponId,
-                                                 @RequestParam final long memberId) throws InterruptedException {
+                                                         @RequestParam final long couponId,
+                                                         @RequestParam final long memberId) throws InterruptedException {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }
+
     @PostMapping("/{eventId}/issues-async")
     public ResponseEntity<ResponseDTO<String>> asyncIssue(@PathVariable final long eventId,
-                                                  @RequestParam final long couponId,
-                                                  @RequestParam final long memberId) {
+                                                          @RequestParam final long couponId,
+                                                          @RequestParam final long memberId) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.asyncIssueCoupon(currentDateTime, eventId, couponId, memberId));
     }

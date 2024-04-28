@@ -39,12 +39,14 @@ public class MessageQueueCountChecker {
      * @See Client-Provided Connection Name, Passive Declaration
      */
     public int getMessageCount(String queueName) {
+
         // RabbitMQ 연결 설정
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(rabbitmqHost);
         factory.setUsername(rabbitmqUsername);
         factory.setPassword(rabbitmqPassword);
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
+            log.info("RabbitMQ 연결에 성공했습니다");
             // queueDeclarePassive : RabbitMQ에게 특정 큐가 존재하는지 확인 요청하는 메서드
             DeclareOk queueDeclareOk = channel.queueDeclarePassive(queueName);
             return queueDeclareOk.getMessageCount();
