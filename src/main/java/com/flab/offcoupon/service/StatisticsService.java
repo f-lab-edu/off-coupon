@@ -43,9 +43,10 @@ public class StatisticsService {
         List<MonthlyOrderStatistics> monthlyStatisticsList = getMonthlyStatistics(startedAt, endedAt);
 
         // 월별로 정렬
-        monthlyStatisticsList.sort(Comparator.comparing(MonthlyOrderStatistics::getYearMonth));
-
-        return ResponseDTO.getSuccessResult(monthlyStatisticsList);
+        return ResponseDTO.getSuccessResult(monthlyStatisticsList
+                .stream()
+                .sorted(Comparator.comparing(MonthlyOrderStatistics::getYearMonth))
+                .toList());
     }
 
     /**
@@ -98,8 +99,9 @@ public class StatisticsService {
 
     /**
      * 현재 월과 대상 날짜가 같은지 확인하는 메서드입니다.
+     *
      * @param currentYearMonth 현재 월
-     * @param target 대상 날짜
+     * @param target           대상 날짜
      * @return 현재 월과 대상 날짜가 같은지 여부
      */
     private boolean isSameYearMonth(YearMonth currentYearMonth, LocalDate target) {
@@ -109,8 +111,9 @@ public class StatisticsService {
     /**
      * 시작일부터 종료일까지의 월 차이를 계산하는 메서드입니다.
      * 병렬 스트림에서 사용하기 위해 long 타입으로 반환합니다.
+     *
      * @param startedAt 시작일
-     * @param endedAt 종료일
+     * @param endedAt   종료일
      * @return 시작일부터 종료일까지의 월 차이
      */
     private long countMonthDifference(LocalDate startedAt, LocalDate endedAt) {

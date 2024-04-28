@@ -19,10 +19,10 @@ public final class MonthlyOrderStatistics {
     private final BigDecimal totalCouponPrice;
 
     public MonthlyOrderStatistics(MonthlyOrderStatisticsVo vo) {
-        this.yearMonth = (vo != null) ? vo.yearMonth() : null;
-        this.totalOrderCnt = (vo != null) ? vo.totalOrderCnt() : 0;
-        this.totalPaymentPrice = (vo != null) ? vo.totalPaymentPrice() : BigDecimal.ZERO;
-        this.totalCouponUseCnt = (vo != null) ? vo.totalCouponUseCnt() : 0;
-        this.totalCouponPrice = (vo != null) ? vo.totalCouponPrice() : BigDecimal.ZERO;
+        this.yearMonth = vo.yearMonth();
+        this.totalOrderCnt = vo.totalOrderCnt();
+        this.totalPaymentPrice = vo.totalPaymentPrice();
+        this.totalCouponUseCnt = vo.totalCouponUseCnt();
+        this.totalCouponPrice = vo.totalCouponPrice();
     }
 }

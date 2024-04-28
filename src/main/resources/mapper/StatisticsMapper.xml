@@ -5,15 +5,15 @@
 
 <mapper namespace="com.flab.offcoupon.repository.mysql.StatisticsRepository">
     <select id="getMonthlyOrderStatistics" parameterType="MonthlyStatisticsParameterVo" resultType="MonthlyOrderStatisticsVo">
-        select DATE_FORMAT(od.created_at,'%Y-%m') as YearMonth,
-            count(od.id) as totalOrderCnt,
-            SUM(od.total_payment_price) as totalPaymentPrice,
-            count(oc.id) as totalCouponUseCnt,
-            SUM(od.total_discount_price) as total_discount_price
+        select DATE_FORMAT(od.created_at,'%Y-%m') as `year_month`,
+            count(od.id) as total_order_cnt,
+            SUM(od.total_payment_price) as 'total_payment_price',
+            count(oc.id) as total_coupon_cnt,
+            SUM(od.total_discount_price) as 'total_discount_price'
         from order_detail od
             left join order_coupon oc on od.id = oc.order_id
         where od.created_at BETWEEN #{startedAt} and #{endedAt}
-        group by YearMonth
-        order by YearMonth;
+        group by `year_month`
+        order by `year_month`;
     </select>
 </mapper>
