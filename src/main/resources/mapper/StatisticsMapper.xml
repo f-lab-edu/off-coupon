@@ -4,8 +4,9 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.flab.offcoupon.repository.mysql.StatisticsRepository">
+
     <select id="getMonthlyOrderStatistics" parameterType="MonthlyStatisticsParameterVo" resultType="MonthlyOrderStatisticsVo">
-        select DATE_FORMAT(od.created_at,'%Y-%m') as `year_month`,
+        select EXTRACT(year_month from od.created_at) as `year_month`,
             count(od.id) as total_order_cnt,
             SUM(od.total_payment_price) as 'total_payment_price',
             count(oc.id) as total_coupon_cnt,

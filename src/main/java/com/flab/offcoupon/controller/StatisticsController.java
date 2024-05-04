@@ -42,7 +42,8 @@ public class StatisticsController {
      * @param request 월별 주문 통계 조회 요청
      * @return 월별 주문 통계 조회 결과
      * @See <a href="https://strong-park.tistory.com/entry/1000%EB%A7%8C%EA%B1%B4%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-%EB%8C%80%EC%83%81%EC%9C%BC%EB%A1%9C-%EC%BF%BC%EB%A6%AC%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90">1000만건의 데이터를 대상으로 쿼리최적화 with. 복합인덱스, 커버링인덱스</a>
-     */
+     * @See <a href="https://strong-park.tistory.com/entry/%EC%BF%BC%EB%A6%AC%EC%B5%9C%EC%A0%81%ED%99%94-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0-%EC%95%A1%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98-%EC%86%8D%EB%8F%84-%EA%B0%9C%EC%84%A0">쿼리최적화 속도 개선 with. 병렬 스트림</a>
+     **/
     @GetMapping("/monthly-order")
     public ResponseEntity<ResponseDTO<List<MonthlyOrderStatistics>>> getMonthlyOrderStatistics(@RequestBody final StatisticsRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(statisticsService.getMonthlyOrderStatistics(request));
