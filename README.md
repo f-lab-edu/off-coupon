@@ -47,7 +47,10 @@ Reference : [우아한 형제들 기술블로그 : gitFlow](https://techblog.woo
 ## 쿠폰 사용 Flow
 ![image](https://github.com/f-lab-edu/off-coupon/assets/101460733/ed965692-3a6d-4f69-bd15-9238a1f3cc18)
 
+## 쿼리 최적화
 
+[1000만건의 데이터를 대상으로 쿼리최적화 with. 복합인덱스, 커버링인덱스](https://strong-park.tistory.com/entry/1000%EB%A7%8C%EA%B1%B4%EC%9D%98-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%A5%BC-%EB%8C%80%EC%83%81%EC%9C%BC%EB%A1%9C-%EC%BF%BC%EB%A6%AC%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%EC%A0%81%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90)  
+[쿼리 최적화를 했지만 부족하다면, Parallel Stream을 사용해보자](https://strong-park.tistory.com/entry/%EC%BF%BC%EB%A6%AC-%EC%B5%9C%EC%A0%81%ED%99%94%EB%A5%BC-%ED%96%88%EC%A7%80%EB%A7%8C-%EB%B6%80%EC%A1%B1%ED%95%98%EB%8B%A4%EB%A9%B4-Parallel-Stream%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EC%9E%90)  
 ## 동시성 테스트
 [쿠폰 발급에 대한 동시성 처리 (1) - synchronized, pessimisti Lock, optimistic Lock](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-1-synchronized-pessimisti-Lock-optimistic-Lock)  
 [쿠폰 발급에 대한 동시성 처리 (2) - MySQL의 NamedLock, Redis의 분산락(Lettuce, Redisson)](https://strong-park.tistory.com/entry/%EC%BF%A0%ED%8F%B0-%EB%B0%9C%EA%B8%89%EC%97%90-%EB%8C%80%ED%95%9C-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%B2%98%EB%A6%AC-2-MySQL%EC%9D%98-NamedLock-Redis%EC%9D%98-%EB%B6%84%EC%82%B0%EB%9D%BDLettuce-Redisson)

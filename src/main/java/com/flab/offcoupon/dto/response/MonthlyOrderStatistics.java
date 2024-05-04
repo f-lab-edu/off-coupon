@@ -25,7 +25,7 @@ public final class MonthlyOrderStatistics {
         this.totalCouponUseCnt = vo.totalCouponUseCnt();
         this.totalCouponPrice = vo.totalCouponPrice();
     }
-
+  
     private YearMonth yearMonthFormatter(String yearMonth) {
         return YearMonth.parse(yearMonth.substring(0,4)+ "-" + yearMonth.substring(4));
     }

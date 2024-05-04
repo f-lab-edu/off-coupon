@@ -48,13 +48,14 @@ public class StatisticsService {
                 .sorted(Comparator.comparing(MonthlyOrderStatistics::getYearMonth))
                 .toList());
     }
-        /**
-         * 시작일과 종료일 간의 유효성을 검사하여 시작일이 종료일보다 이전인지 확인합니다.
-         *
-         * @param startedAt 시작일
-         * @param endedAt   종료일
-         * @throws LocalDateBadRequestException 시작일이 종료일보다 이후인 경우 발생하는 예외
-         */
+
+    /**
+     * 시작일과 종료일 간의 유효성을 검사하여 시작일이 종료일보다 이전인지 확인합니다.
+     *
+     * @param startedAt 시작일
+     * @param endedAt   종료일
+     * @throws LocalDateBadRequestException 시작일이 종료일보다 이후인 경우 발생하는 예외
+     */
     private void validateStartDateIsBeforeEndDate(LocalDate startedAt, LocalDate endedAt) {
         if (startedAt.isAfter(endedAt)) {
             throw new LocalDateBadRequestException(START_MUST_BE_BEFORE_THANT_END.formatted(startedAt, endedAt));
