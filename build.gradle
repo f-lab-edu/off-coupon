@@ -48,6 +48,10 @@ dependencies {
     // Test container
     testImplementation 'org.testcontainers:testcontainers:1.19.3'
     testImplementation 'org.testcontainers:junit-jupiter:1.19.3'
+    testImplementation "org.testcontainers:mysql:1.16.3"
+    testImplementation "org.testcontainers:rabbitmq:1.19.6"
+    testImplementation 'org.awaitility:awaitility:4.2.1'
+
 
     // thymeleaf (sse 알림 확인용 서버사이드 랜더링)
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

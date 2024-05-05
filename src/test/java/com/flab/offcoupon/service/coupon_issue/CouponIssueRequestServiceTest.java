@@ -1,9 +1,12 @@
 package com.flab.offcoupon.service.coupon_issue;
 
+import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
+import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,13 +15,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@SpringBootTest
 @Transactional
+@SpringBootTest
 class CouponIssueRequestServiceTest {
     private final static String COUPON_ISSUE_SUCCESS_MESSAGE_SYNC = "쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s";
     private final static String COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC = "쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s";
@@ -32,16 +36,15 @@ class CouponIssueRequestServiceTest {
     private CouponRepository couponRepository;
 
     @Autowired
+    private RedisRepository redisRepository;
+
+    @Autowired
+    private CouponIssueRepository couponIssueRepository;
+
+    @Autowired
     RedisTemplate<String, String> redisTemplate;
 
     private SetupInitializer setupInitializer;
-
-    @BeforeEach
-    void clear() {
-        Collection<String> redisKeys = redisTemplate.keys("*");
-        redisTemplate.delete(redisKeys);
-
-    }
 
     @BeforeEach
     void setUp() {
@@ -49,9 +52,18 @@ class CouponIssueRequestServiceTest {
         setupInitializer.setUpEventAndCoupon();
     }
 
+    @AfterEach
+    void clear() {
+        redisRepository.delete(getIssueRequestKey(1L));
+        redisRepository.delete("coupon::1");
+        redisRepository.delete("event::1");
+        couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(1L, 1L);
+    }
+
 
     @Test
     @DisplayName("[SUCCESS] 동기식 쿠폰 발급 테스트")
+    @Transactional
     void SyncIssueCoupon() throws InterruptedException {
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
@@ -66,6 +78,7 @@ class CouponIssueRequestServiceTest {
 
     @Test
     @DisplayName("[SUCCESS] 비동기식 쿠폰 발급 테스트")
+    @Transactional
     void AsyncIssueCoupon() {
         // given
         LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
@@ -74,7 +87,12 @@ class CouponIssueRequestServiceTest {
         long memberId = 1L;
         // when
         ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, eventId, couponId, memberId);
+
         // then
-        assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC.formatted(memberId, couponId), response.getData());
+        await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            // then
+            assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC.formatted(memberId, couponId), response.getData());
+        });
+
     }
 }

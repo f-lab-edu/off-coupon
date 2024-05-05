@@ -66,7 +66,7 @@ class LettuceLockCouponIssueTest {
                 .isInstanceOf(CouponNotFoundException.class)
                 .hasMessage(COUPON_NOT_EXIST.formatted(invalidCouponId));
     }
-
+    @Transactional
     @Test
     @DisplayName("[SUCCESS] 쿠폰 발급 성공")
     void issueCoupon_success() throws InterruptedException {

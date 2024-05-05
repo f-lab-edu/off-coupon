@@ -1,3 +1,9 @@
+
+# USE off_coupon;
+#
+# GRANT ALL PRIVILEGES ON off_coupon.* TO 'test'@'%' IDENTIFIED BY '<password>';
+# FLUSH PRIVILEGES;
+
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS coupon;
 DROP TABLE IF EXISTS event;

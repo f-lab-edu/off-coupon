@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
-import com.flab.offcoupon.RedisContainerTest;
+import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
@@ -43,8 +43,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
  * @See <a href="https://docs.spring.io/spring-boot/docs/1.4.x/api/org/springframework/boot/test/IntegrationTest.html">Annotation IntegrationTest</a>
  * @See <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.html">Annotation SpringBootTest</a>
  */
-class DefaultCouponIssueServiceTest extends RedisContainerTest {
-    private static final Logger logger = LoggerFactory.getLogger(DefaultCouponIssueServiceTest.class);
+@Transactional
+class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBaseTest {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCouponIssueServiceBaseTest.class);
 
     @Autowired
     private DefaultCouponIssueService defaultCouponIssueService;
@@ -82,6 +83,7 @@ class DefaultCouponIssueServiceTest extends RedisContainerTest {
         redisRepository.delete("event::1");
         redisRepository.delete("coupon::2");
         redisRepository.delete("event::2");
+        couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(1L, 1L);
     }
 
     @Transactional

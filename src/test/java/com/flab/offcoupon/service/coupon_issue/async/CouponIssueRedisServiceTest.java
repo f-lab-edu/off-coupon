@@ -1,18 +1,19 @@
 package com.flab.offcoupon.service.coupon_issue.async;
 
-import com.flab.offcoupon.RedisContainerTest;
+import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
 import com.flab.offcoupon.repository.redis.RedisRepository;
 import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.stream.IntStream;
 
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 
-
-class CouponIssueRedisServiceTest extends RedisContainerTest {
+@Transactional
+class CouponIssueRedisServiceTest extends AbstractIntegrationContainerBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(AsyncCouponIssueServiceTest.class);
 

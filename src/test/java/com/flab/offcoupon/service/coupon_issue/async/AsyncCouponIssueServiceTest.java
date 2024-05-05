@@ -1,6 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.async;
 
-import com.flab.offcoupon.RedisContainerTest;
+import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
 import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
@@ -8,6 +8,7 @@ import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
+import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.repository.redis.RedisRepository;
@@ -18,14 +19,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.stream.LongStream;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
-class AsyncCouponIssueServiceTest extends RedisContainerTest {
+@Transactional
+class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(AsyncCouponIssueServiceTest.class);
 
     @Autowired
@@ -39,6 +43,9 @@ class AsyncCouponIssueServiceTest extends RedisContainerTest {
 
     @Autowired
     private RedisRepository redisRepository;
+
+    @Autowired
+    private CouponIssueRepository couponIssueRepository;
 
     private SetupInitializer setupInitializer;
 
@@ -54,13 +61,18 @@ class AsyncCouponIssueServiceTest extends RedisContainerTest {
         logger.info("spring.redis.host : " + System.getProperty("spring.redis.host"));
         logger.info("spring.redis.port : " + System.getProperty("spring.redis.port"));
         logger.info("spring.redis.password : " + System.getProperty("spring.redis.password"));
+
+        logger.info("spring.rabbitmq.host : " + System.getProperty("spring.rabbitmq.host"));
+        logger.info("spring.rabbitmq.port : " + System.getProperty("spring.rabbitmq.port"));
+        logger.info("spring.rabbitmq.username : " + System.getProperty("spring.rabbitmq.username"));
     }
 
     @AfterEach
-    void clear() {
+    void clear() throws Exception {
         redisRepository.delete(getIssueRequestKey(1L));
         redisRepository.delete("coupon::1");
         redisRepository.delete("event::1");
+        couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(2L, 1L);
     }
 
     @Transactional
@@ -130,7 +142,9 @@ class AsyncCouponIssueServiceTest extends RedisContainerTest {
             EventPeriodException exception = Assertions.assertThrows(EventPeriodException.class, () -> {
                 asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
             });
+
             Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_PERIOD.formatted(event.getStartDate(), event.getEndDate()));
+
         }
 
         @Test
@@ -148,7 +162,6 @@ class AsyncCouponIssueServiceTest extends RedisContainerTest {
             });
             Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_TIME.formatted(event.getDailyIssueStartTime(), event.getDailyIssueEndTime()));
         }
-
         @Test
         @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급을 기록한다")
         void issueCoupon_success_and_redis_history() {
@@ -160,9 +173,11 @@ class AsyncCouponIssueServiceTest extends RedisContainerTest {
             // when
             asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
             // then
-            String key = getIssueRequestKey(couponId);
-            Boolean isSaved = redisRepository.sIsMember(key, String.valueOf(memberId));
-            Assertions.assertTrue(isSaved);
+            await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+                String key = getIssueRequestKey(couponId);
+                Boolean isSaved = redisRepository.sIsMember(key, String.valueOf(memberId));
+                Assertions.assertTrue(isSaved);
+            });
         }
     }
 }
