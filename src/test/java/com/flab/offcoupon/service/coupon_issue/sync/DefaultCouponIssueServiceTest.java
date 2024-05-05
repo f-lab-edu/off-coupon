@@ -1,5 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
+import com.flab.offcoupon.RedisContainerTest;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
@@ -9,23 +10,23 @@ import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
+import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
 import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
+import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -42,9 +43,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
  * @See <a href="https://docs.spring.io/spring-boot/docs/1.4.x/api/org/springframework/boot/test/IntegrationTest.html">Annotation IntegrationTest</a>
  * @See <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.html">Annotation SpringBootTest</a>
  */
-@SpringBootTest
-@Transactional
-class DefaultCouponIssueServiceTest {
+class DefaultCouponIssueServiceTest extends RedisContainerTest {
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCouponIssueServiceTest.class);
 
     @Autowired
     private DefaultCouponIssueService defaultCouponIssueService;
@@ -57,107 +57,124 @@ class DefaultCouponIssueServiceTest {
 
     @Autowired
     private CouponRepository couponRepository;
+
+    @Autowired
+    private RedisRepository redisRepository;
     private SetupInitializer setupInitializer;
+
     @Autowired
     RedisTemplate<String, String> redisTemplate;
-
-    @BeforeEach
-    void clear() {
-        Collection<String> redisKeys = redisTemplate.keys("*");
-        redisTemplate.delete(redisKeys);
-    }
     @BeforeEach
     void setUp() {
         setupInitializer = new SetupInitializer(eventRepository, couponRepository);
         setupInitializer.setUpEventAndCoupon();
-    }
 
-    @Test
-    @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 식별자가 존재하지 않으면 Exception 발생")
-    void issueCoupon_fail_with_invalid_eventId() {
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long invalidEventId = 1000L;
-        long couponId = 1L;
-        long memberId = 1L;
-        // when
-        assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, invalidEventId, couponId, memberId))
-                .isInstanceOf(EventNotFoundException.class)
-                .hasMessage(EVENT_NOT_EXIST.formatted(invalidEventId));
+        // 테스트 컨테이너에 연결되었는지 확인
+        logger.info("spring.redis.host : " + System.getProperty("spring.redis.host"));
+        logger.info("spring.redis.port : " + System.getProperty("spring.redis.port"));
+        logger.info("spring.redis.password : " + System.getProperty("spring.redis.password"));
     }
-
-    @Test
-    @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 기간 설정이 되어있지 않으면 Exception 발생")
-    void issueCoupon_fail_with_null_event_period() {
-        setupInitializer.setUpEventAndCouponWithParams( null, null, "13:00:00", "15:00:00");
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long eventId = 2L;
-        long couponId = 2L;
-        long memberId = 1L;
-        // when
-        assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
-                .isInstanceOf(EventPeriodException.class)
-                .hasMessage(EVENT_PERIOD_IS_NULL.formatted(null, null));
-    }
-
-    @Test
-    @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 시간 설정이 되어있지 않으면 Exception 발생")
-    void issueCoupon_fail_with_null_event_time() {
-        setupInitializer.setUpEventAndCouponWithParams(LocalDate.now(),  LocalDate.now(), null, null);
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long eventId = 2L;
-        long couponId = 2L;
-        long memberId = 1L;
-        // when
-        assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
-                .isInstanceOf(EventTimeException.class)
-                .hasMessage(EVENT_TIME_IS_NULL.formatted(null, null));
-    }
-
-    @Test
-    @DisplayName("[ERROR] 쿠폰 발급 - 쿠폰 식별자가 존재하지 않으면 Exception 발생")
-    void issueCoupon_fail_with_invalid_couponId() {
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long eventId = 1L;
-        long invalidCouponId = 1000L;
-        long memberId = 1L;
-        // when
-        assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, invalidCouponId, memberId))
-                .isInstanceOf(CouponNotFoundException.class)
-                .hasMessage(COUPON_NOT_EXIST.formatted(invalidCouponId));
+    @AfterEach
+    void clear() {
+        // 테스트 종료 후 발급 요청 키와 쿠폰, 이벤트 데이터 삭제
+        redisRepository.delete(getIssueRequestKey(1L));
+        redisRepository.delete("coupon::1");
+        redisRepository.delete("event::1");
+        redisRepository.delete("coupon::2");
+        redisRepository.delete("event::2");
     }
 
     @Transactional
-    @Test
-    @DisplayName("[ERROR] 쿠폰 발급 - 중복 요청의 경우 Exception 발생")
-    void issueCoupon_fail_with_duplicated_request() {
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long eventId = 1L;
-        long couponId = 1L;
-        long memberId = 1L;
-        CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
-        couponIssueRepository.save(couponIssue);
-        // when
-        assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
-                .isInstanceOf(DuplicatedCouponException.class)
-                .hasMessage(DUPLICATED_COUPON.formatted(memberId, couponId));
-    }
+    @DisplayName("동기식 쿠폰 발급")
+    @Nested()
+    class issueCoupon {
+        @Test
+        @DisplayName("[ERROR] 이벤트 식별자가 존재하지 않으면, EventNotFoundException 발생")
+        void issueCoupon_fail_with_invalid_eventId() {
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long invalidEventId = 1000L;
+            long couponId = 1L;
+            long memberId = 1L;
+            // when
+            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, invalidEventId, couponId, memberId))
+                    .isInstanceOf(EventNotFoundException.class)
+                    .hasMessage(EVENT_NOT_EXIST.formatted(invalidEventId));
+        }
 
-    @Transactional
-    @Test
-    @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급 성공")
-    void issueCoupon_success() {
-        // given
-        LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-        long eventId = 1L;
-        long couponId = 1L;
-        long memberId = 1L;
-        // when
-        ResponseDTO responseDTO = defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
-        assertThat(responseDTO.getData()).isEqualTo("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+        @Test
+        @DisplayName("[ERROR] 이벤트 기간 설정이 되어있지 않으면, EventPeriodException 발생")
+        void issueCoupon_fail_with_null_event_period() {
+            setupInitializer.setUpEventAndCouponWithParams(null, null, "13:00:00", "15:00:00");
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 2L;
+            long couponId = 2L;
+            long memberId = 1L;
+            // when
+            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
+                    .isInstanceOf(EventPeriodException.class)
+                    .hasMessage(EVENT_PERIOD_IS_NULL.formatted(null, null));
+        }
+
+        @Test
+        @DisplayName("[ERROR] 이벤트 시간 설정이 되어있지 않으면, EventTimeException 발생")
+        void issueCoupon_fail_with_null_event_time() {
+            setupInitializer.setUpEventAndCouponWithParams(LocalDate.now(), LocalDate.now(), null, null);
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 2L;
+            long couponId = 2L;
+            long memberId = 1L;
+            // when
+            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
+                    .isInstanceOf(EventTimeException.class)
+                    .hasMessage(EVENT_TIME_IS_NULL.formatted(null, null));
+        }
+
+        @Test
+        @DisplayName("[ERROR] 쿠폰 식별자가 존재하지 않으면, CouponNotFoundException 발생")
+        void issueCoupon_fail_with_invalid_couponId() {
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 1L;
+            long invalidCouponId = 1000L;
+            long memberId = 1L;
+            // when
+            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, invalidCouponId, memberId))
+                    .isInstanceOf(CouponNotFoundException.class)
+                    .hasMessage(COUPON_NOT_EXIST.formatted(invalidCouponId));
+        }
+
+        @Transactional
+        @Test
+        @DisplayName("[ERROR] 중복 요청의 경우, DuplicatedCouponException 발생")
+        void issueCoupon_fail_with_duplicated_request() {
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 1L;
+            long couponId = 1L;
+            long memberId = 1L;
+            CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
+            couponIssueRepository.save(couponIssue);
+            // when
+            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))
+                    .isInstanceOf(DuplicatedCouponException.class)
+                    .hasMessage(DUPLICATED_COUPON.formatted(memberId, couponId));
+        }
+
+        @Transactional
+        @Test
+        @DisplayName("[SUCCESS] 쿠폰 발급 성공")
+        void issueCoupon_success() {
+            // given
+            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 1L;
+            long couponId = 1L;
+            long memberId = 1L;
+            // when
+            ResponseDTO responseDTO = defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+            assertThat(responseDTO.getData()).isEqualTo("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+        }
     }
 }
