@@ -46,7 +46,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 @Transactional
 class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCouponIssueServiceBaseTest.class);
-
+/**/
     @Autowired
     private DefaultCouponIssueService defaultCouponIssueService;
 
@@ -86,10 +86,6 @@ class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBase
         couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(1L, 1L);
     }
 
-    @Transactional
-    @DisplayName("동기식 쿠폰 발급")
-    @Nested()
-    class issueCoupon {
         @Test
         @DisplayName("[ERROR] 이벤트 식별자가 존재하지 않으면, EventNotFoundException 발생")
         void issueCoupon_fail_with_invalid_eventId() {
@@ -178,5 +174,5 @@ class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBase
             ResponseDTO responseDTO = defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
             assertThat(responseDTO.getData()).isEqualTo("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
         }
-    }
+
 }

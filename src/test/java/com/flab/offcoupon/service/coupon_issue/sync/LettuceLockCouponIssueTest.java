@@ -2,10 +2,12 @@ package com.flab.offcoupon.service.coupon_issue.sync;
 
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
+import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,10 @@ class LettuceLockCouponIssueTest {
 
     @Autowired
     private CouponRepository couponRepository;
+
+    @Autowired
+    private CouponIssueRepository couponIssueRepository;
+
     private SetupInitializer setupInitializer;
 
     @BeforeEach
@@ -39,6 +45,13 @@ class LettuceLockCouponIssueTest {
         setupInitializer = new SetupInitializer(eventRepository, couponRepository);
         setupInitializer.setUpEventAndCoupon();
     }
+
+    @AfterEach
+    void clear() {
+        couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(1L, 1L);
+    }
+
+
 
     @Test
     @DisplayName("[ERROR] 쿠폰 발급 - 이벤트 식별자가 존재하지 않으면 Exception 발생")
