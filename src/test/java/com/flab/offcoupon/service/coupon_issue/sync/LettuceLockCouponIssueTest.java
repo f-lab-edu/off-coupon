@@ -1,7 +1,9 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
+import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
@@ -61,8 +63,10 @@ class LettuceLockCouponIssueTest {
         long invalidEventId = 1000L;
         long couponId = 1L;
         long memberId = 1L;
+        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(invalidEventId), new Positive(couponId), new Positive(memberId));
+
         // when
-        assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, invalidEventId, couponId, memberId))
+        assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter))
                 .isInstanceOf(EventNotFoundException.class)
                 .hasMessage(EVENT_NOT_EXIST.formatted(invalidEventId));
     }
@@ -74,8 +78,9 @@ class LettuceLockCouponIssueTest {
         long eventId = 1L;
         long invalidCouponId = 2L;
         long memberId = 1L;
+        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(invalidCouponId), new Positive(memberId));
         // when
-        assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, eventId, invalidCouponId, memberId))
+        assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter))
                 .isInstanceOf(CouponNotFoundException.class)
                 .hasMessage(COUPON_NOT_EXIST.formatted(invalidCouponId));
     }
@@ -88,8 +93,10 @@ class LettuceLockCouponIssueTest {
         long eventId = 1L;
         long couponId = 1L;
         long memberId = 1L;
+        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
         // when
-        ResponseDTO responseDTO = lettuceLockCouponIssue.issueCoupon(currentDateTime, eventId, couponId, memberId);
+        ResponseDTO responseDTO = lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter);
         assertThat(responseDTO.getData()).isEqualTo("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
     }
 }

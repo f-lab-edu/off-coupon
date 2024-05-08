@@ -1,5 +1,7 @@
 package com.flab.offcoupon.service.coupon_issue;
 
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
+import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @Transactional
 @SpringBootTest
 class CouponIssueRequestServiceTest {
@@ -70,8 +73,9 @@ class CouponIssueRequestServiceTest {
         long eventId = 1L;
         long couponId = 1L;
         long memberId = 1L;
+        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
         // when
-        ResponseDTO<String> response = couponIssueRequestService.syncIssueCoupon(currentDateTime, eventId, couponId, memberId);
+        ResponseDTO<String> response = couponIssueRequestService.syncIssueCoupon(currentDateTime, parameter);
         // then
         assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_SYNC.formatted(memberId, couponId), response.getData());
     }
@@ -85,8 +89,10 @@ class CouponIssueRequestServiceTest {
         long eventId = 1L;
         long couponId = 1L;
         long memberId = 1L;
+        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
         // when
-        ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, eventId, couponId, memberId);
+        ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, parameter);
 
         // then
         await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {

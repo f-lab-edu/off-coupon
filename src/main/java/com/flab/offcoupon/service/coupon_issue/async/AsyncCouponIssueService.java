@@ -4,6 +4,7 @@ import com.flab.offcoupon.component.rabbitmq.Producer;
 import com.flab.offcoupon.domain.redis.CouponRedisEntity;
 import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.redis.IssueRequestKey;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.redis.RedisRepository;
@@ -36,17 +37,15 @@ public class AsyncCouponIssueService {
      * 비동기로 쿠폰 발급을 수행하는 메서드입니다.
      *
      * @param currentDateTime 현재 시각
-     * @param eventId          이벤트 ID
-     * @param couponId         쿠폰 ID
-     * @param memberId         회원 ID
+     * @Param requestParameter 쿠폰 발급 요청 파라미터
      * @return 응답 DTO
      */
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
-        checkIssuableEventPeriodAndTime(currentDateTime, eventId);
-        CouponRedisEntity coupon = couponCacheService.getCoupon(couponId);
-        couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, memberId);
-        issueRequest(new IssueRequestKey(new Positive(couponId), new Positive(memberId)));
-        return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
+        checkIssuableEventPeriodAndTime(currentDateTime, requestParameter.getEventId());
+        CouponRedisEntity coupon = couponCacheService.getCoupon(requestParameter.getCouponId());
+        couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, requestParameter.getMemberId());
+        issueRequest(new IssueRequestKey(new Positive(requestParameter.getCouponId()), new Positive(requestParameter.getMemberId())));
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(requestParameter.getMemberId(), requestParameter.getCouponId()));
     }
 
     /**

@@ -4,6 +4,7 @@ import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.CouponIssue;
 import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.vo.persistence.couponissue.CouponIssueCheckVo;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
@@ -33,14 +34,15 @@ public class DefaultCouponIssueService {
     private final EventCacheService eventCacheService;
 
     @Transactional
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
         // 이벤트(Event 테이블) 기간 및 시간 검증
-        checkEventPeriodAndTime(eventId, currentDateTime);
+        checkEventPeriodAndTime(requestParameter.getEventId(), currentDateTime);
         // 쿠폰 조회 및 발급된 쿠폰 수 증가 (Coupon 테이블의 issuedQuantity)
-        increaseIssuedCouponQuantity(couponId);
+        increaseIssuedCouponQuantity(requestParameter.getCouponId());
         // 중복 발급 제한 및 쿠폰 발급 이력 저장 (CouponIssue 테이블)
-        saveCouponIssue(memberId, couponId, currentDateTime);
-        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+        saveCouponIssue(requestParameter.getMemberId(), requestParameter.getCouponId(), currentDateTime);
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s"
+                .formatted(requestParameter.getMemberId(), requestParameter.getCouponId()));
     }
 
     public void checkEventPeriodAndTime(long eventId, LocalDateTime currentDateTime) {

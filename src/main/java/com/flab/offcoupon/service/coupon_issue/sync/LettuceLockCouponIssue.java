@@ -1,6 +1,7 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
 import com.flab.offcoupon.component.lock.DistributeLockExecutorWithLettuce;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -26,13 +27,13 @@ public class LettuceLockCouponIssue implements CouponIssueFacade {
     private final DefaultCouponIssueService defaultCouponIssueService;
 
     @Override
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) throws InterruptedException {
 
         AtomicReference<ResponseDTO<String>> responseDTO = new AtomicReference<>();
         // distributeLockExecutorWithLettuce를 사용하여 락을 획득합니다.
-        distributeLockExecutorWithLettuce.execute(couponId, () ->
+        distributeLockExecutorWithLettuce.execute(requestParameter.getCouponId(), () ->
             // 락을 획득한 후, 실제 쿠폰 발급 서비스를 호출합니다.
-            responseDTO.set(defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId)));
+            responseDTO.set(defaultCouponIssueService.issueCoupon(currentDateTime, requestParameter)));
         // 쿠폰 발급 결과를 반환합니다.
         return responseDTO.get();
     }

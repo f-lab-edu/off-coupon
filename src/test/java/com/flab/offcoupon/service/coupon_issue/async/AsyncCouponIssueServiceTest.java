@@ -2,12 +2,14 @@ package com.flab.offcoupon.service.coupon_issue.async;
 
 import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
 import com.flab.offcoupon.domain.entity.Event;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
 import com.flab.offcoupon.exception.event.EventPeriodException;
 import com.flab.offcoupon.exception.event.EventTimeException;
+import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
@@ -88,9 +90,11 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
             long eventId = 1L;
             long couponId = 2L;
             long memberId = 1L;
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
             // when & then
             CouponNotFoundException exception = Assertions.assertThrows(CouponNotFoundException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+                asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
             });
             Assertions.assertEquals(exception.getMessage(), COUPON_NOT_EXIST.formatted(couponId));
         }
@@ -100,16 +104,18 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
         void issueCoupon_fail_with_run_out_of_coupon() {
             // given
             LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId  = 1L;
             long memberId = 1000L;
             long couponId = 1L;
             // max quantity 갯수만큼 쿠폰 발급 요청을 추가
             LongStream.range(0, 500).forEach(increasingMemberId -> {
                 redisRepository.sAdd(getIssueRequestKey(1L), String.valueOf(increasingMemberId));
             });
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
 
             // when & then
             CouponQuantityException exception = Assertions.assertThrows(CouponQuantityException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, 1L, couponId, memberId);
+                asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
             });
 
             Assertions.assertEquals(exception.getMessage(), ASYNC_INVALID_COUPON_QUANTITY.formatted(couponId));
@@ -120,11 +126,14 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
         void issueCoupon_fail_with_duplicated_user() {
             // given
             LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
+            long eventId = 1L;
             long memberId = 1L;
             long couponId = 1L;
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
             // when & then
             DuplicatedCouponException exception = Assertions.assertThrows(DuplicatedCouponException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, 1L, couponId, memberId);
+                asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
             });
             Assertions.assertEquals(exception.getMessage(), ASYNC_DUPLICATED_COUPON.formatted(memberId, couponId));
         }
@@ -137,10 +146,12 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
             long memberId = 1L;
             long eventId = 1L;
             long couponId = 1L;
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
             Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
             // when & then
             EventPeriodException exception = Assertions.assertThrows(EventPeriodException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+                asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
             });
 
             Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_PERIOD.formatted(event.getStartDate(), event.getEndDate()));
@@ -155,10 +166,12 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
             long memberId = 1L;
             long eventId = 1L;
             long couponId = 1L;
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
             Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
             // when & then
             EventTimeException exception = Assertions.assertThrows(EventTimeException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+                asyncCouponIssueService.issueCoupon(currentDateTime,parameter);
             });
             Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_TIME.formatted(event.getDailyIssueStartTime(), event.getDailyIssueEndTime()));
         }
@@ -170,8 +183,10 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
             long memberId = 2L;
             long eventId = 1L;
             long couponId = 1L;
+            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+
             // when
-            asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+            asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
             // then
             await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
                 String key = getIssueRequestKey(couponId);
