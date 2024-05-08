@@ -128,8 +128,7 @@ public class OrderService {
      * @param now       현재 시간
      */
     @Transactional
-    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime
-            now) {
+    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime now) {
         validateCouponIsAvailable(request, now);
         // 3. 주문 정보 저장
         OrderInfo orderInfo = createOrderInfo(

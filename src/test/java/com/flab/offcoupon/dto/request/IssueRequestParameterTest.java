@@ -17,7 +17,7 @@ class IssueRequestParameterTest {
         @DisplayName("[SUCCESS] IssueRequestParameter 생성 성공")
         @ParameterizedTest
         @CsvSource(value = {"1, 2, 3", "2, 3, 4", "3, 4, 5"})
-        void IssueRequestParameter(long eventId, long couponId, long memberId) {
+        void createIssueRequestParameter_Success(long eventId, long couponId, long memberId) {
             IssueRequestParameter issueRequestParameter =
                     new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
             assertEquals(eventId, issueRequestParameter.getEventId());
@@ -25,10 +25,10 @@ class IssueRequestParameterTest {
             assertEquals(memberId, issueRequestParameter.getMemberId());
         }
 
-        @DisplayName("[ERROR] IssueRequestParameter  객체 생성 실패 시 NonPositiveValueException 발생")
+        @DisplayName("[ERROR] IssueRequestParameter 객체 생성 실패 시 NonPositiveValueException 발생")
         @ParameterizedTest
         @CsvSource(value = {"-1, 2, 3", "2, -3, 4", "3, 4, -5", "-1, -2, -3"})
-        void IssueRequestParameterTest(long eventId, long couponId, long memberId) {
+        void createIssueRequestParameter_Failure(long eventId, long couponId, long memberId) {
             assertThrows(NonPositiveValueException.class, () -> {
                         new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
             });
