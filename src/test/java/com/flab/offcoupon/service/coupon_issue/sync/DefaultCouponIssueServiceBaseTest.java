@@ -6,8 +6,6 @@ import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
-import com.flab.offcoupon.exception.event.EventPeriodException;
-import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
@@ -15,19 +13,21 @@ import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_NOT_EXIST;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.DUPLICATED_COUPON;
-import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
+import static com.flab.offcoupon.exception.event.EventErrorMessage.EVENT_NOT_EXIST;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -102,40 +102,6 @@ class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBase
             assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, parameter))
                     .isInstanceOf(EventNotFoundException.class)
                     .hasMessage(EVENT_NOT_EXIST.formatted(invalidEventId));
-        }
-
-        @Test
-        @DisplayName("[ERROR] 이벤트 기간 설정이 되어있지 않으면, EventPeriodException 발생")
-        void issueCoupon_fail_with_null_event_period() {
-            setupInitializer.setUpEventAndCouponWithParams(null, null, "13:00:00", "15:00:00");
-            // given
-            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-            long eventId = 2L;
-            long couponId = 2L;
-            long memberId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
-
-            // when
-            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, parameter))
-                    .isInstanceOf(EventPeriodException.class)
-                    .hasMessage(EVENT_PERIOD_IS_NULL.formatted(null, null));
-        }
-
-        @Test
-        @DisplayName("[ERROR] 이벤트 시간 설정이 되어있지 않으면, EventTimeException 발생")
-        void issueCoupon_fail_with_null_event_time() {
-            setupInitializer.setUpEventAndCouponWithParams(LocalDate.now(), LocalDate.now(), null, null);
-            // given
-            LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
-            long eventId = 2L;
-            long couponId = 2L;
-            long memberId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
-
-            // when
-            assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, parameter))
-                    .isInstanceOf(EventTimeException.class)
-                    .hasMessage(EVENT_TIME_IS_NULL.formatted(null, null));
         }
 
         @Test

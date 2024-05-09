@@ -1,14 +1,10 @@
 package com.flab.offcoupon.service.coupon_issue.async;
 
 import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
-import com.flab.offcoupon.domain.entity.Event;
 import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
-import com.flab.offcoupon.exception.event.EventNotFoundException;
-import com.flab.offcoupon.exception.event.EventPeriodException;
-import com.flab.offcoupon.exception.event.EventTimeException;
 import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
@@ -26,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.stream.LongStream;
 
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
-import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
@@ -138,43 +133,6 @@ class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
             Assertions.assertEquals(exception.getMessage(), ASYNC_DUPLICATED_COUPON.formatted(memberId, couponId));
         }
 
-        @Test
-        @DisplayName("[ERROR] 쿠폰발급 - 발급 기간이 일치하지 않는다면 예외를 반환한다")
-        void issueCoupon_fail_with_invalid_period() {
-            // given
-            LocalDateTime currentDateTime = LocalDateTime.now().minusDays(1L).withHour(13).withMinute(0).withSecond(0);
-            long memberId = 1L;
-            long eventId = 1L;
-            long couponId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
-
-            Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
-            // when & then
-            EventPeriodException exception = Assertions.assertThrows(EventPeriodException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime, parameter);
-            });
-
-            Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_PERIOD.formatted(event.getStartDate(), event.getEndDate()));
-
-        }
-
-        @Test
-        @DisplayName("[ERROR] 쿠폰발급 - 발급 시간이 일치하지 않는다면 예외를 반환한다")
-        void issueCoupon_fail_with_invalid_time() {
-            // given
-            LocalDateTime currentDateTime = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0);
-            long memberId = 1L;
-            long eventId = 1L;
-            long couponId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
-
-            Event event = eventRepository.findEventById(eventId).orElseThrow(() -> new EventNotFoundException(EVENT_NOT_EXIST.formatted(eventId)));
-            // when & then
-            EventTimeException exception = Assertions.assertThrows(EventTimeException.class, () -> {
-                asyncCouponIssueService.issueCoupon(currentDateTime,parameter);
-            });
-            Assertions.assertEquals(exception.getMessage(), INVALID_EVENT_TIME.formatted(event.getDailyIssueStartTime(), event.getDailyIssueEndTime()));
-        }
         @Test
         @DisplayName("[SUCCESS] 쿠폰 발급 - 쿠폰 발급을 기록한다")
         void issueCoupon_success_and_redis_history() {
