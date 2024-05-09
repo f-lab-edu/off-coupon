@@ -91,11 +91,9 @@ class CouponIssueRequestServiceTest {
         long memberId = 1L;
         IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
 
-        // when
-        ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, parameter);
-
-        // then
+        // when & then
         await().atMost(Duration.ofSeconds(5)).untilAsserted(() -> {
+            ResponseDTO<String> response = couponIssueRequestService.asyncIssueCoupon(currentDateTime, parameter);
             // then
             assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_ASYNC.formatted(memberId, couponId), response.getData());
         });
