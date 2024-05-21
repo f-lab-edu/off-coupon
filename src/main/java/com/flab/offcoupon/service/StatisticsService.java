@@ -119,7 +119,8 @@ public class StatisticsService {
     private long countMonthDifference(LocalDate startedAt, LocalDate endedAt) {
         YearMonth start = YearMonth.of(startedAt.getYear(), startedAt.getMonth());
         YearMonth end = YearMonth.of(endedAt.getYear(), endedAt.getMonth());
-        return ChronoUnit.MONTHS.between(start, end);
+        long between = ChronoUnit.MONTHS.between(start, end);
+        return between;
     }
 
     /**

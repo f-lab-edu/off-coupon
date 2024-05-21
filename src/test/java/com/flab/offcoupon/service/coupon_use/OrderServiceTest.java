@@ -209,6 +209,7 @@ class OrderServiceTest {
     @DisplayName("상품 주문 및 쿠폰 사용 처리")
     class orderProduct {
         OrderProductRequest request;
+
         @DisplayName("[ERROR] 쿠폰의 상태가 ACTIVE가 아닐 경우 CouponStatusException 발생")
         @Test
         void validateCouponIsAvailable() {
@@ -231,14 +232,14 @@ class OrderServiceTest {
         void validateCouponIsAvailable2() {
             // Given
             request = OrderServiceFixtures.orderProductRequest();
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime invalidNow = LocalDateTime.of(2020, 01, 01, 0, 0, 0);
 
             List<CouponValidationPeriodVo> list = OrderServiceFixtures.couponValidationPeriodVo();
             when(couponRepository.getCouponValidationPeriod(request.getCouponId()))
                     .thenReturn(list);
             // When & Then
             CouponUsageInvalidPeriodException exception = assertThrows(CouponUsageInvalidPeriodException.class, ()
-                    -> sut.orderProduct(1L, request, now));
+                    -> sut.orderProduct(1L, request, invalidNow));
             assertNotNull(exception);
             assertTrue(exception.getMessage().startsWith(COUPON_USAGE_INVALID_PERIOD));
         }
@@ -260,5 +261,4 @@ class OrderServiceTest {
             assertTrue(exception.getMessage().startsWith(COUPON_USAGE_INVALID_PERIOD));
         }
     }
-
 }
