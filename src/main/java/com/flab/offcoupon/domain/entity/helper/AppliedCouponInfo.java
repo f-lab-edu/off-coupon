@@ -21,14 +21,14 @@ public final class AppliedCouponInfo {
     private AppliedCouponInfo(Product product, Coupon coupon) {
         this.couponId = coupon.getId();
         this.discountAmount = product.calculateDiscountPricePerUnit(coupon);
-        checkDiscountValidity(couponId, discountAmount);
+        validateIdIsNegativeAndDiscountIsNegative(couponId, discountAmount);
     }
 
     public static AppliedCouponInfo createAppliedCouponInfo(Product product, Coupon coupon) {
         return new AppliedCouponInfo(product, coupon);
     }
 
-    private void checkDiscountValidity(long couponId, BigDecimal discountAmount) {
+    private void validateIdIsNegativeAndDiscountIsNegative(long couponId, BigDecimal discountAmount) {
         Positive positiveCouponId = new Positive(couponId);
         if (positiveCouponId.getValue() > 0 && (discountAmount.compareTo(BigDecimal.ZERO) < 0 || discountAmount.compareTo(BigDecimal.ZERO) == 0)) {
             throw new InvalidDiscountAmountException();

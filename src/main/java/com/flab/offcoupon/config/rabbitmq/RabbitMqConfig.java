@@ -12,8 +12,6 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Random;
-
 import static com.flab.offcoupon.util.CouponRabbitMQConstants.*;
 
 /**
@@ -26,8 +24,6 @@ public class RabbitMqConfig {
      *
      * @return DirectExchange 객체
      */
-    Random random = new Random();
-    long memberId = (random.nextInt(20) + 1);
 
     @Bean
     public DirectExchange directExchange() {

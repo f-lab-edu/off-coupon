@@ -19,10 +19,10 @@ import static com.flab.offcoupon.exception.common.NonPositiveValueException.MUST
 import static org.junit.jupiter.api.Assertions.*;
 
 class OrderCouponTest {
-
     @Nested
     @DisplayName("주문에 사용된 쿠폰 정보를 담는 OrderCoupon 생성 테스트")
     class createOrderCoupon {
+
         @DisplayName("[SUCCESS] Id식별자와 AppliedCouponInfo의 필드가 음수가 아닐 경우 성공적으로 생성된다. AppliedCouponInfo의 discountAmount는 0보다 커야한다.")
         @ParameterizedTest
         @MethodSource("validParams")
@@ -75,7 +75,11 @@ class OrderCouponTest {
             assertNotNull(exception);
             assertEquals(INVALID_DISCOUNT_AMOUNT, exception.getMessage());
         }
-
+        /**
+         * 테스트 시나리오: <br>
+         * 1. 할인 유형이 PERCENT이고 할인율이 -1이고 할인 금액이 null인 경우. <br>
+         * 2. 할인 유형이 AMOUNT이고 할인율이 null이고 할인 금액이 -1인 경우. <br>
+         */
         private static Stream<Arguments> invalidParams() {
             return Stream.of(
                     // 할인 타입, 할인 비율, 할인 가격

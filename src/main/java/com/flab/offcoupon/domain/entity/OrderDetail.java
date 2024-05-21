@@ -2,6 +2,8 @@ package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.domain.entity.helper.OrderInfo;
 import com.flab.offcoupon.domain.entity.params.TimeParams;
+import com.flab.offcoupon.exception.common.InvalidProductPriceException;
+import com.flab.offcoupon.model.Positive;
 import com.flab.offcoupon.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,10 +38,19 @@ public final class OrderDetail {
         this.totalPaymentPrice = orderInfo.getTotalPaymentPrice();
         this.createdAt = timeParams.createdAt();
         this.updatedAt = timeParams.updatedAt();
+        validateIdIsNegativeAndPricePerEachIsNegative(productId, quantity, pricePerEach);
     }
 
     public static OrderDetail createOrderDetail(OrderInfo orderInfo) {
         LocalDateTime now = DateTimeUtils.nowFromZone();
         return new OrderDetail(orderInfo, new TimeParams(now, now));
+    }
+
+    private void validateIdIsNegativeAndPricePerEachIsNegative(long productId, long quantity, BigDecimal pricePerEach) {
+        Positive positiveProductId = new Positive(productId);
+        Positive positiveQuantity = new Positive(quantity);
+        if (pricePerEach.compareTo(BigDecimal.ZERO) < 0 || pricePerEach.compareTo(BigDecimal.ZERO) == 0) {
+            throw new InvalidProductPriceException();
+        }
     }
 }
