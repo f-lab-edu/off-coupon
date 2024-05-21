@@ -31,14 +31,14 @@ class OrderCouponTest {
             Coupon coupon = new Coupon(couponId, 1L, discountType, discountRate, discountPrice, CouponType.FIRST_COME_FIRST_SERVED, 500L, 10L, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now());
             Product product = new Product(1L, "category", "title", "description", BigDecimal.valueOf(1000), BigDecimal.valueOf(0), BigDecimal.valueOf(1000), null, null);
             AppliedCouponInfo appliedCouponInfo = AppliedCouponInfo.createAppliedCouponInfo(product, coupon);
-            // When
+            // When & Then
             OrderCoupon orderCoupon = OrderCoupon.createOrderCoupon(1L, appliedCouponInfo);
             assertNotNull(orderCoupon);
         }
 
         private static Stream<Arguments> validParams() {
             return Stream.of(
-                    // 원래 가격, 세일 가격, 수량, 쿠폰 목록
+                    // 쿠폰 ID, 할인 타입, 할인 비율, 할인 가격
                     Arguments.of(1, "PERCENT", 20L, null),
                     Arguments.of(2, "AMOUNT", null, 5000L)
             );
@@ -60,7 +60,7 @@ class OrderCouponTest {
             assertEquals(MUST_BE_POSITIVE, exception.getMessage());
         }
 
-        @DisplayName("[ERROR] 할인 가격이 음수이거나 0일 경우 InvalidDiscountAmountException이 발생한다.")
+        @DisplayName("[ERROR] 쿠폰이 적용됐는데, 할인 가격이 음수이거나 0일 경우 InvalidDiscountAmountException이 발생한다.")
         @ParameterizedTest
         @MethodSource("invalidParams")
         void createOrderCoupon3(DiscountType discountType, Long discountRate, Long discountPrice) {
@@ -78,9 +78,11 @@ class OrderCouponTest {
 
         private static Stream<Arguments> invalidParams() {
             return Stream.of(
-                    // 원래 가격, 세일 가격, 수량, 쿠폰 목록
+                    // 할인 타입, 할인 비율, 할인 가격
                     Arguments.of("PERCENT", -1L, null),
-                    Arguments.of("AMOUNT", null, -1L)
+                    Arguments.of("PERCENT", 0L, null),
+                    Arguments.of("AMOUNT", null, -1L),
+                    Arguments.of("AMOUNT", null, 0L)
             );
         }
     }
