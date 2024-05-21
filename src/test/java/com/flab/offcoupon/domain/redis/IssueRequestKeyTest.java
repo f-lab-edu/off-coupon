@@ -1,7 +1,7 @@
 package com.flab.offcoupon.domain.redis;
 
 import com.flab.offcoupon.exception.common.NonPositiveValueException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +19,7 @@ class IssueRequestKeyTest {
         @ParameterizedTest
         @CsvSource(value = {"1, 1", "2, 2", "3, 3", "4, 4", "5, 5", "6, 6", "7, 7", "8, 8", "9, 9"})
         void issueRequestKey_ok(long couponId, long memberId) {
-            IssueRequestKey issueRequestKey = new IssueRequestKey(new Positive(couponId), new Positive(memberId));
+            IssueRequestKey issueRequestKey = new IssueRequestKey(new PositiveLong(couponId), new PositiveLong(memberId));
             assertEquals(couponId, issueRequestKey.getCouponId());
             assertEquals(memberId, issueRequestKey.getMemberId());
         }
@@ -29,7 +29,7 @@ class IssueRequestKeyTest {
         @CsvSource(value = {"0, 0", "-1, -1", "-100, -100", "-1000, -1000"})
         void issueRequestKey_fail(long couponId, long memberId) {
             assertThrows(NonPositiveValueException.class, () -> {
-                new IssueRequestKey(new Positive(couponId), new Positive(memberId));
+                new IssueRequestKey(new PositiveLong(couponId), new PositiveLong(memberId));
             });
         }
     }

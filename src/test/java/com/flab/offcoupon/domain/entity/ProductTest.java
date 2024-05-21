@@ -57,6 +57,7 @@ class ProductTest {
             // Then
             assertEquals(salePrice, actualPrice);
         }
+
     }
 
     @Nested

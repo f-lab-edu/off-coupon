@@ -2,7 +2,7 @@ package com.flab.offcoupon.controller;
 
 import com.flab.offcoupon.dto.request.OrderProductRequest;
 import com.flab.offcoupon.dto.response.AvailableCouponsByMemberIdResponse;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.service.coupon_use.OrderService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +31,7 @@ public class OrderController {
                                                                                                      @RequestParam final long productId) {
         LocalDateTime now = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(orderService.getAvailableCoupons(new Positive(memberId).getValue(), new Positive(productId).getValue(), now));
+                .body(orderService.getAvailableCoupons(new PositiveLong(memberId).getValue(), new PositiveLong(productId).getValue(), now));
     }
 
     /**
@@ -47,6 +47,6 @@ public class OrderController {
                                                             @RequestBody final OrderProductRequest orderProductRequest) {
         LocalDateTime now = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.OK)
-                .body(ResponseDTO.getSuccessResult(orderService.orderProduct(new Positive(productId).getValue(), orderProductRequest, now)));
+                .body(ResponseDTO.getSuccessResult(orderService.orderProduct(new PositiveLong(productId).getValue(), orderProductRequest, now)));
     }
 }

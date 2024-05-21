@@ -1,6 +1,6 @@
 package com.flab.offcoupon.dto.request;
 
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import lombok.Getter;
 
 import java.util.List;
@@ -18,9 +18,9 @@ public final class OrderProductRequest {
         this.quantity = validateValuesIsPositive(quantity);
     }
     private List<Long> validateValuesArePositive(final List<Long> values) {
-       return new Positive.Values(values).getValues();
+       return new PositiveLong.Values(values).getValues();
     }
     private long validateValuesIsPositive(final long value) {
-        return new Positive(value).getValue();
+        return new PositiveLong(value).getValue();
     }
 }

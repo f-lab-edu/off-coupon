@@ -1,7 +1,7 @@
 package com.flab.offcoupon.controller;
 
 import com.flab.offcoupon.dto.request.IssueRequestParameter;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.service.coupon_issue.CouponIssueRequestService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class CouponIssueController {
                                                          @RequestParam final long memberId) throws InterruptedException {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.syncIssueCoupon(
-                currentDateTime, new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId))));
+                currentDateTime, new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId))));
     }
 
     @PostMapping("/{eventId}/issues-async")
@@ -48,6 +48,6 @@ public class CouponIssueController {
                                                           @RequestParam final long memberId) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         return ResponseEntity.status(HttpStatus.CREATED).body(couponIssueRequestService.asyncIssueCoupon(
-                currentDateTime, new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId))));
+                currentDateTime, new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId))));
     }
 }

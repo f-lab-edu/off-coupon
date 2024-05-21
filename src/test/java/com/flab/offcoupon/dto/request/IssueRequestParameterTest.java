@@ -1,7 +1,7 @@
 package com.flab.offcoupon.dto.request;
 
 import com.flab.offcoupon.exception.common.NonPositiveValueException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +19,7 @@ class IssueRequestParameterTest {
         @CsvSource(value = {"1, 2, 3", "2, 3, 4", "3, 4, 5"})
         void createIssueRequestParameter_Success(long eventId, long couponId, long memberId) {
             IssueRequestParameter issueRequestParameter =
-                    new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+                    new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
             assertEquals(eventId, issueRequestParameter.getEventId());
             assertEquals(couponId, issueRequestParameter.getCouponId());
             assertEquals(memberId, issueRequestParameter.getMemberId());
@@ -30,7 +30,7 @@ class IssueRequestParameterTest {
         @CsvSource(value = {"-1, 2, 3", "2, -3, 4", "3, 4, -5", "-1, -2, -3"})
         void createIssueRequestParameter_Failure(long eventId, long couponId, long memberId) {
             assertThrows(NonPositiveValueException.class, () -> {
-                        new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+                        new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
             });
 
         }

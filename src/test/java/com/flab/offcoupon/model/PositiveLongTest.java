@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-class PositiveTest {
+class PositiveLongTest {
 
     @Nested
     @DisplayName("단일 value의 음수 검증 테스트")
@@ -25,8 +25,8 @@ class PositiveTest {
         @ParameterizedTest
         @ValueSource(longs = {1, 2, 3, 4, 5, 6, 7, 8, 9})
         void positiveTest(long value) {
-            Positive positive = new Positive(value);
-            assertEquals(value, positive.getValue());
+            PositiveLong positiveLong = new PositiveLong(value);
+            assertEquals(value, positiveLong.getValue());
         }
 
         @DisplayName("[ERROR] Positive 객체 생성 실패 시 NonPositiveValueException 발생")
@@ -34,7 +34,7 @@ class PositiveTest {
         @ValueSource(longs = {0, -1, -100, -1000})
         void nonPositiveTest(long value) {
             assertThrows(NonPositiveValueException.class, () -> {
-                new Positive(value);
+                new PositiveLong(value);
             });
         }
     }
@@ -46,7 +46,7 @@ class PositiveTest {
         @ParameterizedTest
         @MethodSource("onlyPositiveValues")
         void positiveTest(List<Long> values) {
-            Positive.Values positiveValues = new Positive.Values(values);
+            PositiveLong.Values positiveValues = new PositiveLong.Values(values);
             assertEquals(values, positiveValues.getValues());
         }
 
@@ -64,7 +64,7 @@ class PositiveTest {
         @MethodSource("nonPositiveValues")
         void nonPositiveTest(List<Long> values) {
             assertThrows(NonPositiveValueException.class, () -> {
-                new Positive.Values(values);
+                new PositiveLong.Values(values);
             });
         }
 

@@ -3,7 +3,7 @@ package com.flab.offcoupon.service.coupon_issue.sync;
 import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.event.EventNotFoundException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
@@ -63,7 +63,7 @@ class LettuceLockCouponIssueTest {
         long invalidEventId = 1000L;
         long couponId = 1L;
         long memberId = 1L;
-        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(invalidEventId), new Positive(couponId), new Positive(memberId));
+        IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(invalidEventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
         // when
         assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter))
@@ -78,7 +78,7 @@ class LettuceLockCouponIssueTest {
         long eventId = 1L;
         long invalidCouponId = 2L;
         long memberId = 1L;
-        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(invalidCouponId), new Positive(memberId));
+        IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(invalidCouponId), new PositiveLong(memberId));
         // when
         assertThatThrownBy(() -> lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter))
                 .isInstanceOf(CouponNotFoundException.class)
@@ -93,7 +93,7 @@ class LettuceLockCouponIssueTest {
         long eventId = 1L;
         long couponId = 1L;
         long memberId = 1L;
-        IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+        IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
         // when
         ResponseDTO responseDTO = lettuceLockCouponIssue.issueCoupon(currentDateTime, parameter);

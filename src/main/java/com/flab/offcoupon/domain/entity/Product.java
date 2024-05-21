@@ -1,6 +1,5 @@
 package com.flab.offcoupon.domain.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,7 +13,6 @@ import java.util.List;
  */
 @ToString
 @Getter
-@AllArgsConstructor
 public final class Product {
     private long id;
     private final String category;
@@ -25,6 +23,18 @@ public final class Product {
     private final BigDecimal minOrderPrice; // 최소 주문 가격
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+
+    public Product(long id, String category, String title, String description, BigDecimal originalPrice, BigDecimal salePrice, BigDecimal minOrderPrice, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.id = id;
+        this.category = category;
+        this.title = title;
+        this.description = description;
+        this.originalPrice = originalPrice;
+        this.salePrice = salePrice;
+        this.minOrderPrice = minOrderPrice;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
     /**
      * 상품의 개별 가격을 반환하는 메소드입니다.<br>

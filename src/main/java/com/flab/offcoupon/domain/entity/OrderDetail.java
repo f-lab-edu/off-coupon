@@ -3,7 +3,7 @@ package com.flab.offcoupon.domain.entity;
 import com.flab.offcoupon.domain.entity.helper.OrderInfo;
 import com.flab.offcoupon.domain.entity.params.TimeParams;
 import com.flab.offcoupon.exception.common.InvalidProductPriceException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,8 +47,8 @@ public final class OrderDetail {
     }
 
     private void validateIdIsNegativeAndPricePerEachIsNegative(long productId, long quantity, BigDecimal pricePerEach) {
-        Positive positiveProductId = new Positive(productId);
-        Positive positiveQuantity = new Positive(quantity);
+        PositiveLong positiveLongProductId = new PositiveLong(productId);
+        PositiveLong positiveLongQuantity = new PositiveLong(quantity);
         if (pricePerEach.compareTo(BigDecimal.ZERO) < 0 || pricePerEach.compareTo(BigDecimal.ZERO) == 0) {
             throw new InvalidProductPriceException();
         }

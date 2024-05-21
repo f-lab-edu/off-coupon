@@ -1,11 +1,10 @@
 package com.flab.offcoupon.service.coupon_issue.async;
 
-import com.flab.offcoupon.AbstractIntegrationContainerBaseTest;
 import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.coupon.CouponQuantityException;
 import com.flab.offcoupon.exception.coupon.DuplicatedCouponException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.repository.mysql.EventRepository;
@@ -86,7 +85,7 @@ class AsyncCouponIssueServiceTest {
             long eventId = 1L;
             long couponId = 2L;
             long memberId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+            IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
             // when & then
             CouponNotFoundException exception = Assertions.assertThrows(CouponNotFoundException.class, () -> {
@@ -107,7 +106,7 @@ class AsyncCouponIssueServiceTest {
             LongStream.range(0, 500).forEach(increasingMemberId -> {
                 redisRepository.sAdd(getIssueRequestKey(1L), String.valueOf(increasingMemberId));
             });
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+            IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
             // when & then
             CouponQuantityException exception = Assertions.assertThrows(CouponQuantityException.class, () -> {
@@ -125,7 +124,7 @@ class AsyncCouponIssueServiceTest {
             long eventId = 1L;
             long memberId = 1L;
             long couponId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+            IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
             // when & then
             DuplicatedCouponException exception = Assertions.assertThrows(DuplicatedCouponException.class, () -> {
@@ -142,7 +141,7 @@ class AsyncCouponIssueServiceTest {
             long memberId = 2L;
             long eventId = 1L;
             long couponId = 1L;
-            IssueRequestParameter parameter = new IssueRequestParameter(new Positive(eventId), new Positive(couponId), new Positive(memberId));
+            IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
 
             // when
             asyncCouponIssueService.issueCoupon(currentDateTime, parameter);

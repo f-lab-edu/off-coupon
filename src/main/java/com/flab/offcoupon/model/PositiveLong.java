@@ -6,11 +6,11 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public final class Positive {
+public final class PositiveLong {
 
     private final long value;
 
-    public Positive(long value) {
+    public PositiveLong(long value) {
 
         if (value <= 0) {
             throw new NonPositiveValueException();

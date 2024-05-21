@@ -1,6 +1,6 @@
 package com.flab.offcoupon.dto.request;
 
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import lombok.Getter;
 
 /**
@@ -16,7 +16,7 @@ public final class IssueRequestParameter {
     private final long couponId;
     private final long memberId;
 
-    public IssueRequestParameter(Positive eventId, Positive couponId, Positive memberId) {
+    public IssueRequestParameter(PositiveLong eventId, PositiveLong couponId, PositiveLong memberId) {
         this.eventId = eventId.getValue();
         this.couponId = couponId.getValue();
         this.memberId = memberId.getValue();

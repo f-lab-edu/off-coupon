@@ -6,7 +6,7 @@ import com.flab.offcoupon.domain.redis.EventRedisEntity;
 import com.flab.offcoupon.domain.redis.IssueRequestKey;
 import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.service.cache.CouponCacheService;
 import com.flab.offcoupon.service.cache.EventCacheService;
@@ -44,7 +44,7 @@ public class AsyncCouponIssueService {
         checkIssuableEventPeriodAndTime(currentDateTime, requestParameter.getEventId());
         CouponRedisEntity coupon = couponCacheService.getCoupon(requestParameter.getCouponId());
         couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, requestParameter.getMemberId());
-        issueRequest(new IssueRequestKey(new Positive(requestParameter.getCouponId()), new Positive(requestParameter.getMemberId())));
+        issueRequest(new IssueRequestKey(new PositiveLong(requestParameter.getCouponId()), new PositiveLong(requestParameter.getMemberId())));
         return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(requestParameter.getMemberId(), requestParameter.getCouponId()));
     }
 

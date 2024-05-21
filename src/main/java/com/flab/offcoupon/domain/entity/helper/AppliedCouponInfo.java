@@ -3,7 +3,7 @@ package com.flab.offcoupon.domain.entity.helper;
 import com.flab.offcoupon.domain.entity.Coupon;
 import com.flab.offcoupon.domain.entity.Product;
 import com.flab.offcoupon.exception.common.InvalidDiscountAmountException;
-import com.flab.offcoupon.model.Positive;
+import com.flab.offcoupon.model.PositiveLong;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -29,8 +29,8 @@ public final class AppliedCouponInfo {
     }
 
     private void validateIdIsNegativeAndDiscountIsNegative(long couponId, BigDecimal discountAmount) {
-        Positive positiveCouponId = new Positive(couponId);
-        if (positiveCouponId.getValue() > 0 && (discountAmount.compareTo(BigDecimal.ZERO) < 0 || discountAmount.compareTo(BigDecimal.ZERO) == 0)) {
+        PositiveLong positiveLongCouponId = new PositiveLong(couponId);
+        if (positiveLongCouponId.getValue() > 0 && (discountAmount.compareTo(BigDecimal.ZERO) < 0 || discountAmount.compareTo(BigDecimal.ZERO) == 0)) {
             throw new InvalidDiscountAmountException();
         }
     }
