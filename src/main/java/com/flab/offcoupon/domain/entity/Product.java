@@ -1,5 +1,8 @@
 package com.flab.offcoupon.domain.entity;
 
+import com.flab.offcoupon.exception.common.NonPositiveValueException;
+import com.flab.offcoupon.model.PositiveBigDecimal;
+import com.flab.offcoupon.model.PositiveLong;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -7,6 +10,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.flab.offcoupon.exception.common.NonPositiveValueException.MUST_NOT_BE_NEGATIVE;
 
 /**
  * 상품 정보를 담는 도메인 객체입니다.
@@ -34,7 +39,20 @@ public final class Product {
         this.minOrderPrice = minOrderPrice;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        validateNumberIsNegative(this);
     }
+
+    private void validateNumberIsNegative(Product product) throws NonPositiveValueException {
+        PositiveLong positiveLongProductId = new PositiveLong(product.getId());
+        // 원래 가격과 최소 주문 가격의 경우 0보다 작거나 같을 수 없습니다.
+        PositiveBigDecimal positiveBigDecimalOriginalPrice = new PositiveBigDecimal(product.getOriginalPrice());
+        PositiveBigDecimal positiveBigDecimalMinOrderPrice = new PositiveBigDecimal(product.getMinOrderPrice());
+        // 세일 가격의 경우 0일 수 있기 때문에 음수 인지만 체크합니다.
+        if (product.getSalePrice().compareTo(BigDecimal.ZERO) < 0) {
+            throw new NonPositiveValueException(MUST_NOT_BE_NEGATIVE);
+        }
+    }
+
 
     /**
      * 상품의 개별 가격을 반환하는 메소드입니다.<br>

@@ -30,7 +30,7 @@ public final class AppliedCouponInfo {
 
     private void validateIdIsNegativeAndDiscountIsNegative(long couponId, BigDecimal discountAmount) {
         PositiveLong positiveLongCouponId = new PositiveLong(couponId);
-        if (positiveLongCouponId.getValue() > 0 && (discountAmount.compareTo(BigDecimal.ZERO) < 0 || discountAmount.compareTo(BigDecimal.ZERO) == 0)) {
+        if (positiveLongCouponId.getValue() > 0 && (discountAmount.compareTo(BigDecimal.ZERO) <= 0)) {
             throw new InvalidDiscountAmountException();
         }
     }

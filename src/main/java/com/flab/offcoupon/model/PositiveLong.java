@@ -5,6 +5,8 @@ import lombok.Getter;
 
 import java.util.List;
 
+import static com.flab.offcoupon.exception.common.NonPositiveValueException.MUST_BE_POSITIVE;
+
 @Getter
 public final class PositiveLong {
 
@@ -13,7 +15,7 @@ public final class PositiveLong {
     public PositiveLong(long value) {
 
         if (value <= 0) {
-            throw new NonPositiveValueException();
+            throw new NonPositiveValueException(MUST_BE_POSITIVE);
         }
         this.value = value;
     }
@@ -24,7 +26,7 @@ public final class PositiveLong {
 
         public Values(List<Long> values) {
             if (values.stream().anyMatch(v -> v <= 0)) {
-                throw new NonPositiveValueException();
+                throw new NonPositiveValueException(MUST_BE_POSITIVE);
             }
             this.values = values;
         }
