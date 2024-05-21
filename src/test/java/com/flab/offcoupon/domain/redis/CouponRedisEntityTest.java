@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CouponRedisEntityTest {
     private CouponRedisEntity couponRedisEntity;
@@ -26,10 +25,11 @@ class CouponRedisEntityTest {
                     10L, null, CouponType.FIRST_COME_FIRST_SERVED, 300L, 0L,
                     LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(),LocalDateTime.now());
             couponRedisEntity = new CouponRedisEntity(coupon);
-
-            assertNotNull(couponRedisEntity);
-            assertEquals(coupon.getEventId(), couponRedisEntity.eventId());
-            assertEquals(coupon.getMaxQuantity(), couponRedisEntity.maxQuantity());
+            assertAll(
+                    () -> assertNotNull(couponRedisEntity),
+                    () -> assertEquals(1L, couponRedisEntity.eventId()),
+                    () -> assertEquals(300L, couponRedisEntity.maxQuantity())
+            );
         }
     }
 

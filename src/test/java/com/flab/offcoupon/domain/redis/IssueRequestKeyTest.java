@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class IssueRequestKeyTest {
@@ -20,8 +21,10 @@ class IssueRequestKeyTest {
         @CsvSource(value = {"1, 1", "2, 2", "3, 3", "4, 4", "5, 5", "6, 6", "7, 7", "8, 8", "9, 9"})
         void issueRequestKey_ok(long couponId, long memberId) {
             IssueRequestKey issueRequestKey = new IssueRequestKey(new PositiveLong(couponId), new PositiveLong(memberId));
-            assertEquals(couponId, issueRequestKey.getCouponId());
-            assertEquals(memberId, issueRequestKey.getMemberId());
+            assertAll(
+                    () -> assertEquals(couponId, issueRequestKey.getCouponId()),
+                    () -> assertEquals(memberId, issueRequestKey.getMemberId())
+            );
         }
 
         @DisplayName("[ERROR] IssueRequestKey 객체 생성 실패 시 NonPositiveValueException 발생")

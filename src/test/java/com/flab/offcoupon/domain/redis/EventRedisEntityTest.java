@@ -33,14 +33,16 @@ class EventRedisEntityTest {
                     startDate, endDate, dailyIssueStartTime, dailyIssueEndTime, LocalDateTime.now(), LocalDateTime.now());
             eventRedisEntity = new EventRedisEntity(event);
 
-            assertNotNull(eventRedisEntity);
-            assertEquals(1L, eventRedisEntity.eventId());
-            assertEquals("category", eventRedisEntity.category());
-            assertEquals("description", eventRedisEntity.description());
-            assertEquals(startDate, eventRedisEntity.startDate());
-            assertEquals(endDate, eventRedisEntity.endDate());
-            assertEquals(dailyIssueStartTime, eventRedisEntity.dailyIssueStartTime());
-            assertEquals(dailyIssueEndTime, eventRedisEntity.dailyIssueEndTime());
+            assertAll(
+                    () -> assertNotNull(eventRedisEntity),
+                    () -> assertEquals(1L, eventRedisEntity.eventId()),
+                    () -> assertEquals("category", eventRedisEntity.category()),
+                    () -> assertEquals("description", eventRedisEntity.description()),
+                    () -> assertEquals(startDate, eventRedisEntity.startDate()),
+                    () -> assertEquals(endDate, eventRedisEntity.endDate()),
+                    () -> assertEquals(dailyIssueStartTime, eventRedisEntity.dailyIssueStartTime()),
+                    () -> assertEquals(dailyIssueEndTime, eventRedisEntity.dailyIssueEndTime())
+            );
         }
     }
 
