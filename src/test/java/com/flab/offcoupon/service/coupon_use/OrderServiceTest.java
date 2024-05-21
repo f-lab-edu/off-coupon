@@ -1,12 +1,16 @@
 package com.flab.offcoupon.service.coupon_use;
 
 import com.flab.offcoupon.domain.vo.persistence.order.AvailableCouponsByMemberIdVo;
+import com.flab.offcoupon.domain.vo.persistence.order.CouponIssuesAreActiveVo;
+import com.flab.offcoupon.domain.vo.persistence.order.CouponValidationPeriodVo;
 import com.flab.offcoupon.domain.vo.persistence.order.MemberIdProductIdNowVo;
+import com.flab.offcoupon.dto.request.OrderProductRequest;
 import com.flab.offcoupon.dto.response.AvailableCouponsByMemberIdResponse;
+import com.flab.offcoupon.exception.coupon.CouponStatusException;
+import com.flab.offcoupon.exception.coupon.CouponUsageInvalidPeriodException;
 import com.flab.offcoupon.exception.member.MemberNotFoundException;
 import com.flab.offcoupon.exception.product.ProductNotFoundException;
 import com.flab.offcoupon.repository.mysql.*;
-import com.flab.offcoupon.service.AvailableCouponsByMemberIdVoFixtures;
 import com.flab.offcoupon.util.ResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -24,6 +28,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_IS_NOT_ACTIVE;
+import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_USAGE_INVALID_PERIOD;
 import static com.flab.offcoupon.exception.member.MemberErrorMessage.NOT_EXIST_MEMBER;
 import static com.flab.offcoupon.exception.product.ProductErrorMessage.PRODUCT_NOT_EXIST;
 import static org.junit.Assert.assertEquals;
@@ -62,7 +68,7 @@ class OrderServiceTest {
             long memberId = 1L;
             long productId = 1L;
             LocalDateTime now = LocalDateTime.now();
-            availableCouponData = AvailableCouponsByMemberIdVoFixtures.availableCoupons();
+            availableCouponData = OrderServiceFixtures.availableCoupons();
 
             when(couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now)))
                     .thenReturn(availableCouponData);
@@ -82,7 +88,7 @@ class OrderServiceTest {
             long memberId = 1L;
             long productId = 1L;
             LocalDateTime now = LocalDateTime.now();
-            availableCouponData = AvailableCouponsByMemberIdVoFixtures.availableCoupons();
+            availableCouponData = OrderServiceFixtures.availableCoupons();
 
             when(couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now)))
                     .thenReturn(availableCouponData);
@@ -130,7 +136,7 @@ class OrderServiceTest {
             long productId = 1L;
             LocalDateTime now = LocalDateTime.now();
             // 원래 가격이 8만 2천원이고, 최소 주문 금액이 8만원이라면 최대 2천원까지만 할인 가능
-            availableCouponData = AvailableCouponsByMemberIdVoFixtures.overMinPriceCoupons(originalPrice, minPrice, discountPrice);
+            availableCouponData = OrderServiceFixtures.overMinPriceCoupons(originalPrice, minPrice, discountPrice);
 
             when(couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now)))
                     .thenReturn(availableCouponData);
@@ -153,7 +159,7 @@ class OrderServiceTest {
             long productId = 1L;
             LocalDateTime now = LocalDateTime.now();
             // 원래 가격이 8만 2천원이고, 최소 주문 금액이 8만원이라면 최대 2천원까지만 할인 가능
-            availableCouponData = AvailableCouponsByMemberIdVoFixtures.overMinPriceCoupons(originalPrice, minPrice, discountPrice);
+            availableCouponData = OrderServiceFixtures.overMinPriceCoupons(originalPrice, minPrice, discountPrice);
 
             when(couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now)))
                     .thenReturn(availableCouponData);
@@ -166,7 +172,7 @@ class OrderServiceTest {
 
         @DisplayName("[ERROR] 유효하지 않은 회원 ID일 경우 MemberNotFoundException 발생")
         @ParameterizedTest
-        @CsvSource(value = {"1000","11234"})
+        @CsvSource(value = {"1000", "11234"})
         void availableCoupons_return_failure_when_invalid_memberId(long memberId) {
             // Given
             long productId = 1L;
@@ -176,14 +182,14 @@ class OrderServiceTest {
 
             // When & Then
             MemberNotFoundException exception = assertThrows(MemberNotFoundException.class, ()
-                            -> sut.getAvailableCoupons(memberId, productId, now), "유효하지 않은 회원 ID로 예외가 발생해야 합니다.");
+                    -> sut.getAvailableCoupons(memberId, productId, now), "유효하지 않은 회원 ID로 예외가 발생해야 합니다.");
             assertNotNull(exception);
             assertEquals(NOT_EXIST_MEMBER, exception.getMessage());
         }
 
         @DisplayName("[ERROR] 유효하지 않은 상품 ID일 경우 ProductNotFoundException 발생")
         @ParameterizedTest
-        @CsvSource(value = {"1000","11234"})
+        @CsvSource(value = {"1000", "11234"})
         void availableCoupons_return_failure_when_invalid_productId(long productId) {
             // Given
             long memberId = 1L;
@@ -196,6 +202,62 @@ class OrderServiceTest {
                     -> sut.getAvailableCoupons(memberId, productId, now), "유효하지 않은 상품 ID로 예외가 발생해야 합니다.");
             assertNotNull(exception);
             assertEquals(PRODUCT_NOT_EXIST.formatted(productId), exception.getMessage());
+        }
+    }
+
+    @Nested
+    @DisplayName("상품 주문 및 쿠폰 사용 처리")
+    class orderProduct {
+        OrderProductRequest request;
+        @DisplayName("[ERROR] 쿠폰의 상태가 ACTIVE가 아닐 경우 CouponStatusException 발생")
+        @Test
+        void validateCouponIsAvailable() {
+            // Given
+            request = OrderServiceFixtures.orderProductRequest();
+            LocalDateTime now = LocalDateTime.now();
+            List<CouponIssuesAreActiveVo> list = OrderServiceFixtures.couponIssuesAreActive();
+
+            when(couponIssueRepository.validateStatusIsActive(request.getCouponIssueId()))
+                    .thenReturn(list);
+            // When & Then
+            CouponStatusException exception = assertThrows(CouponStatusException.class, ()
+                    -> sut.orderProduct(1L, request, now));
+            assertNotNull(exception);
+            assertEquals(COUPON_IS_NOT_ACTIVE.formatted(List.of(list.get(1).couponIssueId())), exception.getMessage());
+        }
+
+        @DisplayName("[ERROR] 현재 시간이 쿠폰의 유효기간 범위 내에 있지 않으면, CouponUsageInvalidPeriodException 발생")
+        @Test
+        void validateCouponIsAvailable2() {
+            // Given
+            request = OrderServiceFixtures.orderProductRequest();
+            LocalDateTime now = LocalDateTime.now();
+
+            List<CouponValidationPeriodVo> list = OrderServiceFixtures.couponValidationPeriodVo();
+            when(couponRepository.getCouponValidationPeriod(request.getCouponId()))
+                    .thenReturn(list);
+            // When & Then
+            CouponUsageInvalidPeriodException exception = assertThrows(CouponUsageInvalidPeriodException.class, ()
+                    -> sut.orderProduct(1L, request, now));
+            assertNotNull(exception);
+            assertTrue(exception.getMessage().startsWith(COUPON_USAGE_INVALID_PERIOD));
+        }
+
+        @DisplayName("[ERROR] 쿠폰의 유효기간 범위가 null이면, CouponUsageInvalidPeriodException 발생")
+        @Test
+        void validateCouponIsAvailable3() {
+            // Given
+            request = OrderServiceFixtures.orderProductRequest();
+            LocalDateTime now = LocalDateTime.now();
+
+            List<CouponValidationPeriodVo> list = OrderServiceFixtures.couponValidationPeriodVoWithNull();
+            when(couponRepository.getCouponValidationPeriod(request.getCouponId()))
+                    .thenReturn(list);
+            // When & Then
+            CouponUsageInvalidPeriodException exception = assertThrows(CouponUsageInvalidPeriodException.class, ()
+                    -> sut.orderProduct(1L, request, now));
+            assertNotNull(exception);
+            assertTrue(exception.getMessage().startsWith(COUPON_USAGE_INVALID_PERIOD));
         }
     }
 
