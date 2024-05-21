@@ -36,6 +36,7 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_USAG
 @Service
 public class OrderService {
 
+    private final MemberRepository memberRepository;
     private final CouponIssueRepository couponIssueRepository;
     private final CouponRepository couponRepository;
     private final ProductRepository productRepository;
@@ -65,6 +66,8 @@ public class OrderService {
      */
     @Transactional(readOnly = true)
     public ResponseDTO<List<AvailableCouponsByMemberIdResponse>> getAvailableCoupons(final long memberId, final long productId, final LocalDateTime now) {
+        validateMemberIdAndProductId(memberId, productId);
+
         List<AvailableCouponsByMemberIdVo> availableCouponData =
                 couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now));
 
@@ -75,6 +78,11 @@ public class OrderService {
                 .toList();
 
         return ResponseDTO.getSuccessResult(filterAvailableCoupons(availableCouponInfos));
+    }
+
+    private void validateMemberIdAndProductId(long memberId, long productId) {
+        memberRepository.getMemberById(memberId);
+        productRepository.getProductById(productId);
     }
 
     /**

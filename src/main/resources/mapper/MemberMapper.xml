@@ -33,4 +33,18 @@
            WHERE email = #{email};
     </select>
 
+    <select id="findMemberById" resultType="Member">
+        SELECT id,
+               email,
+               password,
+               name,
+               birthdate,
+               phone,
+               role,
+               created_at,
+               updated_at
+        FROM  member
+        WHERE id = #{id};
+    </select>
+
 </mapper>
