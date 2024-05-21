@@ -26,7 +26,7 @@ class OrderCouponTest {
         @DisplayName("[SUCCESS] Id식별자와 AppliedCouponInfo의 필드가 음수가 아닐 경우 성공적으로 생성된다. AppliedCouponInfo의 discountAmount는 0보다 커야한다.")
         @ParameterizedTest
         @MethodSource("validParams")
-        void createOrderCoupon(long couponId, DiscountType discountType, Long discountRate, Long discountPrice) {
+        void createOrderCoupon_success(long couponId, DiscountType discountType, Long discountRate, Long discountPrice) {
             // Given
             Coupon coupon = new Coupon(couponId, 1L, discountType, discountRate, discountPrice, CouponType.FIRST_COME_FIRST_SERVED, 500L, 10L, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now());
             Product product = new Product(1L, "category", "title", "description", BigDecimal.valueOf(1000), BigDecimal.valueOf(0), BigDecimal.valueOf(1000), null, null);
@@ -47,7 +47,7 @@ class OrderCouponTest {
         @DisplayName("[ERROR] Id식별자가 음수이거나 0일 경우 NonPositiveValueException이 발생한다.")
         @ParameterizedTest
         @CsvSource(value = {"-1", "0"})
-        void createOrderCoupon2(long couponId) {
+        void createOrderCoupon_fail_with_invalid_Id(long couponId) {
             // Given
             Coupon coupon = new Coupon(couponId, 1L, DiscountType.PERCENT, 10L, null, CouponType.FIRST_COME_FIRST_SERVED, 500L, 10L, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now());
             Product product = new Product(1L, "category", "title", "description", BigDecimal.valueOf(1000), BigDecimal.valueOf(0), BigDecimal.valueOf(1000), null, null);
@@ -63,7 +63,7 @@ class OrderCouponTest {
         @DisplayName("[ERROR] 쿠폰이 적용됐는데, 할인 가격이 음수이거나 0일 경우 InvalidDiscountAmountException이 발생한다.")
         @ParameterizedTest
         @MethodSource("invalidParams")
-        void createOrderCoupon3(DiscountType discountType, Long discountRate, Long discountPrice) {
+        void createOrderCoupon_fail_with_invalid_discountAmount(DiscountType discountType, Long discountRate, Long discountPrice) {
             // Given
             Coupon coupon = new Coupon(1L, 1L, discountType, discountRate, discountPrice, CouponType.FIRST_COME_FIRST_SERVED, 500L, 10L, LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now(), LocalDateTime.now());
             Product product = new Product(1L, "category", "title", "description", BigDecimal.valueOf(1000), BigDecimal.valueOf(0), BigDecimal.valueOf(1000), null, null);
