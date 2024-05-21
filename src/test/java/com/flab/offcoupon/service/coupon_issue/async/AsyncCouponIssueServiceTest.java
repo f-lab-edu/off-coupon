@@ -15,6 +15,7 @@ import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
@@ -24,9 +25,9 @@ import java.util.stream.LongStream;
 import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.*;
 import static com.flab.offcoupon.util.RedisKeyUtils.getIssueRequestKey;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
-
+@SpringBootTest
 @Transactional
-class AsyncCouponIssueServiceTest extends AbstractIntegrationContainerBaseTest {
+class AsyncCouponIssueServiceTest {
     private static final Logger logger = LoggerFactory.getLogger(AsyncCouponIssueServiceTest.class);
 
     @Autowired

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,8 +46,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
  * @See <a href="https://docs.spring.io/spring-boot/docs/1.4.x/api/org/springframework/boot/test/IntegrationTest.html">Annotation IntegrationTest</a>
  * @See <a href="https://docs.spring.io/spring-boot/docs/current/api/org/springframework/boot/test/context/SpringBootTest.html">Annotation SpringBootTest</a>
  */
+@SpringBootTest
 @Transactional
-class DefaultCouponIssueServiceBaseTest extends AbstractIntegrationContainerBaseTest {
+class DefaultCouponIssueServiceBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(DefaultCouponIssueServiceBaseTest.class);
 /**/
     @Autowired

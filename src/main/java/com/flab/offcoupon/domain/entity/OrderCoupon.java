@@ -2,6 +2,7 @@ package com.flab.offcoupon.domain.entity;
 
 import com.flab.offcoupon.domain.entity.helper.AppliedCouponInfo;
 import com.flab.offcoupon.domain.entity.params.TimeParams;
+import com.flab.offcoupon.model.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -25,8 +26,8 @@ public final class OrderCoupon {
     private final LocalDateTime updatedAt;
 
     private OrderCoupon(long orderDetailId, AppliedCouponInfo coupon, TimeParams timeParams){
-        this.orderDetailId = orderDetailId;
-        this.couponId = coupon.getCouponId();
+        this.orderDetailId = new Positive(orderDetailId).getValue();
+        this.couponId = new Positive(coupon.getCouponId()).getValue();
         this.discountAmount = coupon.getDiscountAmount();
         this.createdAt = timeParams.createdAt();
         this.updatedAt = timeParams.updatedAt();
