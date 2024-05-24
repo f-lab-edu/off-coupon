@@ -139,7 +139,7 @@ class DefaultCouponIssueServiceTest {
         long eventId = 1L;
         long couponId = 1L;
         long memberId = 1L;
-        CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
+        CouponIssue couponIssue = CouponIssue.create(memberId, couponId, true);
         couponIssueRepository.save(couponIssue);
         // when
         assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId))

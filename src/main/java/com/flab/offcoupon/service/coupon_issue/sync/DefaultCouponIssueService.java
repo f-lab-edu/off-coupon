@@ -58,7 +58,7 @@ public class DefaultCouponIssueService {
     public void saveCouponIssue(long memberId, long couponId, LocalDateTime currentDateTime) {
         LocalDate currentDate = currentDateTime.toLocalDate();
         checkAlreadyIssueHistory(memberId, couponId, currentDate);
-        CouponIssue couponIssue = CouponIssue.create(memberId, couponId);
+        CouponIssue couponIssue = CouponIssue.create(memberId, couponId, true);
         couponIssueRepository.save(couponIssue);
     }
 
