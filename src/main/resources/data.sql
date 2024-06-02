@@ -13,12 +13,13 @@ INSERT INTO event (id, category, description, start_date, end_date, daily_issue_
                               daily_issue_end_time, created_at, updated_at)
 VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(now(), INTERVAL 3 DAY),'12:00:00','23:00:00','2024-02-01','2024-02-01');
 
-SELECT COUNT(*)
+SELECT issued_quantity
+from coupon
+where id = 1;
+
+SELECT count(*)
 from coupon_issue;
 
-SELECT *
-from coupon_issue
-where member_id = 177;
 ## PRODUCT
 INSERT INTO product (category, title, description, original_price, sale_price, created_at, updated_at)
 VALUES

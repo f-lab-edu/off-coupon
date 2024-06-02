@@ -11,8 +11,6 @@ import com.flab.offcoupon.repository.mysql.EventRepository;
 import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +25,6 @@ import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 @SpringBootTest
 @Transactional
 class AsyncCouponIssueServiceTest {
-    private static final Logger logger = LoggerFactory.getLogger(AsyncCouponIssueServiceTest.class);
-
     @Autowired
     private AsyncCouponIssueService asyncCouponIssueService;
 
@@ -53,15 +49,6 @@ class AsyncCouponIssueServiceTest {
         // 이벤트와 쿠폰 데이터 초기화
         setupInitializer = new SetupInitializer(eventRepository, couponRepository);
         setupInitializer.setUpEventAndCoupon();
-
-        // 테스트 컨테이너에 연결되었는지 확인
-        logger.info("spring.redis.host : " + System.getProperty("spring.redis.host"));
-        logger.info("spring.redis.port : " + System.getProperty("spring.redis.port"));
-        logger.info("spring.redis.password : " + System.getProperty("spring.redis.password"));
-
-        logger.info("spring.rabbitmq.host : " + System.getProperty("spring.rabbitmq.host"));
-        logger.info("spring.rabbitmq.port : " + System.getProperty("spring.rabbitmq.port"));
-        logger.info("spring.rabbitmq.username : " + System.getProperty("spring.rabbitmq.username"));
     }
 
     @AfterEach

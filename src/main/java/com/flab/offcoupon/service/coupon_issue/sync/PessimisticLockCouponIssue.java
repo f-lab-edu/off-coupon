@@ -25,6 +25,7 @@ public class PessimisticLockCouponIssue implements CouponIssueFacade {
 
     private final CouponRepository couponRepository;
     private final DefaultCouponIssueService defaultCouponIssueService;
+    private final CouponIssueTransactionalService transactionalService;
     @Transactional
     @Override
     public ResponseDTO issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {

@@ -23,14 +23,6 @@ class CouponIssueRedisServiceTest {
     @Autowired
     private RedisRepository redisRepository;
 
-    @BeforeEach
-    void setUp() {
-        // 테스트 컨테이너에 연결되었는지 확인
-        logger.info("spring.redis.host : " + System.getProperty("spring.redis.host"));
-        logger.info("spring.redis.port : " + System.getProperty("spring.redis.port"));
-        logger.info("spring.redis.password : " + System.getProperty("spring.redis.password"));
-    }
-
     @AfterEach
     void clear() {
         // 테스트 종료 후 발급 요청 키와 쿠폰, 이벤트 데이터 삭제

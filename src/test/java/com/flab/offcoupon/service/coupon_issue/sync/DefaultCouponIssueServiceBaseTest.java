@@ -72,11 +72,6 @@ class DefaultCouponIssueServiceBaseTest {
     void setUp() {
         setupInitializer = new SetupInitializer(eventRepository, couponRepository);
         setupInitializer.setUpEventAndCoupon();
-
-        // 테스트 컨테이너에 연결되었는지 확인
-        logger.info("spring.redis.host : " + System.getProperty("spring.redis.host"));
-        logger.info("spring.redis.port : " + System.getProperty("spring.redis.port"));
-        logger.info("spring.redis.password : " + System.getProperty("spring.redis.password"));
     }
     @AfterEach
     void clear() {
@@ -131,7 +126,7 @@ class DefaultCouponIssueServiceBaseTest {
             long couponId = 1L;
             long memberId = 1L;
             IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(eventId), new PositiveLong(couponId), new PositiveLong(memberId));
-            couponIssueRepository.save(CouponIssue.create(memberId, couponId));
+            couponIssueRepository.save(CouponIssue.create(memberId, couponId,true));
             // when
             assertThatThrownBy(() -> defaultCouponIssueService.issueCoupon(currentDateTime, parameter))
                     .isInstanceOf(DuplicatedCouponException.class)
