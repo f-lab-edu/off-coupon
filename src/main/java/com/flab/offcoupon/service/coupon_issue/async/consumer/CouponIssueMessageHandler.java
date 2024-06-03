@@ -35,7 +35,7 @@ public class CouponIssueMessageHandler {
      */
     @Transactional
     public void saveEachCouponIssueHistory(CouponIssueMessageForQueue message) {
-        CouponIssue couponIssue = CouponIssue.create(message.memberId(), message.couponId());
+        CouponIssue couponIssue = CouponIssue.create(message.memberId(), message.couponId(), false);
         couponIssueRepository.save(couponIssue);
         log.info("쿠폰 히스토리 저장 완료");
     }
