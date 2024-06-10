@@ -108,10 +108,10 @@ public class SetupInitializer {
                 2L,
                 "바디케어2",
                 "바디케어 전품목 이벤트2",
-                startDate,
-                endDate,
-                startTime,
-                endTime,
+                startDate, // 이베트 시작일
+                endDate, // 이벤트 종료일
+                startTime, // 이벤트 시작 시간
+                endTime, // 이벤트 종료 시간
                 LocalDateTime.now(),
                 LocalDateTime.now());
         eventRepository.save(event);

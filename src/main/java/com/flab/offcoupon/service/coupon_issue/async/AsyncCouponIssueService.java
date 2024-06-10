@@ -3,7 +3,10 @@ package com.flab.offcoupon.service.coupon_issue.async;
 import com.flab.offcoupon.component.rabbitmq.Producer;
 import com.flab.offcoupon.domain.redis.CouponRedisEntity;
 import com.flab.offcoupon.domain.redis.EventRedisEntity;
+import com.flab.offcoupon.domain.redis.IssueRequestKey;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.service.cache.CouponCacheService;
 import com.flab.offcoupon.service.cache.EventCacheService;
@@ -34,17 +37,15 @@ public class AsyncCouponIssueService {
      * 비동기로 쿠폰 발급을 수행하는 메서드입니다.
      *
      * @param currentDateTime 현재 시각
-     * @param eventId          이벤트 ID
-     * @param couponId         쿠폰 ID
-     * @param memberId         회원 ID
+     * @Param requestParameter 쿠폰 발급 요청 파라미터
      * @return 응답 DTO
      */
-    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
-        checkIssuableEventPeriodAndTime(currentDateTime, eventId);
-        CouponRedisEntity coupon = couponCacheService.getCoupon(couponId);
-        couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, memberId);
-        issueRequest(couponId, memberId);
-        return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+    public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
+        checkIssuableEventPeriodAndTime(currentDateTime, requestParameter.getEventId());
+        CouponRedisEntity coupon = couponCacheService.getCoupon(requestParameter.getCouponId());
+        couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, requestParameter.getMemberId());
+        issueRequest(new IssueRequestKey(new PositiveLong(requestParameter.getCouponId()), new PositiveLong(requestParameter.getMemberId())));
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 요청되었습니다. memberId : %s, couponId : %s".formatted(requestParameter.getMemberId(), requestParameter.getCouponId()));
     }
 
     /**
@@ -62,11 +63,10 @@ public class AsyncCouponIssueService {
      *     <li> RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.</li>
      * </ol>
      *
-     * @param couponId 쿠폰 ID
-     * @param memberId 회원 ID
+     * @param issueRequestKey 쿠폰 발급 요청 키
      */
-    private void issueRequest(long couponId, long memberId) {
-        redisRepository.sAdd(getIssueRequestKey(couponId), String.valueOf(memberId));
-        producer.producer(EXCHANGE_NAME, ROUTING_KEY, new CouponIssueMessageForQueue(couponId, memberId));
+    private void issueRequest(IssueRequestKey issueRequestKey) {
+        redisRepository.sAdd(getIssueRequestKey(issueRequestKey.getCouponId()), String.valueOf(issueRequestKey.getMemberId()));
+        producer.producer(EXCHANGE_NAME, ROUTING_KEY, new CouponIssueMessageForQueue(issueRequestKey.getCouponId(), issueRequestKey.getMemberId()));
     }
 }

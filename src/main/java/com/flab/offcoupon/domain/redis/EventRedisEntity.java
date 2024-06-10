@@ -26,7 +26,7 @@ import static com.flab.offcoupon.exception.event.EventErrorMessage.*;
  * @param dailyIssueEndTime
  */
 @RedisHash("event")
-public record EventRedisEntity(
+public record EventRedisEntity (
 
         @Id
         long eventId,

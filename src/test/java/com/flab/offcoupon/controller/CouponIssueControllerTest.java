@@ -1,6 +1,7 @@
 package com.flab.offcoupon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponExceptionHandler;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.exception.event.EventExceptionHandler;
@@ -13,10 +14,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.time.LocalDateTime;
 
@@ -38,9 +37,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = CouponIssueController.class,
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class)})
+@SpringBootTest
+@AutoConfigureMockMvc
 class CouponIssueControllerTest {
 
     private StringBuilder sb = new StringBuilder("{");
@@ -79,7 +77,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(EVENT_NOT_EXIST.formatted(invalidEventId));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willThrow(new EventNotFoundException(EVENT_NOT_EXIST.formatted(invalidEventId)));
 
         // When & then
@@ -103,7 +101,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(COUPON_NOT_EXIST.formatted(invalidCouponId));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willThrow(new CouponNotFoundException(COUPON_NOT_EXIST.formatted(invalidCouponId)));
 
         // When & then
@@ -127,7 +125,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(EVENT_PERIOD_IS_NULL.formatted(null, null));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willThrow(new EventPeriodException(EVENT_PERIOD_IS_NULL.formatted(null, null)));
 
         // When & then
@@ -151,7 +149,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(INVALID_EVENT_PERIOD.formatted("2021-01-01", "2021-01-01"));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class),  any(IssueRequestParameter.class)))
                 .willThrow(new EventPeriodException(INVALID_EVENT_PERIOD.formatted("2021-01-01", "2021-01-01")));
 
         // When & then
@@ -175,7 +173,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(EVENT_TIME_IS_NULL.formatted(null, null));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willThrow(new EventTimeException(EVENT_TIME_IS_NULL.formatted(null, null)));
 
         // When & then
@@ -199,7 +197,7 @@ class CouponIssueControllerTest {
         info.add("memberId", String.valueOf(memberId));
 
         ResponseDTO failResponse = ResponseDTO.getFailResult(INVALID_EVENT_TIME.formatted("13:00:00","15:00:00"));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willThrow(new EventTimeException(INVALID_EVENT_TIME.formatted("13:00:00","15:00:00")));
 
         // When & then
@@ -222,7 +220,7 @@ class CouponIssueControllerTest {
         info.add("couponId", String.valueOf(couponId));
         info.add("memberId", String.valueOf(memberId));
         ResponseDTO successResult = ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
-        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.syncIssueCoupon(any(LocalDateTime.class),  any(IssueRequestParameter.class)))
                 .willReturn(successResult);
 
         // When & then
@@ -245,7 +243,7 @@ class CouponIssueControllerTest {
         info.add("couponId", String.valueOf(couponId));
         info.add("memberId", String.valueOf(memberId));
         ResponseDTO successResult = ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
-        given(couponIssueRequestService.asyncIssueCoupon(any(LocalDateTime.class), any(Long.class), any(Long.class), any(Long.class)))
+        given(couponIssueRequestService.asyncIssueCoupon(any(LocalDateTime.class), any(IssueRequestParameter.class)))
                 .willReturn(successResult);
 
         // When & then

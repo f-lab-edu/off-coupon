@@ -25,9 +25,9 @@ public final class CouponIssue {
         this.updatedAt = updatedAt;
         this.checkRelatedIssuedQuantity = checkRelatedIssuedQuantity;
     }
-    public static CouponIssue create(long memberId, long couponId, boolean isSyncIssue) {
+    public static CouponIssue create(long memberId, long couponId, boolean isSyncIssueCoupon) {
         LocalDateTime now = DateTimeUtils.nowFromZone();
-        return new CouponIssue( memberId, couponId, CouponStatus.NOT_ACTIVE, now, now, isSyncIssue);
+        return new CouponIssue( memberId, couponId, CouponStatus.NOT_ACTIVE, now, now, isSyncIssueCoupon);
     }
 
     /**

@@ -13,6 +13,6 @@ public class CouponErrorMessage {
     public static final String DUPLICATED_COUPON = "이미 발급된 쿠폰입니다. memberId : %s, couponId : %s";
     public static final String ASYNC_DUPLICATED_COUPON = "이미 발급 요청이 처리됐습니다. memberId : %s, couponId : %s";
     public static final String FAIL_COUPON_ISSUE_REQUEST = "쿠폰 발급에 실패했습니다. input: %s";
-    public static final String COUPON_USAGE_INVALID_PERIOD = "쿠폰의 유효기간 범위에 있지 않습니다. couponId: %s, validateStartDate: %s, validateEndDate : %s ";
+    public static final String COUPON_USAGE_INVALID_PERIOD = "쿠폰의 유효기간 범위에 있지 않습니다.";
     public static final String COUPON_IS_NOT_ACTIVE = "쿠폰이 활성화 되어있지 않습니다. couponId : %s";
 }

@@ -1,5 +1,6 @@
 package com.flab.offcoupon.exception;
 
+import com.flab.offcoupon.exception.common.NonPositiveValueException;
 import com.flab.offcoupon.util.ResponseDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -31,5 +32,11 @@ public final class GlobalExceptionHandler {
             }
         });
         return ResponseEntity.badRequest().body(ResponseDTO.getFailResult(fieldErrors.toString()));
+    }
+    @ExceptionHandler(NonPositiveValueException.class)
+    public ResponseEntity<ResponseDTO<String>> nonPositiveValueException(NonPositiveValueException ex, HttpServletRequest request) {
+        log.info(HTTP_REQUEST, request.getMethod(), request.getRequestURI(),
+                ex.getMessage(), HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseDTO.getFailResult(ex.getMessage()));
     }
 }

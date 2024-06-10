@@ -36,6 +36,7 @@ import static com.flab.offcoupon.exception.coupon.CouponErrorMessage.COUPON_USAG
 @Service
 public class OrderService {
 
+    private final MemberRepository memberRepository;
     private final CouponIssueRepository couponIssueRepository;
     private final CouponRepository couponRepository;
     private final ProductRepository productRepository;
@@ -65,6 +66,8 @@ public class OrderService {
      */
     @Transactional(readOnly = true)
     public ResponseDTO<List<AvailableCouponsByMemberIdResponse>> getAvailableCoupons(final long memberId, final long productId, final LocalDateTime now) {
+        validateMemberIdAndProductId(memberId, productId);
+
         List<AvailableCouponsByMemberIdVo> availableCouponData =
                 couponIssueRepository.getAvailableCoupons(new MemberIdProductIdNowVo(memberId, productId, now));
 
@@ -75,6 +78,11 @@ public class OrderService {
                 .toList();
 
         return ResponseDTO.getSuccessResult(filterAvailableCoupons(availableCouponInfos));
+    }
+
+    private void validateMemberIdAndProductId(long memberId, long productId) {
+        memberRepository.getMemberById(memberId);
+        productRepository.getProductById(productId);
     }
 
     /**
@@ -88,7 +96,7 @@ public class OrderService {
      * @param availableCouponInfos
      * @return
      */
-    private List<AvailableCouponsByMemberIdResponse> filterAvailableCoupons(List<AvailableCouponInfo> availableCouponInfos) {
+    private List<AvailableCouponsByMemberIdResponse> filterAvailableCoupons(final List<AvailableCouponInfo> availableCouponInfos) {
         AtomicReference<BigDecimal> accumulatedDiscountPrice = new AtomicReference<>(BigDecimal.ZERO);
         List<AvailableCouponsByMemberIdResponse> responseList = new ArrayList<>();
 
@@ -114,7 +122,7 @@ public class OrderService {
      * @param accumulatedDiscountPrice 누적된 할인 가격
      * @return 할인이 적용된 금액이 최소 주문 금액보다 크거나 같으면 true, 아니면 false
      */
-    private boolean isOverThanMinOrderPrice(BigDecimal price, BigDecimal minOrderPrice, BigDecimal accumulatedDiscountPrice) {
+    private boolean isOverThanMinOrderPrice(final BigDecimal price, final BigDecimal minOrderPrice, final BigDecimal accumulatedDiscountPrice) {
         // 쿠폰 할인을 적용한 가격을 구함
         BigDecimal appliedDiscountPriceToProduct = price.subtract(accumulatedDiscountPrice);
         return appliedDiscountPriceToProduct.compareTo(minOrderPrice) >= 0;
@@ -128,8 +136,7 @@ public class OrderService {
      * @param now       현재 시간
      */
     @Transactional
-    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, LocalDateTime
-            now) {
+    public ResponseDTO<String> orderProduct(final long productId, final OrderProductRequest request, final LocalDateTime now) {
         validateCouponIsAvailable(request, now);
         // 3. 주문 정보 저장
         OrderInfo orderInfo = createOrderInfo(
@@ -156,21 +163,38 @@ public class OrderService {
      * @param request 주문 요청 정보
      * @param now     현재 시간
      */
-    private void validateCouponIsAvailable(OrderProductRequest request, LocalDateTime now) {
+    private void validateCouponIsAvailable(final OrderProductRequest request, final LocalDateTime now) {
         // 1. 쿠폰들의 상태가 ACTIVE인지 확인
         List<CouponIssuesAreActiveVo> couponIssueStatus = couponIssueRepository.validateStatusIsActive(request.getCouponIssueId());
-        if (couponIssueStatus.stream().anyMatch(couponIssue -> !couponIssue.isActive())) {
-            throw new CouponStatusException(COUPON_IS_NOT_ACTIVE.formatted(couponIssueStatus.get(0).couponIssueId()));
+        List<Long> inactiveCouponIssueIds = couponIssueStatus.stream()
+                .filter(couponIssue -> !couponIssue.isActive())
+                .map(CouponIssuesAreActiveVo::couponIssueId)
+                .toList();
+
+        if (!inactiveCouponIssueIds.isEmpty()) {
+            throw new CouponStatusException(COUPON_IS_NOT_ACTIVE.formatted(inactiveCouponIssueIds));
         }
 
         // 2. 현재 시간이 쿠폰의 유효기간 범위내에 있는지 확인
         List<CouponValidationPeriodVo> isBetweenValidatePeriodVo = couponRepository.getCouponValidationPeriod(request.getCouponId());
-        if (isBetweenValidatePeriodVo.stream().noneMatch(validationPeriod -> isNowBetweenValidatePeriod(now, validationPeriod))) {
-            throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD
-                    .formatted(isBetweenValidatePeriodVo.get(0).couponId(), isBetweenValidatePeriodVo.get(0).validateStartDate(), isBetweenValidatePeriodVo.get(0).validateEndDate()));
+        List<InValidCouponPeriod> inValidCouponPeriods = isBetweenValidatePeriodVo.stream()
+                .filter(validationPeriod -> !isNowBetweenValidatePeriod(now, validationPeriod))
+                .map(InValidCouponPeriod::new)
+                .toList();
+
+        if (!inValidCouponPeriods.isEmpty()) {
+            List<String> exceptionMessage = inValidCouponPeriods.stream()
+                    .map(inValidCouponPeriod -> String.format(
+                            "couponId: %s, validateStartDate: %s, validateEndDate : %s ",
+                            inValidCouponPeriod.couponId,
+                            inValidCouponPeriod.validateStartDate,
+                            inValidCouponPeriod.validateEndDate))
+                    .toList();
+            throw new CouponUsageInvalidPeriodException(COUPON_USAGE_INVALID_PERIOD + exceptionMessage);
         }
     }
-    private boolean isNowBetweenValidatePeriod(LocalDateTime now, CouponValidationPeriodVo validationPeriod) {
+
+    private boolean isNowBetweenValidatePeriod(final LocalDateTime now, final CouponValidationPeriodVo validationPeriod) {
         if(validationPeriod.validateStartDate() == null || validationPeriod.validateEndDate() == null) {
             return false;
         }
@@ -183,5 +207,19 @@ public class OrderService {
 
         return (startDuration.isZero() || !startDuration.isNegative()) &&
                 (endDuration.isZero() || !endDuration.isNegative());
+    }
+
+    /**
+     * CouponUsageInvalidPeriodException 예외 발생시 사용되는 클래스
+     */
+    static class InValidCouponPeriod {
+        private final long couponId;
+        private final LocalDateTime validateStartDate;
+        private final LocalDateTime validateEndDate;
+        public InValidCouponPeriod(CouponValidationPeriodVo validationPeriod) {
+            this.couponId = validationPeriod.couponId();
+            this.validateStartDate = validationPeriod.validateStartDate();
+            this.validateEndDate = validationPeriod.validateEndDate();
+        }
     }
 }

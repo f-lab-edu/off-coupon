@@ -1,5 +1,6 @@
 package com.flab.offcoupon.service.coupon_issue;
 
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.service.coupon_issue.async.AsyncCouponIssueService;
 import com.flab.offcoupon.service.coupon_issue.sync.*;
 import com.flab.offcoupon.util.ResponseDTO;
@@ -37,25 +38,21 @@ public class CouponIssueRequestService {
      * 쿠폰 발급 요청을 동기식으로 처리합니다.
      *
      * @param currentDateTime 현재 시각
-     * @param eventId 이벤트 ID
-     * @param couponId 쿠폰 ID
-     * @param memberId 회원 ID
+     * @param requestParameter 쿠폰 발급 요청 파라미터
      * @return 응답 DTO
      */
-    public ResponseDTO<String> syncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) throws InterruptedException {
-        return couponIssueFacade.issueCoupon(currentDateTime, eventId, couponId, memberId);
+    public ResponseDTO<String> syncIssueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) throws InterruptedException {
+        return couponIssueFacade.issueCoupon(currentDateTime, requestParameter);
     }
 
     /**
      * 쿠폰 발급 요청을 비동기식으로 처리합니다.
      *
      * @param currentDateTime 현재 시각
-     * @param eventId 이벤트 ID
-     * @param couponId 쿠폰 ID
-     * @param memberId 회원 ID
+     * @param requestParameter 쿠폰 발급 요청 파라미터
      * @return 응답 DTO
      */
-    public ResponseDTO<String> asyncIssueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
-        return asyncCouponIssueService.issueCoupon(currentDateTime, eventId, couponId, memberId);
+    public ResponseDTO<String> asyncIssueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
+        return asyncCouponIssueService.issueCoupon(currentDateTime, requestParameter);
     }
 }

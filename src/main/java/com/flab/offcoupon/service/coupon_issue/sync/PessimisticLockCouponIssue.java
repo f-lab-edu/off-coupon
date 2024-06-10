@@ -1,6 +1,7 @@
 package com.flab.offcoupon.service.coupon_issue.sync;
 
 import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
 import com.flab.offcoupon.exception.coupon.CouponNotFoundException;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.util.ResponseDTO;
@@ -24,13 +25,15 @@ public class PessimisticLockCouponIssue implements CouponIssueFacade {
 
     private final CouponRepository couponRepository;
     private final DefaultCouponIssueService defaultCouponIssueService;
+    private final CouponIssueTransactionalService transactionalService;
     @Transactional
     @Override
-    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, long eventId, long couponId, long memberId) {
-        defaultCouponIssueService.checkEventPeriodAndTime(eventId, currentDateTime);
-        increaseIssuedCouponQuantity(couponId);
-        defaultCouponIssueService.saveCouponIssue(memberId, couponId, currentDateTime);
-        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s".formatted(memberId, couponId));
+    public ResponseDTO issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
+        defaultCouponIssueService.checkEventPeriodAndTime(requestParameter.getEventId(), currentDateTime);
+        increaseIssuedCouponQuantity(requestParameter.getCouponId());
+        defaultCouponIssueService.saveCouponIssue(requestParameter.getMemberId(), requestParameter.getCouponId(), currentDateTime);
+        return ResponseDTO.getSuccessResult("쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s"
+                .formatted(requestParameter.getMemberId(), requestParameter.getCouponId()));
     }
     private void increaseIssuedCouponQuantity(long couponId) {
         Coupon existingCoupon = findCouponPessimisticLock(couponId);

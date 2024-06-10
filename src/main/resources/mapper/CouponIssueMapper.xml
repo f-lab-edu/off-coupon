@@ -115,4 +115,11 @@
         </foreach>
             )
     </update>
+
+    <delete id="deleteCouponIssueByMemberIdAndCouponId" parameterType="long">
+        DELETE
+        FROM coupon_issue
+        WHERE member_id = #{memberId}
+          AND coupon_id = #{couponId};
+    </delete>
 </mapper>

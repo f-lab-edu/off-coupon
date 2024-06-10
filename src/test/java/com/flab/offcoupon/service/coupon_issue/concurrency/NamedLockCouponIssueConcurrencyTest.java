@@ -1,6 +1,8 @@
 package com.flab.offcoupon.service.coupon_issue.concurrency;
 
 import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
 import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
 import org.junit.jupiter.api.Disabled;
@@ -36,7 +38,8 @@ class NamedLockCouponIssueConcurrencyTest {
             executorService.submit(() -> {
                 try {
                     LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    namedLockCouponIssue.issueCoupon(currentDateTime,1, 1,currentMemberId);
+                    IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(1), new PositiveLong(1), new PositiveLong(currentMemberId));
+                    namedLockCouponIssue.issueCoupon(currentDateTime,parameter);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {

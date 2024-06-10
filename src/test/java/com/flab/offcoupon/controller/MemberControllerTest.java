@@ -3,27 +3,21 @@ package com.flab.offcoupon.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flab.offcoupon.domain.entity.Role;
 import com.flab.offcoupon.dto.request.SignupMemberRequestDto;
-import com.flab.offcoupon.exception.GlobalExceptionHandler;
 import com.flab.offcoupon.service.MemberService;
 import com.flab.offcoupon.util.ResponseDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.text.MessageFormat;
 import java.time.LocalDate;
@@ -37,9 +31,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = MemberController.class,
-        excludeFilters = {
-                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = WebMvcConfigurer.class)})
+@SpringBootTest
+@AutoConfigureMockMvc
 class MemberControllerTest {
     private StringBuilder sb = new StringBuilder("{");
     private String URL = "/api/v1/members/signup";
@@ -52,17 +45,6 @@ class MemberControllerTest {
 
     @MockBean
     MemberService memberService;
-
-
-    @BeforeEach
-    void init() {
-        this.mvc = MockMvcBuilders.standaloneSetup(new MemberController(memberService))
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                // setControllerAdvice : 컨트롤러에서 발생하는 예외를 처리하기 위해 사용합니다
-                // GlobalExceptionHandler는 Java Bean 어노테이션에서 발생하는 MethodArgumentNotValidException을 처리하기 위해 사용합니다
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-    }
 
     @Test
     @DisplayName("[ERROR] 회원가입 시 유효성 검사 : 이메일이 NULl인 경우")

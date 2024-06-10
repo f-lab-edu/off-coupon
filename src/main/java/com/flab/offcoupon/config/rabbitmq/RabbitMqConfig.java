@@ -1,7 +1,10 @@
 package com.flab.offcoupon.config.rabbitmq;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -21,6 +24,7 @@ public class RabbitMqConfig {
      *
      * @return DirectExchange 객체
      */
+
     @Bean
     public DirectExchange directExchange() {
         return new DirectExchange(EXCHANGE_NAME);
@@ -46,6 +50,7 @@ public class RabbitMqConfig {
     public Binding binding(DirectExchange directExchange, Queue queue) {
         return BindingBuilder.bind(queue).to(directExchange).with(ROUTING_KEY);
     }
+
 
     /**
      * RabbitTemplate은 메시지를 주고 받을 때 사용하는 메시지 템플릿입니다.

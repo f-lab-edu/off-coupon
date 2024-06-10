@@ -2,6 +2,7 @@ package com.flab.offcoupon.controller;
 
 import com.flab.offcoupon.dto.request.OrderProductRequest;
 import com.flab.offcoupon.dto.response.AvailableCouponsByMemberIdResponse;
+import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.service.coupon_use.OrderService;
 import com.flab.offcoupon.util.ResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,8 @@ public class OrderController {
     public ResponseEntity<ResponseDTO<List<AvailableCouponsByMemberIdResponse>>> getAvailableCoupons(@RequestParam final long memberId,
                                                                                                      @RequestParam final long productId) {
         LocalDateTime now = LocalDateTime.now();
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getAvailableCoupons(memberId, productId, now));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(orderService.getAvailableCoupons(new PositiveLong(memberId).getValue(), new PositiveLong(productId).getValue(), now));
     }
 
     /**
@@ -44,6 +46,7 @@ public class OrderController {
     public ResponseEntity<ResponseDTO<String>> orderProduct(@PathVariable final long productId,
                                                             @RequestBody final OrderProductRequest orderProductRequest) {
         LocalDateTime now = LocalDateTime.now();
-        return ResponseEntity.status(HttpStatus.OK).body(ResponseDTO.getSuccessResult(orderService.orderProduct(productId, orderProductRequest, now)));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ResponseDTO.getSuccessResult(orderService.orderProduct(new PositiveLong(productId).getValue(), orderProductRequest, now)));
     }
 }

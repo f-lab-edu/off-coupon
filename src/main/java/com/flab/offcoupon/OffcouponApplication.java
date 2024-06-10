@@ -11,6 +11,7 @@ import java.util.TimeZone;
 @RequiredArgsConstructor
 @SpringBootApplication
 public class OffcouponApplication {
+
 	private final ScheduleRunner scheduleRunner;
 	@PostConstruct
 	public void started() {

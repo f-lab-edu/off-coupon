@@ -65,4 +65,6 @@ public interface CouponIssueRepository {
      * @param couponIssueIds 쿠폰 발급 ID 목록
      */
     void useCoupon(List<Long> couponIssueIds);
+
+    void deleteCouponIssueByMemberIdAndCouponId(long memberId, long couponId);
 }
