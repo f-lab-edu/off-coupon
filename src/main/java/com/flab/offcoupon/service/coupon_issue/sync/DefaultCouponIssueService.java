@@ -32,7 +32,8 @@ public class DefaultCouponIssueService {
     private final EventCacheService eventCacheService;
     private final CouponRepository couponRepository;
     private final CouponIssueRepository couponIssueRepository;
-    private final CouponIssueTransactionalService transactionalService;
+    private final EventCacheService eventCacheService;
+	private final CouponIssueTransactionalService transactionalService;
 
     @Transactional
     public ResponseDTO<String> issueCoupon(LocalDateTime currentDateTime, IssueRequestParameter requestParameter) {
@@ -70,5 +71,8 @@ public class DefaultCouponIssueService {
         if (couponIssueRepository.existCouponIssue(new CouponIssueCheckVo(memberId, couponId, currentDate))) {
             throw new DuplicatedCouponException(DUPLICATED_COUPON.formatted(memberId, couponId));
         }
+    }
+    private Coupon findCoupon(long couponId) {
+        return couponRepository.getCouponById(couponId);
     }
 }
