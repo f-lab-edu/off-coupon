@@ -7,14 +7,22 @@ import lombok.experimental.UtilityClass;
  */
 @UtilityClass
 public class RedisKeyUtils {
-    private static final String ISSUE_REQUEST_WITH_COUPON_ID_PREFIX = "issue.request.couponId=%s";
-    private static final String USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION = "users:sse:publish:memberId";
-    // 비동기 쿠폰 발급 요청의 unique 함을 유지하고 발급 수량의 제어를 위해 사용
-    public static String getIssueRequestKey(long couponId) {
-        return ISSUE_REQUEST_WITH_COUPON_ID_PREFIX.formatted(couponId);
-    }
-    // sse 연결을 여러 was 서버에서 공유하기 위한 key
-    public static String getUserSseConnectionKey() {
-        return USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION;
-    }
+	private static final String ISSUE_REQUEST_WITH_COUPON_ID_PREFIX = "coupon:issue:request:couponId=%s";
+	private static final String COUPON_ISSUE_REQUEST_WITH_COUPON_ID_AND_MEMBER_ID = "coupon:issue:request:couponId=%s:memberId=%s";
+	private static final String USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION = "users:sse:publish:memberId";
+
+	// 누적 쿠폰 발행 개수 제한
+	public static String getIssueRequestKey(long couponId) {
+		return ISSUE_REQUEST_WITH_COUPON_ID_PREFIX.formatted(couponId);
+	}
+
+	// 중복 쿠폰 발행 개수 제한
+	public static String getCouponIssueRequestForDuplicatedCouponKey(long couponId, long memberId) {
+		return COUPON_ISSUE_REQUEST_WITH_COUPON_ID_AND_MEMBER_ID.formatted(couponId, memberId);
+	}
+
+	// sse 연결을 여러 was 서버에서 공유하기 위한 key
+	public static String getUserSseConnectionKey() {
+		return USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION;
+	}
 }

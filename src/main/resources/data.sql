@@ -1,17 +1,19 @@
-
 ## MEMBER
-INSERT INTO member (email, password, name, birthdate, phone, created_at, updated_at,role)
-VALUES('sejin@email.com','$2a$10$o/LuVqMoJZlRgPKUHyLJWegiwmPOjtVYoyH9uKu.nkQ/0Rpk52ew.','박세진','1111-11-12','010-222-222','2023-12-12','2023-12-12', 'ROLE_USER');
+INSERT INTO member (email, password, name, birthdate, phone, created_at, updated_at, role)
+VALUES ('sejin@email.com', '$2a$10$o/LuVqMoJZlRgPKUHyLJWegiwmPOjtVYoyH9uKu.nkQ/0Rpk52ew.', '박세진', '1111-11-12',
+        '010-222-222', '2023-12-12', '2023-12-12', 'ROLE_USER');
 
 ## COUPON
 INSERT INTO coupon (id, event_id, discount_type, discount_rate, discount_price, coupon_type, max_quantity,
                     issued_quantity, validate_start_date, validate_end_date, created_at, updated_at)
-VALUES (1,1,'PERCENT',50,null,'FIRST_COME_FIRST_SERVED',500,0,'2024-03-1','2024-03-30','2024-02-01','2024-02-01');
+VALUES (1, 1, 'PERCENT', 50, null, 'FIRST_COME_FIRST_SERVED', 500, 0, '2024-01-1', '2024-11-30', '2024-02-01',
+        '2024-02-01');
 
 ## EVENT
 INSERT INTO event (id, category, description, start_date, end_date, daily_issue_start_time,
-                              daily_issue_end_time, created_at, updated_at)
-VALUES (1, '바디케어' , '바디케어 전품목 이벤트', now(),DATE_ADD(now(), INTERVAL 3 DAY),'12:00:00','23:00:00','2024-02-01','2024-02-01');
+                   daily_issue_end_time, created_at, updated_at)
+VALUES (1, '바디케어', '바디케어 전품목 이벤트', now(), DATE_ADD(now(), INTERVAL 3 DAY), '09:00:00', '23:00:00', '2024-01-01',
+        '2024-12-01');
 
 SELECT issued_quantity
 from coupon
@@ -22,6 +24,5 @@ from coupon_issue;
 
 ## PRODUCT
 INSERT INTO product (category, title, description, original_price, sale_price, created_at, updated_at)
-VALUES
-    ('의류', '면티셔츠', '편안한 면소재의 티셔츠', 20000, 0, NOW(), NOW()),
-    ('전자제품', '스마트폰', '고성능 스마트폰', 1000000, 800000, NOW(), NOW());
+VALUES ('의류', '면티셔츠', '편안한 면소재의 티셔츠', 20000, 0, NOW(), NOW()),
+       ('전자제품', '스마트폰', '고성능 스마트폰', 1000000, 800000, NOW(), NOW());
