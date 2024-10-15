@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 public class RedisKeyUtils {
 	private static final String ISSUE_REQUEST_WITH_COUPON_ID_PREFIX = "coupon:issue:request:couponId=%s";
 	private static final String COUPON_ISSUE_REQUEST_WITH_COUPON_ID_AND_MEMBER_ID = "coupon:issue:request:couponId=%s:memberId=%s";
-	private static final String USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION = "users:sse:publish:memberId";
+	private static final String USER_PUB_SUB_TOPIC_PREFIX_FOR_SSE_CONNECTION = "users:sse:publish:memberId=%s";
 
 	// 누적 쿠폰 발행 개수 제한
 	public static String getIssueRequestKey(long couponId) {

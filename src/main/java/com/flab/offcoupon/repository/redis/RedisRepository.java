@@ -1,9 +1,8 @@
 package com.flab.offcoupon.repository.redis;
 
-import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Repository;
 
 import lombok.RequiredArgsConstructor;
@@ -59,13 +58,26 @@ public class RedisRepository {
 		redisTemplate.convertAndSend(topic, message);
 	}
 
-	// TODO : 루아스크립트 테스트용
-	public Object execute(RedisScript script, List<String> keys, Object... args) {
-		return redisTemplate.execute(script, keys, args);
-	}
-
 	public Long increment(String key) {
 		return redisTemplate.opsForValue().increment(key);
+	}
+
+	/**
+	 * TTL(Time To Live)을 조회합니다.
+	 * @param key
+	 **/
+	public Long getTTL(String key) {
+		return redisTemplate.getExpire(key);
+	}
+
+	/**
+	 * TTL(Time To Live)을 설정합니다.
+	 * @param key
+	 * @param timeout
+	 * @param timeUnit
+	 **/
+	public void setTTL(String key, long timeout, TimeUnit timeUnit) {
+		redisTemplate.expire(key, timeout, timeUnit);
 	}
 
 }

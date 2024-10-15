@@ -15,6 +15,7 @@ import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.model.PositiveLong;
 import com.flab.offcoupon.service.cache.CouponCacheService;
 import com.flab.offcoupon.service.cache.EventCacheService;
+import com.flab.offcoupon.service.coupon_issue.async.dto.EventAndCouponCache;
 import com.flab.offcoupon.util.ResponseDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -41,9 +42,10 @@ public class AsyncCouponIssueService {
 	 */
 	public ResponseDTO<String> issueCoupon(final LocalDateTime currentDateTime,
 		final IssueRequestParameter requestParameter) {
-		checkIssuableEventPeriodAndTime(currentDateTime, requestParameter.getEventId());
-		CouponRedisEntity coupon = couponCacheService.getCoupon(requestParameter.getCouponId());
-		couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(coupon, requestParameter.getMemberId());
+		EventAndCouponCache eventAndCouponCache = getEventAndCouponCache(requestParameter);
+		checkIssuableEventPeriodAndTime(currentDateTime, eventAndCouponCache.eventCache());
+		couponIssueRedisService.checkCouponIssueQuantityAndDuplicate(eventAndCouponCache,
+			requestParameter.getMemberId());
 		issueRequest(new IssueRequestKey(new PositiveLong(requestParameter.getCouponId()),
 			new PositiveLong(requestParameter.getMemberId())));
 		return ResponseDTO.getSuccessResult(
@@ -52,19 +54,28 @@ public class AsyncCouponIssueService {
 	}
 
 	/**
+	 * 캐싱된 데이터 중 이벤트와 쿠폰 정보를 가져와서 EventAndCouponCache 객체를 생성합니다.
+	 * @param requestParameter 쿠폰 발급 요청 파라미터
+	 * @return 이벤트와 쿠폰 정보를 담은 EventAndCouponCache 객체
+	 **/
+	private EventAndCouponCache getEventAndCouponCache(final IssueRequestParameter requestParameter) {
+		EventRedisEntity event = eventCacheService.getEvent(requestParameter.getEventId());
+		CouponRedisEntity coupon = couponCacheService.getCoupon(requestParameter.getCouponId());
+		return new EventAndCouponCache(event, coupon);
+	}
+
+	/**
 	 * 이벤트 캐시에서 이벤트 정보를 가져와서 이벤트 기간 및 시간을 검증합니다.
-	 */
-	private void checkIssuableEventPeriodAndTime(final LocalDateTime currentDateTime, final long eventId) {
-		EventRedisEntity event = eventCacheService.getEvent(eventId);
-		event.availableIssuePeriodAndTime(currentDateTime);
+	 **/
+	private void checkIssuableEventPeriodAndTime(final LocalDateTime currentDateTime,
+		final EventRedisEntity eventCache) {
+		eventCache.availableIssuePeriodAndTime(currentDateTime);
 	}
 
 	/**
 	 * 검증이 완료된 이후, 쿠폰 발급 요청을 처리하는 메서드 입니다.<br>
-	 * <ol>
-	 *     <li> RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.</li>
-	 * </ol>
 	 *
+	 * RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.</li>
 	 * @param issueRequestKey 쿠폰 발급 요청 키
 	 */
 	private void issueRequest(final IssueRequestKey issueRequestKey) {
