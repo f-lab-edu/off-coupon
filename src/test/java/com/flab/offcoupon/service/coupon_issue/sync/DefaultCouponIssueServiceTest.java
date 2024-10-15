@@ -79,6 +79,7 @@ class DefaultCouponIssueServiceTest {
 	void clear() {
 		// 테스트 종료 후 발급 요청 키와 쿠폰, 이벤트 데이터 삭제
 		redisRepository.delete(getIssueRequestKey(1L));
+		redisRepository.delete(getCouponIssueRequestForDuplicatedCouponKey(1L, 1L));
 		redisRepository.delete("coupon::1");
 		redisRepository.delete("event::1");
 		redisRepository.delete("coupon::2");

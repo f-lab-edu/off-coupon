@@ -1,56 +1,59 @@
 package com.flab.offcoupon.service.coupon_issue.concurrency;
 
-import com.flab.offcoupon.domain.entity.Coupon;
-import com.flab.offcoupon.dto.request.IssueRequestParameter;
-import com.flab.offcoupon.model.PositiveLong;
-import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.flab.offcoupon.domain.entity.Coupon;
+import com.flab.offcoupon.dto.request.IssueRequestParameter;
+import com.flab.offcoupon.model.PositiveLong;
+import com.flab.offcoupon.repository.mysql.CouponRepository;
+import com.flab.offcoupon.service.coupon_issue.sync.NamedLockCouponIssue;
 
 @Disabled("using only for concurrent testing")
 @SpringBootTest
 class NamedLockCouponIssueConcurrencyTest {
 
-    @Autowired
-    private NamedLockCouponIssue namedLockCouponIssue;
-    @Autowired
-    private CouponRepository couponRepository;
-    @Transactional
-    @Test
-    void 동시에_100개_요청() throws Exception {
-        final int threadCount = 100;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+	@Autowired
+	private NamedLockCouponIssue namedLockCouponIssue;
+	@Autowired
+	private CouponRepository couponRepository;
 
-        for (int i = 0; i < threadCount; i++) {
-            final int currentMemberId = i+1;
-            executorService.submit(() -> {
-                try {
-                    LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
-                    IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(1), new PositiveLong(1), new PositiveLong(currentMemberId));
-                    namedLockCouponIssue.issueCoupon(currentDateTime,parameter);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                } finally {
-                    latch.countDown();
-                }
-            });
-        }
-        latch.await();
+	@Transactional
+	@Test
+	void 동시에_100개_요청() throws Exception {
+		final int threadCount = 100;
+		ExecutorService executorService = Executors.newFixedThreadPool(32);
+		CountDownLatch latch = new CountDownLatch(threadCount);
 
-        Coupon coupon = couponRepository.getCouponById(1);
-        // 500 - 100 == 400
-        assertEquals(400,coupon.remainedCoupon());
-    }
+		for (int i = 0; i < threadCount; i++) {
+			final int currentMemberId = i + 1;
+			executorService.submit(() -> {
+				try {
+					LocalDateTime currentDateTime = LocalDateTime.of(2024, 02, 27, 13, 0, 0);
+					IssueRequestParameter parameter = new IssueRequestParameter(new PositiveLong(1),
+						new PositiveLong(1), new PositiveLong(currentMemberId));
+					namedLockCouponIssue.issueCoupon(currentDateTime, parameter);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+		latch.await();
+
+		Coupon coupon = couponRepository.getCouponById(1);
+		// 500 - 100 == 400
+		assertEquals(400, coupon.remainedCoupon());
+	}
 }

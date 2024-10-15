@@ -25,6 +25,7 @@ import com.flab.offcoupon.repository.redis.RedisRepository;
 import com.flab.offcoupon.setup.SetupInitializer;
 import com.flab.offcoupon.util.ResponseDTO;
 
+@Transactional
 @SpringBootTest
 class CouponIssueRequestServiceTest {
 	private final static String COUPON_ISSUE_SUCCESS_MESSAGE_SYNC = "쿠폰이 발급 완료되었습니다. memberId : %s, couponId : %s";
@@ -59,6 +60,7 @@ class CouponIssueRequestServiceTest {
 	@AfterEach
 	void clear() {
 		redisRepository.delete(getIssueRequestKey(1L));
+		redisRepository.delete(getCouponIssueRequestForDuplicatedCouponKey(1L, 1L));
 		redisRepository.delete("coupon::1");
 		redisRepository.delete("event::1");
 		couponIssueRepository.deleteCouponIssueByMemberIdAndCouponId(1L, 1L);
@@ -66,7 +68,6 @@ class CouponIssueRequestServiceTest {
 
 	@Test
 	@DisplayName("[SUCCESS] 동기식 쿠폰 발급 테스트")
-	@Transactional
 	void syncIssueCoupon() throws InterruptedException {
 		// given
 		LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
@@ -81,9 +82,8 @@ class CouponIssueRequestServiceTest {
 		assertEquals(COUPON_ISSUE_SUCCESS_MESSAGE_SYNC.formatted(memberId, couponId), response.getData());
 	}
 
-	// @Test
+	@Test
 	@DisplayName("[SUCCESS] 비동기식 쿠폰 발급 테스트")
-	@Transactional
 	void asyncIssueCoupon() {
 		// given
 		LocalDateTime currentDateTime = LocalDateTime.now().withHour(13).withMinute(0).withSecond(0);
