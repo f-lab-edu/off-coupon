@@ -75,7 +75,7 @@ public class AsyncCouponIssueService {
 	/**
 	 * 검증이 완료된 이후, 쿠폰 발급 요청을 처리하는 메서드 입니다.<br>
 	 *
-	 * RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.</li>
+	 * RabbitMQ에 쿠폰 발급 요청 적재 : 선착 순 대기 큐 목록으로서 사용됩니다.
 	 * @param issueRequestKey 쿠폰 발급 요청 키
 	 */
 	private void issueRequest(final IssueRequestKey issueRequestKey) {

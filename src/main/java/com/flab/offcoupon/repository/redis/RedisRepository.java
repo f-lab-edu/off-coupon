@@ -25,16 +25,6 @@ public class RedisRepository {
 	}
 
 	/**
-	 * Redis SCARD 명령어: Set의 크기를 반환합니다.
-	 *
-	 * @param key Set의 키
-	 * @return Set의 크기
-	 */
-	public Long sCard(String key) {
-		return redisTemplate.opsForSet().size(key);
-	}
-
-	/**
 	 * Redis SISMEMBER 명령어: Set에 특정 멤버가 존재하는지 확인합니다.
 	 *
 	 * @param key   Set의 키
@@ -54,17 +44,27 @@ public class RedisRepository {
 		return redisTemplate.delete(key);
 	}
 
+	/**
+	 * Redis PUBLISH 명령어: 메시지를 특정 채널로 발행합니다.
+	 * @param topic 채널
+	 * @param message 발행할 메시지
+	 */
 	public void publish(String topic, Object message) {
 		redisTemplate.convertAndSend(topic, message);
 	}
 
+	/**
+	 * Redis INCR 명령어: 키의 값을 1 증가시킵니다.
+	 * @param key 카운팅할 키
+	 * @return 카운팅된 값
+	 */
 	public Long increment(String key) {
 		return redisTemplate.opsForValue().increment(key);
 	}
 
 	/**
 	 * TTL(Time To Live)을 조회합니다.
-	 * @param key
+	 * @param key TTL을 조회할 키
 	 **/
 	public Long getTTL(String key) {
 		return redisTemplate.getExpire(key);
@@ -72,9 +72,9 @@ public class RedisRepository {
 
 	/**
 	 * TTL(Time To Live)을 설정합니다.
-	 * @param key
-	 * @param timeout
-	 * @param timeUnit
+	 * @param key TTL을 설정할 키
+	 * @param timeout TTL 시간
+	 * @param timeUnit TTL 단위
 	 **/
 	public void setTTL(String key, long timeout, TimeUnit timeUnit) {
 		redisTemplate.expire(key, timeout, timeUnit);

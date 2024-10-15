@@ -15,7 +15,6 @@ import com.flab.offcoupon.dto.request.rabbit_mq.CouponIssueMessageForQueue;
 import com.flab.offcoupon.exception.coupon.CouponIssueException;
 import com.flab.offcoupon.repository.mysql.CouponIssueRepository;
 import com.flab.offcoupon.repository.mysql.CouponRepository;
-import com.flab.offcoupon.repository.redis.RedisRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +26,6 @@ public class CouponIssueMessageHandler {
 
 	private final CouponRepository couponRepository;
 	private final CouponIssueRepository couponIssueRepository;
-	private final RedisRepository redisRepository;
 
 	/**
 	 * 각 쿠폰 발행 이력을 저장합니다.
@@ -56,15 +54,12 @@ public class CouponIssueMessageHandler {
 	}
 
 	/**
-	 * MySQL에 저장된 총 발행된 수량을 업데이트하고, <br>
-	 * Redis에 저장된 요청 중 메시지로 들어온 쿠폰ID와 관련된 데이터를 삭제합니다.
-	 *
+	 * MySQL에 저장된 총 발행된 수량을 업데이트하고, <br>*
 	 * @param countByCouponIdVoList 오늘 발급된 쿠폰의 총 발급 수량 및 쿠폰 ID List
 	 */
 	private void totalUpdateIssuedCouponAndDeleteRequest(List<CountByCouponIdVo> countByCouponIdVoList) {
 		countByCouponIdVoList.forEach(countByCouponIdVo -> {
 			totalUpdateIssuedQuantity(countByCouponIdVo);
-			//removeIssuedCouponRequestInRedis(countByCouponIdVo.couponId());
 		});
 	}
 
@@ -77,37 +72,6 @@ public class CouponIssueMessageHandler {
 			new UpdateTotalIssuedQuantityVo(countByCouponIdVo.couponId(),
 				coupon.getIssuedQuantity() + countByCouponIdVo.count()));
 	}
-
-	// /**
-	//  * Redis에 저장된 메시지로 들어온 쿠폰ID와 관련된 데이터를 삭제합니다.
-	//  */
-	// private void removeIssuedCouponRequestInRedis(long couponId) {
-	// 	redisRepository.delete(getIssueRequestKey(couponId));
-	// 	String pattern = String.format("coupon:issue:request:couponId=%d:*", couponId);
-	// 	// SCAN을 사용해서 패턴에 맞는 키들을 검색하고 삭제
-	// 	Set<String> keysToDelete = scanKeys(pattern);
-	//
-	// 	for (String key : keysToDelete) {
-	// 		redisRepository.delete(key); // 각 키 삭제
-	// 	}
-	// 	redisRepository.delete(getCouponIssueRequestForDuplicatedCouponKey(couponId));
-	//
-	// }
-
-	// // Redis의 SCAN 명령어를 이용해 일정량씩 키를 검색하는 메서드
-	// private Set<String> scanKeys(String pattern) {
-	// 	Set<String> keys = new HashSet<>();
-	// 	String cursor = "0";
-	//
-	// 	do {
-	// 		// Redis의 SCAN 명령을 이용해 일정량씩 키 검색
-	// 		ScanResult<String> scanResult = redisRepository.scan(cursor, pattern);
-	// 		cursor = scanResult.getCursor();  // 다음 커서 값
-	// 		keys.addAll(scanResult.getResult());  // 검색된 키들 추가
-	// 	} while (!cursor.equals("0"));  // cursor가 0이 되면 검색 종료
-	//
-	// 	return keys;
-	// }
 
 	/**
 	 * 오늘 발급된 쿠폰의 총 발급 수량을 확인합니다.
